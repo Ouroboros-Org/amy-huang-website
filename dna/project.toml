@@ -2,8 +2,8 @@
 # Project-owned: change it whenever a decision changes.
 
 [project]
-name = "{{project name}}"
-description = "{{one sentence on what the project is for}}"
+name = "Amy Huang website"
+description = "Amy Huang's portfolio site: her martial arts teaching, performing and other crafts, told in her own voice so visitors can get in touch."
 
 [planning]
 # Horizon milestones, from soon to some time: soon, after, later, some time.

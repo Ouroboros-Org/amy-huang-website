@@ -1,7 +1,7 @@
 # Template manifest. `dna cleanup` applies it and `dna check-template` verifies it.
 
 # "template" in dna-template itself; `dna cleanup` changes it to "project".
-state = "template"
+state = "project"
 version = "0.0.1"
 source = "https://github.com/Marc-Paul/dna-template"
 
