@@ -21,7 +21,13 @@ The ruleset `Default branch` targets the default branch and is active. It:
 
 The process still requires a review on the exact head. Someone working alone can't approve their own pull request, so the review is recorded as [Review](Verification-and-review.md#review) describes, and the ruleset doesn't count approvals. When several people review, raise the required approvals.
 
-When the project adds hosted checks, require them under **Require status checks to pass** in this ruleset.
+Require the project's hosted checks under **Require status checks to pass** in this ruleset:
+
+| Check | Workflow | Runs on |
+|---|---|---|
+| `site verify` | `.github/workflows/site.yml`: type-check, formatting and build of `site/` | Pull requests and default-branch pushes that change `site/` or the workflow |
+
+A required check that doesn't run leaves a pull request waiting, so before requiring `site verify`, remove the workflow's path filters or let pull requests that don't touch `site/` report it as skipped.
 
 Rulesets on private repositories need a paid plan. Without one, follow the same rules as a practice.
 
