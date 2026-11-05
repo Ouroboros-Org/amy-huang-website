@@ -55,6 +55,12 @@ export function initJourney(): void {
     journey = undefined;
     root.classList.remove("journey--live");
     pauseMedia(root);
+    // Forget which chapters were on screen, so a rebuilt journey restarts their video.
+    for (const chapter of root.querySelectorAll<HTMLElement>(
+      "[data-chapter]",
+    )) {
+      delete chapter.dataset.active;
+    }
     if (motionAllowed()) {
       root.classList.add("journey--live");
       context = gsap.context(() => {
