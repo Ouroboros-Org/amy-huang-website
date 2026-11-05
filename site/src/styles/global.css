@@ -1,0 +1,56 @@
+/*
+ * Baseline only. The design system (type, scale, grid, materials) replaces these
+ * placeholder tokens once the design direction is approved (#3).
+ */
+:root {
+  --paper: oklch(0.97 0.006 240);
+  --text: oklch(0.22 0.012 262);
+  --ink: oklch(0.3 0.09 262);
+  --signal: oklch(0.6 0.2 30);
+  --night: oklch(0.16 0.006 262);
+
+  color-scheme: light;
+  font-family: system-ui, sans-serif;
+  font-synthesis: none;
+  color: var(--text);
+  background: var(--paper);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  line-height: 1.5;
+}
+
+img,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Stable layout before the stacked-alpha component upgrades. */
+stacked-alpha-video {
+  display: block;
+}
+
+stacked-alpha-video video {
+  display: none;
+}
