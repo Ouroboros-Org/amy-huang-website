@@ -1,5 +1,10 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 import { findPlaceholders, isNoindex, sourceOf } from "./check-launch.mjs";
 
 const page = (body) =>
@@ -62,4 +67,41 @@ test("reports a repeated placeholder once per section", () => {
 test("recognises noindex work benches", () => {
   assert.equal(isNoindex(`<meta name="robots" content="noindex">`), true);
   assert.equal(isNoindex(`<meta name="description" content="x">`), false);
+});
+
+const script = fileURLToPath(new URL("./check-launch.mjs", import.meta.url));
+
+function runCheck(html, env) {
+  const dist = mkdtempSync(join(tmpdir(), "launch-check-"));
+  try {
+    writeFileSync(join(dist, "index.html"), html);
+    return spawnSync(process.execPath, [script, dist, "--production-only"], {
+      env: { ...process.env, ...env },
+      encoding: "utf8",
+    });
+  } finally {
+    rmSync(dist, { recursive: true, force: true });
+  }
+}
+
+test("--production-only skips preview deploys and blocks production", () => {
+  const draft = page(
+    `<section id="teaching" data-draft><p>[confirm]</p></section>`,
+  );
+  const preview = runCheck(draft, { VERCEL_ENV: "preview" });
+  assert.equal(preview.status, 0);
+  assert.match(preview.stdout, /skipped/);
+
+  const production = runCheck(draft, { VERCEL_ENV: "production" });
+  assert.equal(production.status, 1);
+  assert.match(production.stdout, /#teaching .*draft/);
+
+  const done = runCheck(
+    page(`<section id="teaching"><p>Ready.</p></section>`),
+    {
+      VERCEL_ENV: "production",
+    },
+  );
+  assert.equal(done.status, 0);
+  assert.match(done.stdout, /passed/);
 });

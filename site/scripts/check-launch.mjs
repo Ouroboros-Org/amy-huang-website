@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 // Refuse to publish while placeholder content remains (#13).
 //
-//   node scripts/check-launch.mjs [dist]
+//   node scripts/check-launch.mjs [dist] [--production-only]
 //
-// Reads every built page except noindex work benches (/tiles, /lab) and reports, per
-// section and the content file it comes from:
+// With --production-only it runs only when VERCEL_ENV is "production", so preview
+// deploys (for review) still build while a production deploy refuses to publish.
+//
+// Reads every built page except noindex ones and reports, per section and the content
+// file it comes from:
 // - chapters still marked `draft: true` (rendered as data-draft)
 // - stand-ins marked data-placeholder (contact buttons, tape scans, intro reel, …)
 // - media served from public/media/placeholder/ or public/media/test/
@@ -137,5 +140,14 @@ function main(dist = "dist") {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  process.exit(main(process.argv[2]));
+  const args = process.argv.slice(2);
+  const productionOnly = args.includes("--production-only");
+  const dist = args.find((arg) => !arg.startsWith("--"));
+  if (productionOnly && process.env.VERCEL_ENV !== "production") {
+    console.log(
+      `Launch check skipped: VERCEL_ENV is ${process.env.VERCEL_ENV ?? "unset"}, not production.`,
+    );
+    process.exit(0);
+  }
+  process.exit(main(dist));
 }

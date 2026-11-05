@@ -22,6 +22,21 @@ Use the Node version in `.node-version` (24.22.2), then from this folder:
 | `npm run check:launch` | After a build: list every placeholder left on public pages; fails until none remain. |
 | `npm run media:test`   | Regenerate the synthetic test media in `public/media/test/`.                         |
 
+## Deploy
+
+The site deploys on [Vercel](https://vercel.com) from this folder (the project's Root
+Directory is `site`). `vercel.json` sets the build to `npm run build:vercel`:
+
+- **Preview deploys** (every branch and pull request) build normally, placeholders and all,
+  so Amy can review work in progress.
+- **Production deploys** run the launch check after the build and fail while any
+  placeholder remains (#13), so a draft can't be published.
+
+`vercel.json` also caches the hashed `/_astro/` files for a year and `/media/` for a day,
+and sets baseline security headers. Node is pinned to 24.x in `package.json`, matching
+`.node-version` and CI. Media served from the same deployment needs no CORS setup for the
+WebGL video player; a separate media host would.
+
 ## How the journey works
 
 - **Without JavaScript, with reduced motion, or with motion paused** (the control in the
