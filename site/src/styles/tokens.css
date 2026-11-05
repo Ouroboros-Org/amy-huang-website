@@ -1,0 +1,98 @@
+/*
+ * Design tokens. Swiss skeleton (grid, type scale, one signal colour) with the
+ * notebook's own palette. Colour values are starting points: refine them by
+ * sampling the real paper and ink scans once they exist.
+ */
+:root {
+  /* Colour: a real notebook, not cream. Neutrals lean toward the ink's hue. */
+  --paper: oklch(0.97 0.006 240);
+  --rule: oklch(0.86 0.04 240);
+  --margin-line: oklch(0.68 0.15 25 / 0.7);
+  --text: oklch(0.22 0.012 262);
+  --text-2: oklch(0.42 0.02 262);
+  --ink: oklch(0.3 0.09 262);
+  /* 5.2:1 with white text, 4.9:1 on paper. Night pages use a lighter shade. */
+  --signal: oklch(0.55 0.2 30);
+  --signal-text: oklch(0.99 0.01 30);
+  --night: oklch(0.16 0.006 262);
+  --gel: oklch(0.97 0 0);
+  --night-text-2: oklch(0.78 0.01 262);
+  /* Placeholder material colours until scans replace them. */
+  --kraft: oklch(0.72 0.06 70);
+  --sticky: oklch(0.93 0.1 98);
+  --print-border: oklch(0.99 0.002 240);
+
+  /* Type: one grotesk for everything readable, handwriting only for Amy's voice. */
+  --font-grotesk: "Schibsted Grotesk Variable", system-ui, sans-serif;
+  --font-hand: "Shantell Sans Variable", "Segoe Print", "Bradley Hand", cursive;
+  --hand-settings: "INFM" 100;
+
+  /* Fluid modular scale: 17px x1.25 at 360px wide, 18px x1.333 at 1440px, capped at 6rem. */
+  --step--1: 0.875rem;
+  --step-0: clamp(1.062rem, 1.042rem + 0.093vw, 1.125rem);
+  --step-1: clamp(1.328rem, 1.271rem + 0.254vw, 1.5rem);
+  --step-2: clamp(1.66rem, 1.547rem + 0.502vw, 2rem);
+  --step-3: clamp(2.075rem, 1.879rem + 0.873vw, 2.665rem);
+  --step-4: clamp(2.594rem, 2.275rem + 1.419vw, 3.552rem);
+  --step-5: clamp(3.242rem, 2.745rem + 2.211vw, 4.735rem);
+  --step-6: clamp(4.053rem, 3.404rem + 2.884vw, 6rem);
+
+  /* Space: an 8px unit; the ruling is the baseline that body text sits on. */
+  --unit: 0.5rem;
+  --rule-gap: 1.75rem;
+  --space-1: calc(var(--unit) * 1);
+  --space-2: calc(var(--unit) * 2);
+  --space-3: calc(var(--unit) * 3);
+  --space-4: calc(var(--unit) * 4);
+  --space-6: calc(var(--unit) * 6);
+  --space-8: calc(var(--unit) * 8);
+  --space-12: calc(var(--unit) * 12);
+
+  /* Grid: 4 / 8 / 12 columns. The margin line sits in the left margin. */
+  --cols: 4;
+  --gutter: 1rem;
+  --page-margin: 1.25rem;
+  --margin-line-x: 0.75rem;
+  --measure: 65ch;
+
+  /* Scrapbook tilt: fixed per element, chosen from this set only. */
+  --tilt-n4: -4deg;
+  --tilt-n2: -2deg;
+  --tilt-n1: -1deg;
+  --tilt-p1: 1deg;
+  --tilt-p2: 2deg;
+  --tilt-p3: 3deg;
+
+  /* Material depth: soft and believable, never a hard offset. */
+  --shadow-paper:
+    0 1px 1px oklch(0.2 0.02 262 / 0.08),
+    0 6px 16px -6px oklch(0.2 0.02 262 / 0.22);
+  --shadow-lift:
+    0 2px 3px oklch(0.2 0.02 262 / 0.1),
+    0 14px 30px -10px oklch(0.2 0.02 262 / 0.3);
+
+  /* Motion: ease out, exits faster than entrances, no bounce. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-feedback: 120ms;
+  --dur-state: 220ms;
+  --dur-layout: 400ms;
+  --dur-entrance: 700ms;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --cols: 8;
+    --gutter: 1.25rem;
+    --page-margin: 3rem;
+    --margin-line-x: 2rem;
+  }
+}
+
+@media (min-width: 72rem) {
+  :root {
+    --cols: 12;
+    --gutter: 1.5rem;
+    --page-margin: 5rem;
+    --margin-line-x: 3.5rem;
+  }
+}

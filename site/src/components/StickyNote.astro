@@ -1,0 +1,31 @@
+---
+type Tilt = "n4" | "n2" | "n1" | "p1" | "p2" | "p3";
+
+/** A sticky note in Amy's hand, such as "currently in: Chiang Mai". */
+interface Props {
+  tilt?: Tilt;
+  class?: string;
+}
+
+const { tilt = "p2", class: className } = Astro.props;
+---
+
+<aside
+  class:list={["sticky", "hand", className]}
+  style={`--tilt: var(--tilt-${tilt})`}
+>
+  <slot />
+</aside>
+
+<style>
+  .sticky {
+    display: inline-block;
+    width: max-content;
+    max-width: 14rem;
+    padding: 1rem 1.25rem 1.5rem;
+    background: var(--sticky);
+    box-shadow: var(--shadow-paper);
+    rotate: var(--tilt);
+    color: var(--ink);
+  }
+</style>
