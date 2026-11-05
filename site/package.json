@@ -23,14 +23,21 @@
   "dependencies": {
     "@fontsource-variable/schibsted-grotesk": "^5.3.0",
     "@fontsource-variable/shantell-sans": "^5.3.0",
+    "@fontsource/schibsted-grotesk": "^5.3.0",
     "astro": "^7.4.6",
     "gsap": "^3.15.1",
+    "satori": "^0.63.2",
+    "sharp": "^0.35.5",
     "stacked-alpha-video": "^1.0.10"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@types/node": "^24.19.2",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.2",
     "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "fflate": "0.7.5"
   }
 }

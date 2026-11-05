@@ -1,0 +1,89 @@
+---
+import Base from "../layouts/Base.astro";
+import { getSite } from "../lib/site";
+
+const { settings } = await getSite();
+---
+
+<Base
+  title={`Page not found: ${settings.name}`}
+  description="This address doesn't lead to a page on the site."
+  noindex
+>
+  <main class="lost">
+    <div class="lost__opening" aria-hidden="true"></div>
+    <div class="lost__text">
+      <h1>This page isn't here</h1>
+      <p>The link may be old, or the address has a typo.</p>
+      <a class="lost__home" href="/">
+        Back to {settings.name}
+      </a>
+    </div>
+  </main>
+</Base>
+
+<style>
+  /* The hero's opening, lit and still, beside a way back. */
+  .lost {
+    display: grid;
+    align-content: center;
+    gap: var(--space-6);
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: var(--space-8) var(--page-margin);
+    overflow: hidden;
+  }
+
+  .lost__opening {
+    width: min(56vw, 16rem);
+    aspect-ratio: 1;
+    border: 3px solid oklch(0.95 0.03 40 / 0.8);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      oklch(0.78 0.14 38),
+      var(--signal) 45%,
+      oklch(0.66 0.18 35)
+    );
+    box-shadow: 0 0 6rem 1rem oklch(0.7 0.18 35 / 0.3);
+  }
+
+  .lost__text {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-3);
+  }
+
+  .lost h1 {
+    font-size: var(--step-5);
+  }
+
+  .lost p {
+    color: var(--text-2);
+    font-size: var(--step-1);
+    line-height: 1.35;
+  }
+
+  .lost__home {
+    margin-top: var(--space-2);
+    padding: 0.6rem 1.1rem;
+    border: 2px solid var(--signal);
+    background: var(--signal);
+    color: var(--signal-text);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  @media (min-width: 48rem) {
+    .lost {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: var(--space-12);
+    }
+
+    .lost__opening {
+      order: 2;
+      width: min(36vw, 26rem);
+    }
+  }
+</style>
