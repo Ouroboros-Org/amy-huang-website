@@ -40,7 +40,28 @@ const { contact, weddingsUrl } = settings;
 </Base>
 
 <script>
-  import { initJourney } from "../scripts/journey";
+  import { motionAllowed, onMotionChange } from "../scripts/motion";
 
-  initJourney();
+  // The motion engine (GSAP and the journey, most of the page's script) loads only
+  // when motion is allowed, and only once the page has loaded and gone idle, so it
+  // never delays the first paint. Until then the chapters are the static stack.
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    import("../scripts/journey").then(({ initJourney }) => initJourney());
+  };
+  const whenIdle = (task: () => void) =>
+    "requestIdleCallback" in window
+      ? requestIdleCallback(task, { timeout: 1500 })
+      : setTimeout(task, 200);
+
+  if (motionAllowed()) {
+    if (document.readyState === "complete") whenIdle(start);
+    else window.addEventListener("load", () => whenIdle(start), { once: true });
+  } else {
+    onMotionChange(() => {
+      if (motionAllowed()) start();
+    });
+  }
 </script>
