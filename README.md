@@ -4,7 +4,9 @@ Amy Huang's portfolio site: her martial arts teaching, performing and other craf
 
 ## Components
 
-<!-- Name the real component boundaries and where each one lives. Give a component its own README at its boundary. -->
+| Component | Lives in | Read |
+|---|---|---|
+| The website: a static Astro build with layered scroll scenes and transparent video | `site/` | [site/README.md](site/README.md) |
 
 ## Find information
 
