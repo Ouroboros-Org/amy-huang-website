@@ -37,6 +37,11 @@ and sets baseline security headers. Node is pinned to 24.x in `package.json`, ma
 `.node-version` and CI. Media served from the same deployment needs no CORS setup for the
 WebGL video player; a separate media host would.
 
+Vercel reports the production domain at build time (`VERCEL_PROJECT_PRODUCTION_URL`, set on
+previews too), and `astro.config.mjs` makes it the site's address. The canonical URL and
+the social card's address in link previews are built from it. A build outside Vercel
+leaves those two out. Vercel serves the built `404.html` for unknown paths.
+
 ## How the journey works
 
 - **Without JavaScript, with reduced motion, or with motion paused** (the control in the
@@ -59,6 +64,9 @@ WebGL video player; a separate media host would.
 | `src/content/settings.json`                                                    | Name, line, "currently in", contact details, wedding-site link, the hero clip.                             |
 | `src/content.config.ts`                                                        | The schema both are checked against at build time.                                                         |
 | `src/pages/index.astro`                                                        | The page: top bar, hero, chapters, contact.                                                                |
+| `src/pages/404.astro`                                                          | The page for unknown addresses, with a way back.                                                           |
+| `src/pages/social-card.png.ts`, `src/lib/social-card.ts`                       | The picture shared links preview with: her name and line, rendered at build time.                          |
+| `src/pages/favicon.svg.ts`, `favicon.ico.ts`, `apple-touch-icon.png.ts`        | The icon for browser tabs and phone home screens, from the one drawing in `src/lib/brand.ts`.              |
 | `src/components/HeroChapter.astro`                                             | The dark hero with its opening, her name and the chapter index.                                            |
 | `src/components/Chapter.astro`                                                 | A chapter's layers and their scroll windows.                                                               |
 | `src/components/ContactChapter.astro`                                          | The calm last chapter and the footer.                                                                      |
@@ -67,6 +75,7 @@ WebGL video player; a separate media host would.
 | `src/components/ContactAction.astro`, `ContactLinks.astro`, `StickyNote.astro` | Contact buttons and the sticky-note personality piece.                                                     |
 | `src/scripts/journey.ts`, `motion.ts`, `media.ts`                              | The journey engine, the motion setting, and video playback.                                                |
 | `src/lib/site.ts`, `contact.ts`                                                | Loading the content in order; building WhatsApp, email and Instagram links.                                |
+| `src/lib/brand.ts`, `raster.ts`                                                | The icon, and the colours of build-time images (kept in step with `tokens.css`); PNG and ICO output.       |
 | `scripts/encode-alpha.sh`                                                      | Encodes a master clip with alpha into the stacked AV1, HEVC and poster files.                              |
 | `scripts/check-launch.mjs`                                                     | The launch check (#13).                                                                                    |
 | `public/media/test/`, `public/media/placeholder/`                              | Synthetic test clips and labelled placeholder images. Real media is served from a CDN.                     |
@@ -83,6 +92,8 @@ Words and media live in `src/content/`, not in the layout code:
 - Add contact details in `settings.json` (`whatsapp` as an international number, `email`,
   `instagram` as the handle). Until a detail is there, its button renders as a dashed
   placeholder.
+- The link preview shows `name` and `line` from `settings.json`, so editing them updates it
+  on the next build. Apps that already fetched the preview may keep the old one for a while.
 
 ## Design rules in code
 
