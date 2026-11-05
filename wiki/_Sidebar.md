@@ -11,5 +11,5 @@
 **Maintain the handbook**
 
 - [Wiki maintenance](Wiki-maintenance.md)
-- [Process tools](Process-tools.md)
+- [GitHub configuration](GitHub-configuration.md)
 - [Glossary](Glossary.md)

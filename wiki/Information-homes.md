@@ -41,7 +41,7 @@ Maintained explanations belong in this handbook, not in a `docs/` folder. When a
 
 ## Where the handbook is stored
 
-The handbook is the repository's GitHub Wiki when it is available. Otherwise it is the `wiki/` folder at the repository root. The folder holds only the handbook's Markdown pages and is treated like a separate Wiki repository: its changes are pull requests of their own, its checks run separately, and source archives leave it out. [Publish a change](Wiki-maintenance.md#publish-a-change) explains both forms.
+The handbook is the repository's GitHub Wiki when it is available. Otherwise it is the `wiki/` folder at the repository root. The folder holds only the handbook's Markdown pages and is treated like a separate Wiki repository: its changes are pull requests of their own, and source archives leave it out. [Publish a change](Wiki-maintenance.md#publish-a-change) explains both forms.
 
 ## Keep ownership clear
 

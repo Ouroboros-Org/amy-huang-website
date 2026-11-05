@@ -28,7 +28,7 @@ Every open Issue leaves a pass with one disposition:
 
 | Disposition | Record |
 |---|---|
-| Placed | A horizon milestone, and a priority when it matters. |
+| Placed | A horizon milestone and an entry in the planning Project, with a priority when it matters. |
 | Linked | A duplicate is closed with its canonical link. A part becomes a sub-issue, or is blocked by its prerequisite, and is placed with it. |
 | Postponed | A later horizon, with the reason and what would bring the Issue back. |
 | Closed | Not planned, with the reason. |
@@ -38,8 +38,9 @@ An open Issue without a horizon milestone or the `kept open` label is untriaged.
 
 ## Run a pass
 
-1. Run `python3 -m dna doctor`, or read the summary of the latest routines run. Its triage section lists untriaged Issues, Issues waiting for a decision, soon-horizon Issues that aren't ready, triaged Issues missing from the planning Project, and kept-open Issues due for review.
-2. Triage the untriaged Issues first. Then refine from the top of the soon horizon downwards, and continue with the after horizon.
-3. Record each decision on the Issue itself.
+1. Find the untriaged Issues with the repository's Issue search: `is:issue is:open no:milestone -label:"kept open"`.
+2. Triage them first. Then refine from the top of the soon horizon downwards, and continue with the after horizon. In the planning Project, **Current cycle** shows the soon horizon by status, and **Needs decision** lists the open questions.
+3. Review kept-open Issues, oldest update first: `is:issue is:open label:"kept open" sort:updated-asc`.
+4. Record each decision on the Issue itself.
 
-A pass is done when no Issue is untriaged and every Issue in the soon horizon is ready or has its pending decision stated. When passes regularly find a long list, or nothing, change the schedule in `.github/workflows/routines.yml`.
+A pass is done when no Issue is untriaged and every Issue in the soon horizon is ready or has its pending decision stated. When passes regularly find a long list, or nothing, change their pace.

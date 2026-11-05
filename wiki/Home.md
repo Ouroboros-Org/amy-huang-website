@@ -17,7 +17,7 @@ This handbook explains how the project works and what it has learned. Start with
 | Question | Read |
 |---|---|
 | How does this handbook stay relevant and connected? | [Wiki maintenance](Wiki-maintenance.md) |
-| What do the process commands and configuration files do? | [Process tools](Process-tools.md) |
+| How are the repository and the planning Project configured? | [GitHub configuration](GitHub-configuration.md) |
 | What does a process term mean? | [Glossary](Glossary.md) |
 
 <!-- Add the project's own pages, such as architecture and development setup, in a section above "Maintain the handbook". -->
