@@ -12,7 +12,7 @@ Amy Huang's portfolio site: her martial arts teaching, performing and other craf
 |---|---|
 | What went wrong, and how was it investigated and resolved? | [Issues](https://github.com/Ouroboros-Org/amy-huang-website/issues) |
 | What is changing now? | [Pull requests](https://github.com/Ouroboros-Org/amy-huang-website/pulls) |
-| What comes next? | [Milestones](https://github.com/Ouroboros-Org/amy-huang-website/milestones) and the planning Project |
+| What comes next? | [Milestones](https://github.com/Ouroboros-Org/amy-huang-website/milestones) and the [planning Project](https://github.com/orgs/Ouroboros-Org/projects/1) |
 | What did we learn, and how does it work? | [Handbook](wiki/Home.md) |
 | What was delivered? | [Releases](https://github.com/Ouroboros-Org/amy-huang-website/releases) |
 

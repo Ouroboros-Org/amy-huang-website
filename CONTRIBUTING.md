@@ -20,7 +20,7 @@ Search existing Issues and pull requests first, and extend the record that alrea
 
 ## Check the change
 
-Run `python3 -m dna check`. It runs the checks that the changed paths select, the same way the hosted run does; `python3 -m dna check --list` previews the selection. Add checks that would detect an incorrect change. A zero-test result verifies nothing. [Verification and review](wiki/Verification-and-review.md) explains how to choose checks.
+Run the project's checks for the behavior you changed and its consumers. Add checks that would detect an incorrect change. A zero-test result verifies nothing. [Verification and review](wiki/Verification-and-review.md) explains how to choose checks.
 
 ## Open the pull request
 
@@ -32,7 +32,7 @@ Review the current head against its base. It is a separate step even when you wr
 
 ## Merge
 
-Merge with `python3 -m dna merge <number> <reviewed-head>`. It refuses unless the head is reviewed and its checks pass. It then verifies that the merged change equals the reviewed diff, archives the branch and records the result on the pull request. Add `--delivery-pending` when the change still needs a deployment, build or publication.
+Merge on GitHub once a review approves the current head, its conversations are resolved and its checks pass. From the command line, pin the reviewed head: `gh pr merge <number> --squash --match-head-commit <head>`. Add the `delivery: pending` label when the change still needs a deployment, build or publication. [Merge a reviewed change](wiki/Acceptance-and-delivery.md#merge-a-reviewed-change) gives the details.
 
 ## Update the Wiki
 
