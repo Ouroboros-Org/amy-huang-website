@@ -5,7 +5,7 @@
 //
 // Reads every built page except noindex work benches (/tiles, /lab) and reports, per
 // section and the content file it comes from:
-// - spreads still marked `draft: true` (rendered as data-draft)
+// - chapters still marked `draft: true` (rendered as data-draft)
 // - stand-ins marked data-placeholder (contact buttons, tape scans, intro reel, …)
 // - media served from public/media/placeholder/ or public/media/test/
 // - bracketed text such as "[year]", which marks facts Amy still has to confirm
@@ -22,7 +22,7 @@ export function sourceOf(sectionId) {
   if (!sectionId) return "";
   return sectionId === "top"
     ? "src/content/settings.json"
-    : `src/content/spreads/${sectionId}.md`;
+    : `src/content/chapters/${sectionId}.md`;
 }
 
 export function isNoindex(html) {
@@ -51,7 +51,7 @@ export function findPlaceholders(html) {
   };
 
   for (const match of page.matchAll(/<[a-z][^>]*\sdata-draft(?=[\s=>])/gi)) {
-    add(match.index, "draft", "spread is still marked draft: true");
+    add(match.index, "draft", "chapter is still marked draft: true");
   }
   for (const match of page.matchAll(/\sdata-placeholder="([^"]*)"/g)) {
     add(match.index, "placeholder", match[1]);

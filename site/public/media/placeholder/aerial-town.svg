@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
-  <title>Placeholder: aerial detail</title>
-  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8c0b2"/><stop offset="1" stop-color="#6d6658"/></linearGradient></defs>
-  <rect width="1000" height="1000" fill="url(#g)"/>
-  <text x="500" y="928" font-family="system-ui, sans-serif" font-size="45" fill="#fff" text-anchor="middle" opacity="0.85">aerial detail</text>
-</svg>

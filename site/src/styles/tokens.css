@@ -1,26 +1,22 @@
 /*
- * Design tokens. Swiss skeleton (grid, type scale, one signal colour) with the
- * notebook's own palette. Colour values are starting points: refine them by
- * sampling the real paper and ink scans once they exist.
+ * Design tokens. A dark, cinematic base for the full-screen video journey: clean
+ * type on video, one signal colour, and Amy's handwriting as the personality layer.
  */
 :root {
-  /* Colour: a real notebook, not cream. Neutrals lean toward the ink's hue. */
-  --paper: oklch(0.97 0.006 240);
-  --rule: oklch(0.86 0.04 240);
-  --margin-line: oklch(0.68 0.15 25 / 0.7);
-  --text: oklch(0.22 0.012 262);
-  --text-2: oklch(0.42 0.02 262);
-  --ink: oklch(0.3 0.09 262);
-  /* 5.2:1 with white text, 4.9:1 on paper. Night pages use a lighter shade. */
-  --signal: oklch(0.55 0.2 30);
-  --signal-text: oklch(0.99 0.01 30);
+  /* Colour: near-black tinted toward the ink's hue, never pure #000. */
   --night: oklch(0.16 0.006 262);
-  --gel: oklch(0.97 0 0);
-  --night-text-2: oklch(0.78 0.01 262);
-  /* Placeholder material colours until scans replace them. */
-  --kraft: oklch(0.72 0.06 70);
+  --text: oklch(0.97 0 0);
+  --text-2: oklch(0.78 0.01 262);
+  /* White gel pen: Amy's notes over video. */
+  --ink: oklch(0.97 0 0);
+  /* 6.8:1 on night, and night text on it reads at the same ratio. */
+  --signal: oklch(0.7 0.18 35);
+  --signal-text: var(--night);
+  /* Scrims keep type readable over any footage. */
+  --scrim: oklch(0.16 0.006 262 / 0.82);
+  /* Personality pieces: a sticky note with ballpoint on it. */
   --sticky: oklch(0.93 0.1 98);
-  --print-border: oklch(0.99 0.002 240);
+  --sticky-ink: oklch(0.3 0.09 262);
 
   /* Type: one grotesk for everything readable, handwriting only for Amy's voice. */
   --font-grotesk: "Schibsted Grotesk Variable", system-ui, sans-serif;
@@ -37,7 +33,7 @@
   --step-5: clamp(3.242rem, 2.745rem + 2.211vw, 4.735rem);
   --step-6: clamp(4.053rem, 3.404rem + 2.884vw, 6rem);
 
-  /* Space: an 8px unit; the ruling is the baseline that body text sits on. */
+  /* Space: an 8px unit. */
   --unit: 0.5rem;
   --rule-gap: 1.75rem;
   --space-1: calc(var(--unit) * 1);
@@ -48,11 +44,10 @@
   --space-8: calc(var(--unit) * 8);
   --space-12: calc(var(--unit) * 12);
 
-  /* Grid: 4 / 8 / 12 columns. The margin line sits in the left margin. */
+  /* Grid: 4 / 8 / 12 columns. */
   --cols: 4;
   --gutter: 1rem;
   --page-margin: 1.25rem;
-  --margin-line-x: 0.75rem;
   --measure: 65ch;
 
   /* Scrapbook tilt: fixed per element, chosen from this set only. */
@@ -84,7 +79,6 @@
     --cols: 8;
     --gutter: 1.25rem;
     --page-margin: 3rem;
-    --margin-line-x: 2rem;
   }
 }
 
@@ -93,6 +87,5 @@
     --cols: 12;
     --gutter: 1.5rem;
     --page-margin: 5rem;
-    --margin-line-x: 3.5rem;
   }
 }

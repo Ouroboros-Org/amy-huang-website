@@ -1,13 +1,13 @@
 @import "./tokens.css";
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   font-family: var(--font-grotesk);
   font-size: 100%;
   font-synthesis: none;
   font-optical-sizing: auto;
   color: var(--text);
-  background: var(--paper);
+  background: var(--night);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -113,4 +113,24 @@ stacked-alpha-video video {
 
 .prose p {
   max-width: var(--measure);
+}
+
+/*
+ * The journey. Without JavaScript, with reduced motion or with motion paused, the
+ * chapters are a plain stack of full-screen sections. journey.ts adds
+ * .journey--live when motion is allowed: one pinned stage, chapters on top of
+ * each other.
+ */
+.journey--live {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/* main.… outranks each chapter component's own scoped position rule. */
+main.journey--live > [data-chapter] {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
 }

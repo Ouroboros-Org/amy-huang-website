@@ -7,7 +7,7 @@ const page = (body) =>
 
 test("a complete page has no findings", () => {
   const html = page(
-    `<header id="top"><h1>Amy Huang</h1><img src="/media/amy/cover.avif" alt="Amy"></header>` +
+    `<section id="top"><h1>Amy Huang</h1><img src="/media/amy/cover.avif" alt="Amy"></section>` +
       `<section id="teaching"><h2>I teach kung fu</h2><p>Classes in Chiang Mai.</p>` +
       `<a href="https://wa.me/66123">WhatsApp</a></section>`,
   );
@@ -16,7 +16,7 @@ test("a complete page has no findings", () => {
 
 test("finds each kind of placeholder and the section it is in", () => {
   const html = page(
-    `<header id="top"><img src="/media/test/still.svg" alt=""></header>` +
+    `<section id="top"><img src="/media/test/still.svg" alt=""></section>` +
       `<section id="teaching" data-draft><p>Kids [confirm]</p>` +
       `<span data-placeholder="contact detail">WhatsApp</span></section>` +
       `<section id="hair"><img src="/media/placeholder/hair-after.svg" alt=""></section>`,
@@ -25,7 +25,7 @@ test("finds each kind of placeholder and the section it is in", () => {
     ({ section, kind, detail }) => `${section} ${kind} ${detail}`,
   );
   assert.deepEqual(found, [
-    "teaching draft spread is still marked draft: true",
+    "teaching draft chapter is still marked draft: true",
     "teaching placeholder contact detail",
     "top media /media/test/still.svg",
     "hair media /media/placeholder/hair-after.svg",
@@ -35,7 +35,7 @@ test("finds each kind of placeholder and the section it is in", () => {
 
 test("maps sections to the content files they come from", () => {
   assert.equal(sourceOf("top"), "src/content/settings.json");
-  assert.equal(sourceOf("drone"), "src/content/spreads/drone.md");
+  assert.equal(sourceOf("drone"), "src/content/chapters/drone.md");
   assert.equal(sourceOf(""), "");
 });
 

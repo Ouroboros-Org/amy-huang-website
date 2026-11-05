@@ -1,0 +1,121 @@
+---
+/**
+ * Always on screen: her name back to the start, the one main action, and the
+ * control that stops all motion and video (WCAG 2.2.2). The control is hidden
+ * when the reader's system already asks for reduced motion, because then nothing
+ * moves.
+ */
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+---
+
+<header class="bar">
+  <a class="bar__name" href="#top">
+    {name}
+  </a>
+  <div class="bar__actions">
+    <!-- The label names the action; "motion" is hidden visually on narrow screens. -->
+    <button class="bar__motion" type="button" data-motion-toggle>
+      <span data-motion-verb>Pause</span>
+      <span class="bar__wide"> motion</span>
+    </button>
+    <a class="bar__hi" href="#contact">
+      Say hi
+    </a>
+  </div>
+</header>
+
+<script>
+  import {
+    motionPaused,
+    onMotionChange,
+    setMotionPaused,
+  } from "../scripts/motion";
+
+  const button = document.querySelector<HTMLButtonElement>(
+    "[data-motion-toggle]",
+  );
+  const verb = button?.querySelector("[data-motion-verb]");
+  if (button && verb) {
+    const render = () => {
+      verb.textContent = motionPaused() ? "Play" : "Pause";
+    };
+    button.addEventListener("click", () => setMotionPaused(!motionPaused()));
+    onMotionChange(render);
+    render();
+  }
+</script>
+
+<style>
+  .bar {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--page-margin);
+    background: linear-gradient(
+      to bottom,
+      oklch(0.16 0.006 262 / 0.6),
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  .bar > * {
+    pointer-events: auto;
+  }
+
+  .bar__name {
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .bar__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .bar__motion,
+  .bar__hi {
+    padding: 0.4rem 0.85rem;
+    border: 2px solid currentColor;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: var(--step--1);
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .bar__hi {
+    border-color: var(--signal);
+    background: var(--signal);
+    color: var(--signal-text);
+  }
+
+  @media (max-width: 30rem) {
+    .bar__wide {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bar__motion {
+      display: none;
+    }
+  }
+</style>

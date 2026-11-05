@@ -1,0 +1,265 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import AlphaVideo from "./AlphaVideo.astro";
+import BackgroundMedia from "./BackgroundMedia.astro";
+import ContactAction from "./ContactAction.astro";
+import StickyNote from "./StickyNote.astro";
+import type { ContactDetails } from "../lib/contact";
+
+/**
+ * One chapter of the journey, in layers from back to front: background, scrim,
+ * cut-out of Amy, the clean text block, and the personality layer (her note and a
+ * sticky). Each layer arrives on its own window of the chapter's scroll stretch.
+ */
+interface Props {
+  entry: CollectionEntry<"chapters">;
+  contact: ContactDetails;
+}
+
+const { entry, contact } = Astro.props;
+const { Content } = await render(entry);
+const {
+  title,
+  length,
+  reveal,
+  revealAt,
+  lead,
+  note,
+  sticky,
+  facts,
+  cta,
+  background,
+  cutout,
+  draft,
+} = entry.data;
+---
+
+<section
+  class="chapter"
+  id={entry.id}
+  data-chapter
+  data-length={length}
+  data-reveal={reveal}
+  data-reveal-at={revealAt}
+  data-draft={draft ? "" : undefined}
+  aria-labelledby={`${entry.id}-title`}
+>
+  {background && (
+    <div
+      class="chapter__background"
+      data-layer
+      data-in='{"scale":1.2}'
+      data-in-window="0 0.9"
+    >
+      <BackgroundMedia {...background} />
+    </div>
+  )}
+  <div class="chapter__scrim" aria-hidden="true"></div>
+
+  {cutout && (
+    <div
+      class="chapter__cutout"
+      data-layer
+      data-in='{"opacity":0,"scale":0.82,"yPercent":12}'
+      data-in-window="0.25 0.55"
+    >
+      <AlphaVideo {...cutout} />
+    </div>
+  )}
+
+  <div
+    class="chapter__text"
+    data-layer
+    data-in='{"opacity":0,"yPercent":18}'
+    data-in-window="0.4 0.62"
+  >
+    <h2 id={`${entry.id}-title`}>{title}</h2>
+    {lead && <p class="chapter__lead">{lead}</p>}
+    <div class="chapter__body">
+      <Content />
+    </div>
+    {facts.length > 0 && (
+      <dl class="chapter__facts">
+        {facts.map((fact) => (
+          <div>
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+    {cta && (
+      <p class="chapter__cta">
+        <ContactAction
+          channel={cta.channel}
+          details={contact}
+          message={cta.message}
+          label={cta.label}
+          primary
+        />
+      </p>
+    )}
+  </div>
+
+  {note && (
+    <p
+      class="chapter__note hand"
+      data-layer
+      data-in='{"opacity":0,"rotate":-10,"scale":0.8}'
+      data-in-window="0.6 0.75"
+    >
+      {note}
+    </p>
+  )}
+  {sticky && (
+    <div
+      class="chapter__sticky"
+      data-layer
+      data-in='{"opacity":0,"rotate":8,"yPercent":30}'
+      data-in-window="0.68 0.82"
+    >
+      <StickyNote tilt="p3">{sticky}</StickyNote>
+    </div>
+  )}
+</section>
+
+<style>
+  .chapter {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow: hidden;
+    background: var(--night);
+  }
+
+  .chapter__background,
+  .chapter__scrim {
+    position: absolute;
+    inset: 0;
+  }
+
+  .chapter__scrim {
+    background:
+      linear-gradient(to top, var(--scrim), transparent 62%),
+      linear-gradient(to right, oklch(0.16 0.006 262 / 0.45), transparent 55%);
+  }
+
+  /* Phones: the cut-out stands in the upper half, the text sits below it. */
+  .chapter__cutout {
+    position: absolute;
+    top: 6svh;
+    left: 50%;
+    height: 52svh;
+    translate: -50% 0;
+  }
+
+  .chapter__cutout :global(.alpha-video) {
+    height: 100%;
+    width: auto;
+  }
+
+  .chapter__text {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    min-height: 100svh;
+    max-width: 40rem;
+    padding: 58svh var(--page-margin) var(--space-6);
+  }
+
+  .chapter__text h2 {
+    font-size: var(--step-5);
+  }
+
+  .chapter__lead {
+    font-size: var(--step-1);
+    line-height: 1.3;
+  }
+
+  .chapter__body {
+    color: var(--text-2);
+  }
+
+  .chapter__facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: var(--space-1) var(--space-3);
+    margin: var(--space-1) 0 0;
+    font-size: var(--step--1);
+    line-height: 1.35;
+  }
+
+  .chapter__facts dt {
+    color: var(--text-2);
+  }
+
+  .chapter__facts dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .chapter__cta {
+    margin-top: var(--space-2);
+  }
+
+  .chapter__note {
+    position: absolute;
+    top: 9svh;
+    right: var(--page-margin);
+    max-width: 44vw;
+    margin: 0;
+    text-align: right;
+    rotate: var(--tilt-n2);
+    font-size: var(--step-2);
+  }
+
+  /* Phones: note and sticky share the top band, each in its own half, clear of
+     a centred cut-out. */
+  .chapter__sticky {
+    position: absolute;
+    top: 8svh;
+    left: var(--page-margin);
+    max-width: 44vw;
+  }
+
+  .chapter__sticky :global(.sticky) {
+    max-width: 100%;
+    width: auto;
+  }
+
+  /* Wider screens: the cut-out stands to the right, text at the lower left. */
+  @media (min-width: 48rem) and (orientation: landscape), (min-width: 72rem) {
+    .chapter__cutout {
+      top: auto;
+      left: auto;
+      right: 8vw;
+      bottom: 0;
+      height: 84svh;
+      translate: none;
+    }
+
+    .chapter__text {
+      padding-top: 20svh;
+      padding-bottom: 10svh;
+    }
+
+    .chapter__note {
+      top: 18svh;
+      right: calc(8vw + 30svh);
+      max-width: none;
+    }
+
+    .chapter__sticky {
+      max-width: none;
+    }
+
+    .chapter__sticky {
+      top: auto;
+      bottom: 12svh;
+      left: auto;
+      right: 4vw;
+    }
+  }
+</style>
