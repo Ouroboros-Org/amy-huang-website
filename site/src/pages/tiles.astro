@@ -4,7 +4,18 @@ import "@fontsource-variable/rethink-sans";
 import Base from "../layouts/Base.astro";
 import Cover from "../components/Cover.astro";
 import Paper from "../components/Paper.astro";
-import { cover } from "../data/placeholder";
+import { getSite } from "../lib/site";
+
+const { settings, contents } = await getSite();
+const cover = {
+  name: settings.name,
+  line: settings.line,
+  currentlyIn: settings.currentlyIn,
+  still: settings.cover.still,
+  cutout: settings.cover.cutout,
+  contents,
+  contact: settings.contact,
+};
 
 const candidates = [
   {

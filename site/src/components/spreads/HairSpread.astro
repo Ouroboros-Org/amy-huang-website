@@ -1,0 +1,122 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import ContactAction from "../ContactAction.astro";
+import Spread from "../Spread.astro";
+import SpreadTitle from "../SpreadTitle.astro";
+import type { ContactDetails } from "../../lib/contact";
+
+/** Page 4: hair, shown as a photo-booth strip from before to after. */
+interface Props {
+  entry: CollectionEntry<"spreads">;
+  contact: ContactDetails;
+  weddingsUrl?: string;
+}
+
+const { entry, contact, weddingsUrl } = Astro.props;
+const { Content } = await render(entry);
+const { title, note, page, cta, media } = entry.data;
+---
+
+<Spread id={entry.id} page={page} kind="plain">
+  <div class="hair__text">
+    <SpreadTitle id={entry.id} title={title} note={note} noteTilt="p1" />
+    <div class="prose hair__body">
+      <Content />
+    </div>
+    {cta && (
+      <p class="hair__cta">
+        <ContactAction
+          channel={cta.channel}
+          details={contact}
+          message={cta.message}
+          label={cta.label}
+        />
+      </p>
+    )}
+    <p class="hair__weddings">
+      Getting married in Canada?{" "}
+      {weddingsUrl ? (
+        <a href={weddingsUrl}>See my wedding hair site</a>
+      ) : (
+        <span data-placeholder="weddings link">[link to my wedding site]</span>
+      )}
+    </p>
+  </div>
+
+  <figure class="strip">
+    {media.map((item) => (
+      <img
+        src={item.src}
+        alt={item.alt}
+        width={item.width}
+        height={item.height}
+        loading="lazy"
+      />
+    ))}
+  </figure>
+</Spread>
+
+<style>
+  .hair__text,
+  .strip {
+    grid-column: 1 / -1;
+  }
+
+  .hair__body {
+    margin-top: var(--space-4);
+  }
+
+  .hair__cta {
+    margin-top: var(--space-6);
+  }
+
+  .hair__weddings {
+    margin-top: var(--space-3);
+    color: var(--text-2);
+  }
+
+  .hair__weddings [data-placeholder] {
+    color: var(--text-2);
+  }
+
+  /* A photo-booth strip: square frames stacked on one white strip. */
+  .strip {
+    justify-self: center;
+    display: grid;
+    gap: var(--space-1);
+    width: min(100%, 14rem);
+    margin: 0;
+    padding: var(--space-1) var(--space-1) var(--space-4);
+    background: var(--print-border);
+    box-shadow: var(--shadow-lift);
+    rotate: var(--tilt-p2);
+  }
+
+  .strip img {
+    aspect-ratio: 1;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  @media (min-width: 48rem) {
+    .hair__text {
+      grid-column: 1 / span 5;
+      align-self: center;
+    }
+
+    .strip {
+      grid-column: 6 / span 3;
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .hair__text {
+      grid-column: 2 / span 5;
+    }
+
+    .strip {
+      grid-column: 8 / span 3;
+    }
+  }
+</style>

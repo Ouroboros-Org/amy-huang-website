@@ -1,0 +1,80 @@
+---
+import {
+  channelLabels,
+  contactHref,
+  type Channel,
+  type ContactDetails,
+} from "../lib/contact";
+
+/**
+ * One way to reach Amy as a button-like link. While the detail is missing it
+ * renders a dashed, dimmed placeholder instead of a dead or invented link.
+ */
+interface Props {
+  channel: Channel;
+  details: ContactDetails;
+  /** Prefilled message (WhatsApp text, email subject). */
+  message?: string;
+  label?: string;
+  primary?: boolean;
+  size?: "regular" | "large";
+}
+
+const {
+  channel,
+  details,
+  message,
+  label = channelLabels[channel],
+  primary = false,
+  size = "regular",
+} = Astro.props;
+const href = contactHref(channel, details, message);
+const classes = ["action", `action--${size}`, { "action--primary": primary }];
+---
+
+{href ? (
+  <a class:list={classes} href={href}>
+    {label}
+  </a>
+) : (
+  <span class:list={classes} data-placeholder="contact detail">
+    {label}
+  </span>
+)}
+
+<style>
+  .action {
+    display: inline-block;
+    padding: 0.6rem 1.1rem;
+    border: 2px solid currentColor;
+    font-size: var(--step-0);
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background-color var(--dur-state) var(--ease-out);
+  }
+
+  .action--large {
+    padding: 0.9rem 1.6rem;
+    font-size: var(--step-1);
+  }
+
+  .action--primary {
+    border-color: var(--signal);
+    background: var(--signal);
+    color: var(--signal-text);
+  }
+
+  a.action:hover {
+    background: color-mix(in oklch, currentColor 10%, transparent);
+  }
+
+  a.action--primary:hover {
+    background: color-mix(in oklch, var(--signal) 85%, black);
+  }
+
+  span.action {
+    opacity: 0.55;
+    border-style: dashed;
+  }
+</style>

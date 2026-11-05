@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1000" preserveAspectRatio="xMidYMid slice">
+  <title>Placeholder: teaching photo</title>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9cbb0"/><stop offset="1" stop-color="#55684a"/></linearGradient></defs>
+  <rect width="1500" height="1000" fill="url(#g)"/>
+  <text x="750" y="928" font-family="system-ui, sans-serif" font-size="45" fill="#fff" text-anchor="middle" opacity="0.85">teaching photo</text>
+</svg>

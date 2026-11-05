@@ -1,24 +1,58 @@
 ---
 import Base from "../layouts/Base.astro";
+import Cover from "../components/Cover.astro";
+import Paper from "../components/Paper.astro";
+import ContactSpread from "../components/spreads/ContactSpread.astro";
+import DroneSpread from "../components/spreads/DroneSpread.astro";
+import HairSpread from "../components/spreads/HairSpread.astro";
+import IntroSpread from "../components/spreads/IntroSpread.astro";
+import PerformingSpread from "../components/spreads/PerformingSpread.astro";
+import TeachingSpread from "../components/spreads/TeachingSpread.astro";
+import { getSite } from "../lib/site";
+
+const { settings, contents, spread } = await getSite();
+const { contact, weddingsUrl } = settings;
 ---
 
 <Base
-  title="Amy Huang"
-  description="Amy Huang teaches kung fu, performs with fire and Shaolin forms, does hair and flies drones."
+  title={`${settings.name}: kung fu teacher and performer`}
+  description="Amy Huang teaches kung fu, performs fire shows and Shaolin forms, does hair and flies drones. Here's what she offers and how to reach her."
 >
-  <main class="placeholder">
-    <h1>Amy Huang</h1>
-    <p>
-      Kung fu teacher and performer. This site is being built; the first version
-      comes in early 2027.
-    </p>
+  <main>
+    <Paper as="header" kind="lined" id="top">
+      <Cover
+        name={settings.name}
+        line={settings.line}
+        currentlyIn={settings.currentlyIn}
+        still={settings.cover.still}
+        cutout={settings.cover.cutout}
+        contents={contents}
+        contact={contact}
+      />
+    </Paper>
+
+    <IntroSpread entry={spread("intro")} />
+    <TeachingSpread entry={spread("teaching")} contact={contact} />
+    <PerformingSpread entry={spread("performing")} contact={contact} />
+    <HairSpread
+      entry={spread("hair")}
+      contact={contact}
+      weddingsUrl={weddingsUrl}
+    />
+    <DroneSpread entry={spread("drone")} contact={contact} />
+    <ContactSpread
+      entry={spread("contact")}
+      contact={contact}
+      name={settings.name}
+      currentlyIn={settings.currentlyIn}
+      replyNote={settings.replyNote}
+      weddingsUrl={weddingsUrl}
+    />
   </main>
 </Base>
 
-<style>
-  .placeholder {
-    max-width: 40rem;
-    margin: 0 auto;
-    padding: 20vh 1.5rem;
-  }
-</style>
+<script>
+  import { initAlphaVideos } from "../scripts/alpha-video";
+
+  initAlphaVideos();
+</script>

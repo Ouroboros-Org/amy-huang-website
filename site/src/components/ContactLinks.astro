@@ -1,56 +1,27 @@
 ---
-/**
- * The three ways to reach Amy. Missing details render as visibly unfinished
- * placeholders instead of invented numbers or handles.
- */
+import ContactAction from "./ContactAction.astro";
+import type { Channel, ContactDetails } from "../lib/contact";
+
+/** The three ways to reach Amy, WhatsApp first. */
 interface Props {
-  whatsapp?: string;
-  email?: string;
-  instagram?: string;
+  details: ContactDetails;
+  size?: "regular" | "large";
   class?: string;
 }
 
-const { whatsapp, email, instagram, class: className } = Astro.props;
-
-const links = [
-  {
-    label: "WhatsApp",
-    href: whatsapp && `https://wa.me/${whatsapp.replace(/\D/g, "")}`,
-    primary: true,
-  },
-  { label: "Email", href: email && `mailto:${email}` },
-  {
-    label: "Instagram",
-    href:
-      instagram && `https://www.instagram.com/${instagram.replace(/^@/, "")}/`,
-  },
-];
+const { details, size = "regular", class: className } = Astro.props;
+const channels: Channel[] = ["whatsapp", "email", "instagram"];
 ---
 
 <ul class:list={["contact", className]}>
-  {links.map((link) => (
+  {channels.map((channel) => (
     <li>
-      {link.href ? (
-        <a
-          class:list={[
-            "contact__link",
-            { "contact__link--primary": link.primary },
-          ]}
-          href={link.href}
-        >
-          {link.label}
-        </a>
-      ) : (
-        <span
-          class:list={[
-            "contact__link",
-            { "contact__link--primary": link.primary },
-          ]}
-          data-placeholder="contact detail"
-        >
-          {link.label}
-        </span>
-      )}
+      <ContactAction
+        channel={channel}
+        details={details}
+        primary={channel === "whatsapp"}
+        size={size}
+      />
     </li>
   ))}
 </ul>
@@ -63,35 +34,5 @@ const links = [
     margin: 0;
     padding: 0;
     list-style: none;
-  }
-
-  .contact__link {
-    display: inline-block;
-    padding: 0.6rem 1.1rem;
-    border: 2px solid currentColor;
-    font-size: var(--step-0);
-    font-weight: 600;
-    line-height: 1.2;
-    text-decoration: none;
-    transition: background-color var(--dur-state) var(--ease-out);
-  }
-
-  .contact__link--primary {
-    border-color: var(--signal);
-    background: var(--signal);
-    color: var(--signal-text);
-  }
-
-  a.contact__link:hover {
-    background: color-mix(in oklch, currentColor 10%, transparent);
-  }
-
-  a.contact__link--primary:hover {
-    background: color-mix(in oklch, var(--signal) 85%, black);
-  }
-
-  span.contact__link {
-    opacity: 0.55;
-    border-style: dashed;
   }
 </style>

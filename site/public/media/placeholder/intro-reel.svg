@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600" preserveAspectRatio="xMidYMid slice">
+  <title>Placeholder: intro reel</title>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9b9a6"/><stop offset="1" stop-color="#6f5b4c"/></linearGradient></defs>
+  <rect width="900" height="1600" fill="url(#g)"/>
+  <text x="450" y="1536" font-family="system-ui, sans-serif" font-size="40" fill="#fff" text-anchor="middle" opacity="0.85">intro reel</text>
+</svg>

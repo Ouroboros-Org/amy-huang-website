@@ -1,0 +1,50 @@
+---
+/**
+ * Plain facts in a Swiss table: what, who, how, where. Bracketed values are still
+ * to be confirmed by Amy and are shown as such.
+ */
+interface Props {
+  facts: { label: string; value: string }[];
+}
+
+const { facts } = Astro.props;
+const isPending = (value: string) => /\[[^\]]+\]/.test(value);
+---
+
+<dl class="facts">
+  {facts.map((fact) => (
+    <div class="facts__row">
+      <dt>{fact.label}</dt>
+      <dd class:list={{ "facts__value--pending": isPending(fact.value) }}>
+        {fact.value}
+      </dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .facts {
+    margin: 0;
+    border-top: 2px solid var(--text);
+  }
+
+  .facts__row {
+    display: grid;
+    grid-template-columns: minmax(5rem, 1fr) 3fr;
+    gap: var(--space-2);
+    padding-block: calc(var(--rule-gap) / 4);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  dt {
+    font-weight: 650;
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  .facts__value--pending {
+    color: var(--text-2);
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+import Paper from "./Paper.astro";
+
+/**
+ * One spread of the diary: a sheet of paper with its page number in the corner and
+ * the 4/8/12-column grid inside. Spreads place their own content on the grid.
+ */
+interface Props {
+  id: string;
+  page: number;
+  kind?: "lined" | "graph" | "plain" | "kraft" | "night";
+}
+
+const { id, page, kind = "lined" } = Astro.props;
+---
+
+<Paper as="section" kind={kind} id={id} aria-labelledby={`${id}-title`}>
+  <div class="spread grid">
+    <slot />
+    <p class="spread__page" aria-hidden="true">
+      {page}
+    </p>
+  </div>
+</Paper>
+
+<style>
+  .spread {
+    position: relative;
+    row-gap: var(--space-6);
+    align-items: start;
+    padding-block: var(--space-12);
+  }
+
+  .spread__page {
+    position: absolute;
+    right: var(--page-margin);
+    bottom: var(--space-3);
+    font-size: var(--step--1);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-2);
+  }
+</style>
