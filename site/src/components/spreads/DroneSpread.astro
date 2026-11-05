@@ -18,7 +18,7 @@ const { title, note, page, cta, media } = entry.data;
 const [lead, ...details] = media;
 ---
 
-<Spread id={entry.id} page={page} kind="graph">
+<Spread id={entry.id} page={page} draft={entry.data.draft} kind="graph">
   <div class="drone__lead">
     {lead && <Print {...lead} tilt="n1" tape={["top-left", "bottom-right"]} />}
   </div>
