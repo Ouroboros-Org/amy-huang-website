@@ -1,6 +1,8 @@
 ---
 import "@fontsource-variable/schibsted-grotesk";
 import "@fontsource-variable/shantell-sans/infm.css";
+// The Latin grotesk file: preloaded, because the hero heading is the page's largest paint.
+import groteskLatin from "@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-normal.woff2?url";
 import "../styles/global.css";
 
 interface Props {
@@ -17,6 +19,13 @@ const { title, description, noindex = false } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link
+      rel="preload"
+      href={groteskLatin}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
