@@ -1,0 +1,74 @@
+# Machine-readable part of the process. The Wiki explains it in Process-tools.
+# Template-owned: improve it upstream in dna-template, then bring the change back.
+
+# Labels that `dna setup` creates. Unlisted labels that no Issue or PR uses are removed.
+[[labels]]
+name = "defect"
+color = "d73a4a"
+description = "Behavior differs from what is expected"
+
+[[labels]]
+name = "improvement"
+color = "a2eeef"
+description = "A new or better result"
+
+[[labels]]
+name = "kept open"
+color = "fbca04"
+description = "Open on purpose; the reason is in a comment"
+
+[[labels]]
+name = "delivery: pending"
+color = "c5def5"
+description = "Merged; delivery is not verified yet"
+
+# The planning Project. Status describes planning readiness, not execution.
+# "Done" keeps its built-in option ID, so the Project's closed and merged automations keep working.
+[project]
+status_options = [
+  { name = "Needs refinement", color = "GRAY", description = "Triaged; research and preparation remain" },
+  { name = "Needs decision", color = "YELLOW", description = "An open question in the Issue blocks readiness" },
+  { name = "Ready", color = "GREEN", description = "Bounded acceptance, known checks, dependencies satisfied" },
+  { name = "Handed off", color = "BLUE", description = "The Issue or pull request owns execution" },
+  { name = "Done", color = "PURPLE", description = "Closed" },
+]
+priority_options = [
+  { name = "High", color = "RED", description = "Deserves earlier attention; the reason is on the entry" },
+  { name = "Normal", color = "GRAY", description = "" },
+  { name = "Low", color = "BLUE", description = "Can wait; the entry says what would bring it forward" },
+]
+
+# Views that `dna setup` creates. {soon} is the first horizon milestone.
+[[project.views]]
+name = "Backlog"
+layout = "TABLE_LAYOUT"
+filter = 'is:open -milestone:"{soon}"'
+
+[[project.views]]
+name = "Needs decision"
+layout = "TABLE_LAYOUT"
+filter = 'is:open status:"Needs decision"'
+
+[[project.views]]
+name = "Ready to start"
+layout = "TABLE_LAYOUT"
+filter = "is:open status:Ready"
+
+[[project.views]]
+name = "Current cycle"
+layout = "BOARD_LAYOUT"
+filter = 'milestone:"{soon}"'
+
+# Built-in checks. `dna check` adds the checks from dna/project.toml.
+[[checks]]
+name = "scope"
+run = "python3 -m dna check-scope"
+
+[[checks]]
+name = "wiki"
+paths = ["wiki/*"]
+run = "python3 -m dna check-wiki"
+
+[[checks]]
+name = "template"
+run = "python3 -m dna check-template"

@@ -1,0 +1,28 @@
+name: routines
+
+on:
+  # The routine cadence. Match it to throughput: daily when much changes, weekly when little does.
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  doctor:
+    name: dna doctor
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Report what triage-refinement and grooming should look at
+        env:
+          # The workflow token reads Issues and the wiki/ folder. A token in DNA_DOCTOR_TOKEN
+          # that can read the planning Project and a private GitHub Wiki completes the report.
+          GH_TOKEN: ${{ secrets.DNA_DOCTOR_TOKEN || github.token }}
+        run: python3 -m dna doctor
