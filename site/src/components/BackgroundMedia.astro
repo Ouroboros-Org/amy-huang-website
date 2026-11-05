@@ -1,0 +1,81 @@
+---
+/**
+ * A chapter's full-screen background: a looping video or a still, cropped to
+ * fill, with an optional portrait cut for phones. A video shows its poster until
+ * the first frame plays; scripts/media.ts controls playback.
+ */
+interface Props {
+  type: "video" | "still";
+  src: string;
+  portrait?: string;
+  poster?: string;
+  portraitPoster?: string;
+  width: number;
+  height: number;
+  alt: string;
+}
+
+const { type, src, portrait, poster, portraitPoster, width, height, alt } =
+  Astro.props;
+const portraitMedia = "(orientation: portrait)";
+const still = type === "still" ? src : poster;
+const portraitStill = type === "still" ? portrait : portraitPoster;
+---
+
+<div
+  class="background"
+  data-media={type === "video" ? "" : undefined}
+  data-state="poster"
+>
+  {still && (
+    <picture class="background__still">
+      {portraitStill && <source media={portraitMedia} srcset={portraitStill} />}
+      <img
+        src={still}
+        width={width}
+        height={height}
+        alt={type === "still" ? alt : ""}
+        decoding="async"
+      />
+    </picture>
+  )}
+  {type === "video" && (
+    <video
+      class="background__video"
+      muted
+      playsinline
+      loop
+      preload="none"
+      aria-label={alt || undefined}
+    >
+      {portrait && <source media={portraitMedia} src={portrait} />}
+      <source src={src} />
+    </video>
+  )}
+</div>
+
+<style>
+  .background,
+  .background__still,
+  .background__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .background__still img,
+  .background__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .background__video {
+    opacity: 0;
+  }
+
+  .background[data-state="playing"] .background__video {
+    opacity: 1;
+  }
+</style>

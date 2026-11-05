@@ -1,58 +1,77 @@
 ---
 /**
- * A transparent video loop from scripts/encode-alpha.sh output. The poster shows
- * until the first frame plays, and stays when playback isn't allowed.
+ * A transparent video layer from scripts/encode-alpha.sh output: a cut-out of
+ * Amy, or the hero with its opening. Phones in portrait get the `portrait` cut
+ * when there is one. The poster shows until the first frame plays, and stays when
+ * playback isn't wanted or allowed; scripts/media.ts controls playback.
  */
 interface Props {
-  /** Path prefix of the encoded files, e.g. "/media/test/sticker". */
+  /** Base path of the encoded files, e.g. "/media/test/portal". */
   src: string;
-  /** Size of the visible (colour) half, used to reserve space. */
+  portrait?: string;
+  /** Size of the visible (colour) half of the landscape cut, to reserve space. */
   width: number;
   height: number;
   /** Text alternative, or "" when the clip is decorative. */
   alt: string;
-  /** "cover" fills the parent edge to edge and crops, like a full-screen background. */
+  /** "cover" fills the parent edge to edge and crops, like a full-screen layer. */
   fit?: "contain" | "cover";
   class?: string;
 }
 
 const {
   src,
+  portrait,
   width,
   height,
   alt,
   fit = "contain",
   class: className,
 } = Astro.props;
+const portraitMedia = "(orientation: portrait)";
+const av1 = "video/mp4; codecs=av01.0.08M.08.0.110.01.01.01.1";
+const hevc = "video/mp4; codecs=hvc1.1.6.H120.b0";
 ---
 
 <div
   class:list={["alpha-video", `alpha-video--${fit}`, className]}
-  data-alpha-video
+  data-media
   data-state="poster"
   style={fit === "contain" ? `aspect-ratio: ${width} / ${height}` : undefined}
   role={alt ? "img" : undefined}
   aria-label={alt || undefined}
   aria-hidden={alt ? undefined : "true"}
 >
-  <img
-    class="alpha-video__poster"
-    src={`${src}.poster.webp`}
-    width={width}
-    height={height}
-    alt=""
-    decoding="async"
-  />
+  <picture class="alpha-video__poster">
+    {portrait && (
+      <source media={portraitMedia} srcset={`${portrait}.poster.webp`} />
+    )}
+    <img
+      src={`${src}.poster.webp`}
+      width={width}
+      height={height}
+      alt=""
+      decoding="async"
+    />
+  </picture>
   <stacked-alpha-video class="alpha-video__player">
-    <video muted playsinline loop preload="metadata" crossorigin="anonymous">
-      <source
-        src={`${src}.av1.mp4`}
-        type="video/mp4; codecs=av01.0.08M.08.0.110.01.01.01.1"
-      />
-      <source
-        src={`${src}.hevc.mp4`}
-        type="video/mp4; codecs=hvc1.1.6.H120.b0"
-      />
+    <video muted playsinline loop preload="none" crossorigin="anonymous">
+      {portrait && (
+        <>
+          <source
+            media={portraitMedia}
+            src={`${portrait}.av1.mp4`}
+            type={av1}
+          />
+          <source
+            media={portraitMedia}
+            src={`${portrait}.hevc.mp4`}
+            type={hevc}
+          />
+        </>
+      )}
+      <source src={`${src}.av1.mp4`} type={av1} />
+      <source src={`${src}.hevc.mp4`} type={hevc} />
     </video>
   </stacked-alpha-video>
 </div>
@@ -60,6 +79,11 @@ const {
 <style>
   .alpha-video {
     position: relative;
+  }
+
+  .alpha-video--cover {
+    position: absolute;
+    inset: 0;
   }
 
   .alpha-video__poster,
@@ -70,19 +94,19 @@ const {
     height: 100%;
   }
 
-  .alpha-video__player {
-    opacity: 0;
-  }
-
-  .alpha-video--cover {
-    position: absolute;
-    inset: 0;
+  .alpha-video__poster img {
+    width: 100%;
+    height: 100%;
   }
 
   /* The player's canvas inherits object-fit from its host element. */
-  .alpha-video--cover .alpha-video__poster,
+  .alpha-video--cover .alpha-video__poster img,
   .alpha-video--cover .alpha-video__player {
     object-fit: cover;
+  }
+
+  .alpha-video__player {
+    opacity: 0;
   }
 
   .alpha-video[data-state="playing"] .alpha-video__player {

@@ -1,16 +1,12 @@
 ---
 import Base from "../layouts/Base.astro";
-import Cover from "../components/Cover.astro";
-import Paper from "../components/Paper.astro";
-import ContactSpread from "../components/spreads/ContactSpread.astro";
-import DroneSpread from "../components/spreads/DroneSpread.astro";
-import HairSpread from "../components/spreads/HairSpread.astro";
-import IntroSpread from "../components/spreads/IntroSpread.astro";
-import PerformingSpread from "../components/spreads/PerformingSpread.astro";
-import TeachingSpread from "../components/spreads/TeachingSpread.astro";
+import Chapter from "../components/Chapter.astro";
+import ContactChapter from "../components/ContactChapter.astro";
+import HeroChapter from "../components/HeroChapter.astro";
+import TopBar from "../components/TopBar.astro";
 import { getSite } from "../lib/site";
 
-const { settings, contents, spread } = await getSite();
+const { settings, chapters, index } = await getSite();
 const { contact, weddingsUrl } = settings;
 ---
 
@@ -18,41 +14,33 @@ const { contact, weddingsUrl } = settings;
   title={`${settings.name}: kung fu teacher and performer`}
   description="Amy Huang teaches kung fu, performs fire shows and Shaolin forms, does hair and flies drones. Here's what she offers and how to reach her."
 >
-  <main>
-    <Paper as="header" kind="lined" id="top">
-      <Cover
-        name={settings.name}
-        line={settings.line}
-        currentlyIn={settings.currentlyIn}
-        still={settings.cover.still}
-        cutout={settings.cover.cutout}
-        contents={contents}
-        contact={contact}
-      />
-    </Paper>
-
-    <IntroSpread entry={spread("intro")} />
-    <TeachingSpread entry={spread("teaching")} contact={contact} />
-    <PerformingSpread entry={spread("performing")} contact={contact} />
-    <HairSpread
-      entry={spread("hair")}
-      contact={contact}
-      weddingsUrl={weddingsUrl}
-    />
-    <DroneSpread entry={spread("drone")} contact={contact} />
-    <ContactSpread
-      entry={spread("contact")}
-      contact={contact}
+  <TopBar name={settings.name} />
+  <main class="journey" data-journey>
+    <HeroChapter
       name={settings.name}
-      currentlyIn={settings.currentlyIn}
-      replyNote={settings.replyNote}
-      weddingsUrl={weddingsUrl}
+      line={settings.line}
+      hero={settings.hero}
+      index={index}
     />
+    {chapters.map((entry) =>
+      entry.data.layout === "contact" ? (
+        <ContactChapter
+          entry={entry}
+          contact={contact}
+          name={settings.name}
+          currentlyIn={settings.currentlyIn}
+          replyNote={settings.replyNote}
+          weddingsUrl={weddingsUrl}
+        />
+      ) : (
+        <Chapter entry={entry} contact={contact} />
+      ),
+    )}
   </main>
 </Base>
 
 <script>
-  import { initAlphaVideos } from "../scripts/alpha-video";
+  import { initJourney } from "../scripts/journey";
 
-  initAlphaVideos();
+  initJourney();
 </script>
