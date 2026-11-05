@@ -16,31 +16,26 @@ When you report status, name the component and the action rather than an unquali
 
 ## Merge a reviewed change
 
-Merge only the reviewed head, with its checks passing. `python3 -m dna merge <number> <head>`:
+Merge only the reviewed head, with its checks passing. Before you merge, check on the pull request that:
 
-1. refuses when the head moved, the pull request is a draft or targets another branch, it has closing keywords, a check failed or is pending, or no review approves that exact head;
-2. merges with the head pinned, so a push during the merge makes it fail;
-3. verifies that the merged change equals the reviewed diff;
-4. preserves the branch tip as the tag `archive/<branch>`, and deletes the branch only when that tag is verified and no open pull request builds on the branch;
-5. records the result on the pull request.
+1. it targets the default branch and isn't a draft;
+2. its description references Issues without closing keywords;
+3. the latest review approves the current head: the review names the commit it covers, and a later push needs a new review;
+4. every conversation is resolved and every check passed.
 
-Branch deletion on merge stays off in the repository settings, because it would skip the archive.
+Merge with GitHub's squash merge. From the command line, pin the reviewed head, so that a push during the merge makes it fail: `gh pr merge <number> --squash --match-head-commit <head>`. The pull request records the merge, and GitHub then deletes its branch.
 
 ## Keep pending delivery visible
 
-`delivery: pending` marks merged source whose delivery isn't verified yet. Whoever merges a change that still needs a deployment, a build or a publication adds the label (`--delivery-pending`); whoever verifies the delivery removes it. Changes that take effect on merge, such as workflows, checks and documentation, don't get the label.
+`delivery: pending` marks merged source whose delivery isn't verified yet. Whoever merges a change that still needs a deployment, a build or a publication adds the label; whoever verifies the delivery removes it. Changes that take effect on merge, such as workflows, checks and documentation, don't get the label.
 
 An Issue closes once its acceptance is verified where its acceptance says, for example on a tested staging deployment. A later production rollout doesn't keep the Issue open.
 
-## Retire a branch
+## Delete a branch
 
-`dna merge` retires the branch of the pull request it merges. To retire another branch by hand:
+GitHub deletes a pull request's branch when the pull request merges, and **Restore branch** on the pull request brings it back. Delete another branch on the repository's Branches page once the default branch contains its change, or once it is recorded as abandoned, and no open pull request uses it as its base.
 
-1. Record its exact tip. Check that no open pull request uses it as its base, and that the default branch contains its whole change.
-2. Push the tag `archive/<branch>` at that tip and verify that the remote tag resolves to it. Never overwrite a conflicting archive tag.
-3. Delete the branch with a lease on that tip: `git push --force-with-lease=refs/heads/<branch>:<tip> origin :refs/heads/<branch>`. Verify that it is gone.
-
-Local branches, worktrees and uncommitted files are separate; retiring the remote branch doesn't touch them.
+Local branches, worktrees and uncommitted files are separate; deleting the remote branch doesn't touch them.
 
 ## Release a version
 

@@ -13,7 +13,7 @@ Identify the observable change, the responsible module, the affected consumers a
 | Interface or contract | Producer and consumer checks, including error cases. | Encoding, authorization or compatibility change. |
 | Shared helper or check definition | Consumer checks and selection boundaries. | The impact cannot be bounded. |
 
-`python3 -m dna check` runs the checks that the change selects, and the hosted run executes the same command for each pull request, so local and hosted selection agree. [Check a change](Process-tools.md#check-a-change) describes the selection. Add a project check when a behavior needs one.
+Run the selected checks before you open the pull request, and let hosted checks repeat them for each pull request. Add a hosted check, as a GitHub Actions workflow, once the project has behavior to verify, and require it in the [default-branch ruleset](GitHub-configuration.md#default-branch-ruleset).
 
 ## Establish meaningful evidence
 

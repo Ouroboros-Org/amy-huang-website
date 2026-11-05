@@ -34,7 +34,7 @@ The mindset is the same in both storage forms; only the mechanics differ.
 
 | Storage | Publish |
 |---|---|
-| `wiki/` folder | A pull request that changes only `wiki/`. `dna check` rejects a pull request that mixes Wiki pages with other files, and checks page names, links, anchors and orphan pages. Review it like any other change. |
+| `wiki/` folder | A pull request that changes only `wiki/`. Review it like any other change. |
 | GitHub Wiki | Edit in the browser, or push to the `.wiki.git` repository. There is no pull request, but treat the edit the same way: check it, read the diff, push without force and read back the changed pages. |
 
 In both forms, check changed claims and commands against the implementation, verify links and anchors, and link new pages from Home or their overview page.
@@ -46,7 +46,7 @@ Grooming is a routine of its own, separate from ordinary work. Its pace follows 
 - **Relevant.** The page is still true for current source and delivered behavior. Merge duplicate answers into their owner, update or remove outdated statements, and retire pages that lost their purpose.
 - **Connected.** The page is reachable from Home or the sidebar, linked from the pages it relates to, and links its owners instead of restating them.
 
-`python3 -m dna doctor` lists what can be found mechanically: broken links and anchors, orphan pages, source links whose pinned file changed since, and links to closed Issues. Judging relevance needs a reader. A pass is done when each listed finding has a disposition and the pages that recent merges affected have been read.
+A pass reads the pages that merges since the last pass affected, and follows their links. Look for broken links and anchors, pages nothing links to, source links whose pinned file changed since, and links to Issues that have closed. A pass is done when each finding has a disposition.
 
 ## Write for the task
 
@@ -56,4 +56,4 @@ Lead with the purpose or the result. Use plain words, active verbs and consisten
 
 Both forms use the same format: flat, hyphenated page names, `Home.md`, an optional `_Sidebar.md` and `_Footer.md`, and Markdown only, with Mermaid for diagrams. Links between pages are written `Page.md` in the folder and `Page` in the GitHub Wiki, and links from repository files point at the folder or at the GitHub Wiki's URL.
 
-During setup, `python3 -m dna setup` seeds the GitHub Wiki from the folder and `python3 -m dna cleanup` removes the folder and repoints the links. A later move is the same copy with the same link changes, in one change of its own.
+A move copies the pages, rewrites the links between them, and repoints the links from repository files, in one change of its own.
