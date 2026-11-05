@@ -105,3 +105,12 @@ stacked-alpha-video video {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Running text from content files: paragraphs on the ruling, at a readable measure. */
+.prose > * + * {
+  margin-top: var(--rule-gap);
+}
+
+.prose p {
+  max-width: var(--measure);
+}

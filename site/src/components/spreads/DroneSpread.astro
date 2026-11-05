@@ -1,0 +1,96 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import ContactAction from "../ContactAction.astro";
+import Print from "../Print.astro";
+import Spread from "../Spread.astro";
+import SpreadTitle from "../SpreadTitle.astro";
+import type { ContactDetails } from "../../lib/contact";
+
+/** Page 5: drone work. One big aerial print on graph paper, two details beside it. */
+interface Props {
+  entry: CollectionEntry<"spreads">;
+  contact: ContactDetails;
+}
+
+const { entry, contact } = Astro.props;
+const { Content } = await render(entry);
+const { title, note, page, cta, media } = entry.data;
+const [lead, ...details] = media;
+---
+
+<Spread id={entry.id} page={page} kind="graph">
+  <div class="drone__lead">
+    {lead && <Print {...lead} tilt="n1" tape={["top-left", "bottom-right"]} />}
+  </div>
+
+  <div class="drone__text">
+    <SpreadTitle id={entry.id} title={title} note={note} />
+    <div class="prose drone__body">
+      <Content />
+    </div>
+    {details.length > 0 && (
+      <ul class="drone__details">
+        {details.map((item, index) => (
+          <li>
+            <Print {...item} tilt={index % 2 ? "p2" : "n2"} tape={["top"]} />
+          </li>
+        ))}
+      </ul>
+    )}
+    {cta && (
+      <p class="drone__cta">
+        <ContactAction
+          channel={cta.channel}
+          details={contact}
+          message={cta.message}
+          label={cta.label}
+        />
+      </p>
+    )}
+  </div>
+</Spread>
+
+<style>
+  .drone__lead,
+  .drone__text {
+    grid-column: 1 / -1;
+  }
+
+  .drone__body {
+    margin-top: var(--space-4);
+  }
+
+  .drone__details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .drone__cta {
+    margin-top: var(--space-6);
+  }
+
+  @media (min-width: 48rem) {
+    .drone__lead {
+      grid-column: 1 / span 5;
+    }
+
+    .drone__text {
+      grid-column: 6 / span 3;
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .drone__lead {
+      grid-column: 1 / span 7;
+      padding-top: var(--space-6);
+    }
+
+    .drone__text {
+      grid-column: 9 / span 4;
+    }
+  }
+</style>

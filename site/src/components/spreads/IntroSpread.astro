@@ -1,0 +1,103 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import PhoneFrame from "../PhoneFrame.astro";
+import Spread from "../Spread.astro";
+import SpreadTitle from "../SpreadTitle.astro";
+
+/** Page 1: who she is, in her own words, next to her intro reel. */
+interface Props {
+  entry: CollectionEntry<"spreads">;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, note, page, facts, media } = entry.data;
+const tilts = ["n2", "p1", "n1", "p2"];
+---
+
+<Spread id={entry.id} page={page}>
+  <div class="intro__reel">{media[0] && <PhoneFrame poster={media[0]} />}</div>
+
+  <div class="intro__text">
+    <SpreadTitle id={entry.id} title={title} note={note} />
+    <div class="prose intro__body">
+      <Content />
+    </div>
+
+    {facts.length > 0 && (
+      <ul class="proof">
+        {facts.map((fact, index) => (
+          <li style={`--tilt: var(--tilt-${tilts[index % tilts.length]})`}>
+            <span class="proof__label">{fact.label}</span>
+            <span class="proof__value">{fact.value}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</Spread>
+
+<style>
+  .intro__reel,
+  .intro__text {
+    grid-column: 1 / -1;
+  }
+
+  .intro__reel {
+    justify-self: center;
+    width: min(100%, 16rem);
+  }
+
+  .intro__body {
+    margin-top: var(--space-4);
+  }
+
+  .proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .proof li {
+    display: grid;
+    padding: var(--space-1) var(--space-2) var(--space-2);
+    background: var(--print-border);
+    box-shadow: var(--shadow-paper);
+    rotate: var(--tilt);
+  }
+
+  .proof__label {
+    font-size: var(--step--1);
+    color: var(--text-2);
+  }
+
+  .proof__value {
+    font-weight: 600;
+  }
+
+  @media (min-width: 48rem) {
+    .intro__reel {
+      grid-column: 1 / span 3;
+      justify-self: start;
+      width: 100%;
+    }
+
+    .intro__text {
+      grid-column: 4 / span 5;
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .intro__reel {
+      grid-column: 2 / span 3;
+    }
+
+    .intro__text {
+      grid-column: 6 / span 6;
+      align-self: center;
+    }
+  }
+</style>

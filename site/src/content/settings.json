@@ -1,0 +1,24 @@
+[
+  {
+    "id": "site",
+    "name": "Amy Huang",
+    "line": "I teach kung fu, perform with fire, and travel a lot.",
+    "currentlyIn": "Thailand",
+    "replyNote": "I usually reply within [a day or two]",
+    "contact": {},
+    "cover": {
+      "still": {
+        "src": "/media/test/still.svg",
+        "alt": "Placeholder for a photo of Amy",
+        "width": 1600,
+        "height": 1000
+      },
+      "cutout": {
+        "src": "/media/test/sticker",
+        "alt": "",
+        "width": 360,
+        "height": 640
+      }
+    }
+  }
+]
