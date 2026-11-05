@@ -1,0 +1,283 @@
+---
+import "@fontsource-variable/albert-sans";
+import "@fontsource-variable/rethink-sans";
+import Base from "../layouts/Base.astro";
+import Cover from "../components/Cover.astro";
+import Paper from "../components/Paper.astro";
+import { cover } from "../data/placeholder";
+
+const candidates = [
+  {
+    id: "a",
+    name: "Schibsted Grotesk",
+    family: '"Schibsted Grotesk Variable", system-ui, sans-serif',
+    note: "The most classically Swiss: firm, newsy, a little serious.",
+  },
+  {
+    id: "b",
+    name: "Albert Sans",
+    family: '"Albert Sans Variable", system-ui, sans-serif',
+    note: "Rounder and lighter on its feet; Scandinavian rather than Swiss.",
+  },
+  {
+    id: "c",
+    name: "Rethink Sans",
+    family: '"Rethink Sans Variable", system-ui, sans-serif',
+    note: "The friendliest: open shapes with small quirks.",
+  },
+];
+
+const swatches = [
+  { token: "paper", label: "Paper", use: "Day pages" },
+  { token: "rule", label: "Ruling", use: "Lines and grid" },
+  { token: "text", label: "Text", use: "Everything you read" },
+  { token: "ink", label: "Ballpoint", use: "Amy's notes" },
+  { token: "signal", label: "Margin red", use: "Contact, and nothing else" },
+  { token: "night", label: "Night paper", use: "Fire pages" },
+];
+
+const scale = [6, 5, 4, 3, 2, 1, 0];
+---
+
+<Base
+  title="Style tiles · Amy Huang"
+  description="Design directions for Amy Huang's website, for review."
+  noindex
+>
+  <main>
+    <Paper as="header" kind="lined" class="intro grid">
+      <div class="intro__text">
+        <h1>Style tiles</h1>
+        <p>
+          Three directions for the website's lettering. Everything else is the
+          same in all three: the notebook paper, the colours, the layout of the
+          first screen. Pick the one that feels most like you, or tell us what's
+          off.
+        </p>
+        <p class="hand intro__note">
+          photos, tape & this handwriting are stand-ins: your photos, real
+          scanned tape and your own handwriting replace them
+        </p>
+      </div>
+    </Paper>
+
+    {candidates.map((candidate) => (
+      <Paper
+        as="section"
+        kind="lined"
+        class="tile"
+        aria-labelledby={`tile-${candidate.id}`}
+        style={`--font-grotesk: ${candidate.family}`}
+      >
+        <div class="tile__label grid">
+          <h2 id={`tile-${candidate.id}`}>
+            {candidate.id.toUpperCase()} · {candidate.name}
+          </h2>
+          <p class="tile__note">{candidate.note}</p>
+        </div>
+        <Cover {...cover} headingLevel="h2" id={`tile-${candidate.id}-cover`} />
+        <div class="tile__type grid">
+          <ol class="scale">
+            {scale.map((step) => (
+              <li style={`font-size: var(--step-${step})`}>
+                {step >= 4 ? "Kung fu" : "I teach kung fu to kids and adults"}
+              </li>
+            ))}
+          </ol>
+          <p class="tile__body">
+            I started training when I was a kid and never really stopped. Now I
+            teach classes wherever I happen to be, and on weekends you'll
+            probably find me spinning fire somewhere near a beach. This
+            paragraph shows how longer text reads.
+          </p>
+        </div>
+      </Paper>
+    ))}
+
+    <Paper
+      as="section"
+      kind="graph"
+      margin={false}
+      class="palette grid"
+      aria-labelledby="palette-title"
+    >
+      <h2 id="palette-title" class="palette__title">
+        Colours
+      </h2>
+      <ul class="swatches">
+        {swatches.map((swatch) => (
+          <li>
+            <span class="swatch" style={`background: var(--${swatch.token})`} />
+            <strong>{swatch.label}</strong>
+            <span class="swatch__use">{swatch.use}</span>
+          </li>
+        ))}
+      </ul>
+    </Paper>
+
+    <Paper
+      as="section"
+      kind="night"
+      class="night grid"
+      aria-labelledby="night-title"
+    >
+      <div class="night__text">
+        <p class="hand night__hi" aria-hidden="true">
+          after dark
+        </p>
+        <h2 id="night-title">I perform</h2>
+        <p>
+          Fire shows and Shaolin forms for festivals, events and the occasional
+          very brave wedding. Fire pages turn the paper black and the pen white.
+        </p>
+      </div>
+    </Paper>
+  </main>
+</Base>
+
+<script>
+  import { initAlphaVideos } from "../scripts/alpha-video";
+
+  initAlphaVideos();
+</script>
+
+<style>
+  .intro,
+  .palette,
+  .night {
+    padding-block: var(--space-12);
+  }
+
+  .intro__text {
+    grid-column: 1 / -1;
+    max-width: 44rem;
+  }
+
+  .intro h1 {
+    font-size: var(--step-5);
+    margin-bottom: var(--space-3);
+  }
+
+  .intro__note {
+    margin-top: var(--space-4);
+    rotate: var(--tilt-n1);
+  }
+
+  .tile {
+    padding-top: var(--space-12);
+    border-top: 2px solid var(--text);
+    font-family: var(--font-grotesk);
+  }
+
+  .tile__label {
+    row-gap: var(--space-1);
+  }
+
+  .tile__label h2,
+  .tile__note {
+    grid-column: 1 / -1;
+  }
+
+  .tile__label h2 {
+    font-size: var(--step-2);
+  }
+
+  .tile__note {
+    color: var(--text-2);
+  }
+
+  .tile__type {
+    row-gap: var(--space-6);
+    padding-bottom: var(--space-12);
+  }
+
+  .scale {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    line-height: 1.1;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+  }
+
+  .scale li + li {
+    margin-top: var(--space-1);
+  }
+
+  .tile__body {
+    grid-column: 1 / -1;
+  }
+
+  .palette__title {
+    grid-column: 1 / -1;
+    font-size: var(--step-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .swatches {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .swatches li {
+    display: grid;
+    gap: 0.15rem;
+    padding: var(--space-1);
+    background: var(--paper);
+    box-shadow: var(--shadow-paper);
+  }
+
+  .swatch {
+    height: 4.5rem;
+    margin-bottom: var(--space-1);
+    outline: 1px solid oklch(0.2 0.02 262 / 0.12);
+  }
+
+  .swatch__use {
+    font-size: var(--step--1);
+    line-height: 1.3;
+    color: var(--text-2);
+  }
+
+  .night__text {
+    grid-column: 1 / -1;
+    max-width: 40rem;
+  }
+
+  .night__hi {
+    font-size: var(--step-2);
+    rotate: var(--tilt-n2);
+    width: max-content;
+  }
+
+  .night h2 {
+    font-size: var(--step-5);
+    margin-bottom: var(--space-3);
+  }
+
+  @media (min-width: 72rem) {
+    .tile__label h2 {
+      grid-column: 1 / span 5;
+    }
+
+    .tile__note {
+      grid-column: 6 / span 7;
+      align-self: end;
+    }
+
+    .scale {
+      grid-column: 1 / span 7;
+    }
+
+    .tile__body {
+      grid-column: 9 / span 4;
+      align-self: end;
+    }
+  }
+</style>
