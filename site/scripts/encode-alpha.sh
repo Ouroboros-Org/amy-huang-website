@@ -30,14 +30,14 @@ trap 'rm -rf "$passlog"' EXIT
 stack="[0:v]fps=${fps},scale=${width}:-2:flags=lanczos,format=pix_fmts=yuva444p[main];[main]split[main][alpha];[alpha]alphaextract[alpha];[main][alpha]vstack"
 
 ffmpeg -v error -y -i "$input" -filter_complex "$stack" -pix_fmt yuv420p -an \
-  -c:v libaom-av1 -cpu-used "${AV1_CPU:-3}" -crf "${AV1_CRF:-45}" "${gop[@]}" \
+  -c:v libaom-av1 -cpu-used "${AV1_CPU:-3}" -crf "${AV1_CRF:-45}" ${gop[@]+"${gop[@]}"} \
   -pass 1 -passlogfile "$passlog/av1" -f null -
 ffmpeg -v error -y -i "$input" -filter_complex "$stack" -pix_fmt yuv420p -an \
-  -c:v libaom-av1 -cpu-used "${AV1_CPU:-3}" -crf "${AV1_CRF:-45}" "${gop[@]}" \
+  -c:v libaom-av1 -cpu-used "${AV1_CPU:-3}" -crf "${AV1_CRF:-45}" ${gop[@]+"${gop[@]}"} \
   -pass 2 -passlogfile "$passlog/av1" -movflags +faststart "$out.av1.mp4"
 
 ffmpeg -v error -y -i "$input" -filter_complex "$stack" -pix_fmt yuv420p -an \
-  -c:v libx265 -preset "${HEVC_PRESET:-veryslow}" -crf "${HEVC_CRF:-30}" "${gop[@]}" \
+  -c:v libx265 -preset "${HEVC_PRESET:-veryslow}" -crf "${HEVC_CRF:-30}" ${gop[@]+"${gop[@]}"} \
   -x265-params log-level=error -tag:v hvc1 -movflags +faststart "$out.hevc.mp4"
 
 ffmpeg -v error -y -i "$input" -frames:v 1 -vf "scale=${width}:-2:flags=lanczos,format=yuva420p" \
