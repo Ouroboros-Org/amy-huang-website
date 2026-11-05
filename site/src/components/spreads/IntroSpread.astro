@@ -15,7 +15,7 @@ const { title, note, page, facts, media } = entry.data;
 const tilts = ["n2", "p1", "n1", "p2"];
 ---
 
-<Spread id={entry.id} page={page}>
+<Spread id={entry.id} page={page} draft={entry.data.draft}>
   <div class="intro__reel">{media[0] && <PhoneFrame poster={media[0]} />}</div>
 
   <div class="intro__text">

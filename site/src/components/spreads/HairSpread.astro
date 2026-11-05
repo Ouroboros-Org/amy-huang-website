@@ -17,7 +17,7 @@ const { Content } = await render(entry);
 const { title, note, page, cta, media } = entry.data;
 ---
 
-<Spread id={entry.id} page={page} kind="plain">
+<Spread id={entry.id} page={page} draft={entry.data.draft} kind="plain">
   <div class="hair__text">
     <SpreadTitle id={entry.id} title={title} note={note} noteTilt="p1" />
     <div class="prose hair__body">

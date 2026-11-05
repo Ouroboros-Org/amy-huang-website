@@ -8,14 +8,16 @@ and transparent video loops ([`stacked-alpha-video`](https://github.com/jakearch
 
 Use the Node version in `.node-version` (24.22.2), then from this folder:
 
-| Command              | Does                                                        |
-| :------------------- | :---------------------------------------------------------- |
-| `npm ci`             | Install the locked dependencies.                            |
-| `npm run dev`        | Start the dev server at http://localhost:4321.              |
-| `npm run verify`     | Type-check, check formatting and build, as CI does.         |
-| `npm run format`     | Apply Prettier formatting.                                  |
-| `npm run build`      | Build the static site into `dist/`.                         |
-| `npm run media:test` | Regenerate the synthetic test clip in `public/media/test/`. |
+| Command                | Does                                                                                 |
+| :--------------------- | :----------------------------------------------------------------------------------- |
+| `npm ci`               | Install the locked dependencies.                                                     |
+| `npm run dev`          | Start the dev server at http://localhost:4321.                                       |
+| `npm run verify`       | Type-check, check formatting, run the tests and build, as CI does.                   |
+| `npm run format`       | Apply Prettier formatting.                                                           |
+| `npm run build`        | Build the static site into `dist/`.                                                  |
+| `npm test`             | Run the script tests (`scripts/*.test.mjs`).                                         |
+| `npm run check:launch` | After a build: list every placeholder left on public pages; fails until none remain. |
+| `npm run media:test`   | Regenerate the synthetic test clip in `public/media/test/`.                          |
 
 Two pages are work benches, marked `noindex` and not linked from the site:
 `/lab` tests the scene engine and transparent video, and `/tiles` shows the style

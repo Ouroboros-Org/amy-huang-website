@@ -25,7 +25,7 @@ const { title, note, page } = entry.data;
 const year = new Date().getFullYear();
 ---
 
-<Spread id={entry.id} page={page} kind="plain">
+<Spread id={entry.id} page={page} draft={entry.data.draft} kind="plain">
   <div class="contact__main">
     <SpreadTitle id={entry.id} title={title} note={note} size="large" />
     <div class="prose contact__body">
