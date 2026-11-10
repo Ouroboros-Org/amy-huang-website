@@ -22,8 +22,8 @@ const channel = z.enum(["whatsapp", "email", "instagram"]);
  * short paragraph in Amy's voice; the frontmatter holds the parts the layout
  * places separately. `draft: true` marks words that aren't hers yet.
  *
- * - `layout: stop` (the default) is one thing she does: a card in the overview
- *   and a block in the step-by-step details.
+ * - `layout: stop` (the default) is one thing she does: a work card, a step in
+ *   the offerings and a page of its own at `/<file name>/`.
  * - `layout: about` and `layout: contact` are the two sections of that name.
  */
 const chapters = defineCollection({
@@ -50,6 +50,8 @@ const chapters = defineCollection({
       .object({ label: z.string(), channel, message: z.string().optional() })
       .optional(),
     background: background.optional(),
+    /** Describes the about section's photo (src/assets/about/photo.webp). */
+    photoAlt: z.string().optional(),
     draft: z.boolean().default(true),
   }),
 });

@@ -3,10 +3,14 @@ import type { CollectionEntry } from "astro:content";
 import BackgroundMedia from "./BackgroundMedia.astro";
 
 /**
- * The overview: one large card per thing Amy does. Each card sticks below the
- * top bar and the next one slides up over it, so scrolling pages through all of
- * them. A card leads to its block in the step-by-step details (StopDetails).
- * The stacking is plain `position: sticky`, so it needs no script.
+ * The work cards: one per thing Amy does, each a picture with its name and a
+ * handwritten note, linking to that offering's own page.
+ *
+ * As plain HTML the cards stick below the top bar and each next card slides up
+ * over the last (`position: sticky`). With motion allowed, scripts/stack.ts
+ * takes over: one screen pins, the cards scroll through it at native speed, and
+ * a canvas draws their pictures through a soft lens with a slow water wobble
+ * and a little colour split, all of which swell while scrolling.
  */
 interface Props {
   stops: CollectionEntry<"chapters">[];
@@ -15,46 +19,75 @@ interface Props {
 const { stops } = Astro.props;
 ---
 
-<section class="stops" id="work" aria-labelledby="work-title">
+<section class="stops" id="work" data-stack aria-labelledby="work-title">
   <h2 class="caption" id="work-title">
     What I do
   </h2>
-  <div class="stops__stack">
-    {stops.map((stop) => (
-      <article class="stop" id={`card-${stop.id}`}>
-        {stop.data.background && (
-          <BackgroundMedia {...stop.data.background} alt="" />
-        )}
-        <div class="stop__scrim" />
-        <div class="stop__text">
-          {stop.data.kicker && <p class="stop__kicker">{stop.data.kicker}</p>}
-          <h3 class="stop__name">
-            <a href={`#${stop.id}`}>{stop.data.nav ?? stop.data.title}</a>
-          </h3>
-          <span class="stop__arrow" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
-              <path
-                d="M12 5v14m0 0-6-6m6 6 6-6"
-                stroke="currentColor"
-                stroke-width="1.75"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </span>
-        </div>
-      </article>
-    ))}
+  <div class="stops__track" data-stack-track>
+    <div class="stops__stage" data-stack-stage>
+      <canvas
+        class="stops__canvas"
+        data-stack-canvas
+        aria-hidden="true"
+      ></canvas>
+      <div class="stops__stack">
+        {stops.map((stop) => (
+          <article class="stop" id={`card-${stop.id}`} data-stack-card>
+            {stop.data.background && (
+              <BackgroundMedia {...stop.data.background} />
+            )}
+            <div class="stop__scrim" />
+            <a class="stop__link" href={`/${stop.id}/`}>
+              {stop.data.kicker && (
+                <span class="stop__kicker">{stop.data.kicker}</span>
+              )}
+              <h3 class="stop__name">{stop.data.nav ?? stop.data.title}</h3>
+              <span class="stop__arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+                  <path
+                    d="M7 17 17 7m0 0H9m8 0v8"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </a>
+            {stop.data.note && <p class="stop__note hand">{stop.data.note}</p>}
+          </article>
+        ))}
+      </div>
+      <div class="stops__ticks">
+        {stops.map((stop) => (
+          <button
+            type="button"
+            data-stack-tick
+            aria-label={`Show ${stop.data.nav ?? stop.data.title}`}
+          />
+        ))}
+      </div>
+    </div>
   </div>
 </section>
 
 <style>
   .stops {
-    padding: var(--space-8) var(--page-margin) 0;
+    padding-top: var(--space-8);
   }
 
-  .stops__stack {
+  .stops > .caption {
+    padding-inline: var(--page-margin);
+  }
+
+  .stops__stage {
     margin-top: var(--space-2);
+    padding-inline: var(--page-margin);
+  }
+
+  .stops__canvas,
+  .stops__ticks {
+    display: none;
   }
 
   .stop {
@@ -80,13 +113,23 @@ const { stops } = Astro.props;
     background: var(--scrim);
   }
 
-  .stop__text {
-    position: relative;
+  /* The whole card is the link. */
+  .stop__link {
+    position: absolute;
+    inset: 0;
     display: grid;
+    place-content: center;
     justify-items: center;
     gap: var(--space-2);
     padding: var(--space-3);
     text-align: center;
+    text-decoration: none;
+  }
+
+  .stop__link:focus-visible {
+    outline-color: var(--on-media);
+    outline-offset: -6px;
+    border-radius: var(--radius-card);
   }
 
   .stop__kicker {
@@ -100,17 +143,6 @@ const { stops } = Astro.props;
     letter-spacing: -0.03em;
   }
 
-  /* The whole card is the link's target. */
-  .stop__name a {
-    text-decoration: none;
-  }
-
-  .stop__name a::after {
-    content: "";
-    position: absolute;
-    inset: -100vmax;
-  }
-
   .stop__arrow {
     display: grid;
     place-items: center;
@@ -120,16 +152,109 @@ const { stops } = Astro.props;
     border: 1px solid oklch(0.97 0 0 / 0.5);
     border-radius: 50%;
     background: oklch(0.16 0.006 262 / 0.35);
-    transition: background-color var(--dur-state) var(--ease-out);
+    transition:
+      background-color var(--dur-state) var(--ease-out),
+      border-color var(--dur-state) var(--ease-out),
+      color var(--dur-state) var(--ease-out);
   }
 
-  .stop:hover .stop__arrow,
-  .stop:focus-within .stop__arrow {
-    background: var(--on-media);
-    color: var(--night);
+  .stop__link:hover .stop__arrow,
+  .stop__link:focus-visible .stop__arrow {
+    border-color: var(--signal);
+    background: var(--signal);
+    color: var(--signal-text);
   }
 
-  .stop__name a:focus-visible {
-    outline-color: var(--on-media);
+  .stop__note {
+    position: absolute;
+    left: var(--space-3);
+    bottom: var(--space-3);
+    max-width: 60%;
+    rotate: var(--tilt-n2);
+    color: var(--on-media);
+    pointer-events: none;
+  }
+
+  /*
+   * Live (scripts/stack.ts adds .stops--live and sizes the track and the cards):
+   * the stage pins for one screen, the canvas draws the pictures, and the cards
+   * keep only their words, moved by the script.
+   */
+  .stops--live .stops__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    margin-top: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .stops--live .stops__canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .stops--live .stop {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--card-w);
+    height: var(--card-h);
+    min-height: 0;
+    max-height: none;
+    margin: calc(var(--card-h) / -2) 0 0 calc(var(--card-w) / -2);
+    background: none;
+    will-change: transform;
+  }
+
+  .stops--live .stop :global(.background),
+  .stops--live .stop__scrim {
+    visibility: hidden;
+  }
+
+  .stops--live .stops__ticks {
+    position: absolute;
+    right: var(--page-margin);
+    top: 50%;
+    display: grid;
+    gap: 0.15rem;
+    translate: 0 -50%;
+  }
+
+  .stops__ticks button {
+    display: grid;
+    align-items: center;
+    justify-items: end;
+    width: 1.75rem;
+    height: 0.9rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .stops__ticks button::before {
+    content: "";
+    width: 0.75rem;
+    height: 2px;
+    background: var(--text-2);
+    transition:
+      width var(--dur-state) var(--ease-out),
+      background-color var(--dur-state) var(--ease-out);
+  }
+
+  .stops__ticks button[aria-current="true"]::before {
+    width: 1.5rem;
+    background: var(--ink);
+  }
+
+  @media (max-width: 47.99rem) {
+    .stops--live .stops__ticks {
+      display: none;
+    }
   }
 </style>

@@ -43,6 +43,8 @@ test("maps sections to the content files they come from", () => {
   assert.equal(sourceOf("footer"), "src/content/settings.json");
   assert.equal(sourceOf("drone"), "src/content/chapters/drone.md");
   assert.equal(sourceOf("card-drone"), "src/content/chapters/drone.md");
+  assert.equal(sourceOf("panel-drone"), "src/content/chapters/drone.md");
+  assert.equal(sourceOf("gallery"), "src/content/chapters/");
   assert.equal(sourceOf(""), "");
 });
 

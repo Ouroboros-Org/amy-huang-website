@@ -1,19 +1,43 @@
 ---
+import { getImage } from "astro:assets";
+import aboutPhoto from "../assets/about/photo.webp";
+import heroPhoto from "../assets/hero/photo.webp";
 import Base from "../layouts/Base.astro";
 import About from "../components/About.astro";
 import Contact from "../components/Contact.astro";
+import Effects from "../components/Effects.astro";
 import Footer from "../components/Footer.astro";
+import Gallery from "../components/Gallery.astro";
 import Hero from "../components/Hero.astro";
-import StopDetails from "../components/StopDetails.astro";
+import Offerings from "../components/Offerings.astro";
 import Stops from "../components/Stops.astro";
 import Ticker from "../components/Ticker.astro";
 import TopBar from "../components/TopBar.astro";
 import { getSite } from "../lib/site";
 
-const { settings, stops, about, contact } = await getSite();
-const links = [
-  { label: "What I do", href: "#work" },
-  { label: "About", href: `#${about.id}` },
+const { settings, stops, about, contact, links } = await getSite();
+
+// The gallery's pictures: the two photos of Amy, then each offering's still
+// (a video's poster) and its portrait cut.
+const photos = await Promise.all(
+  [aboutPhoto, heroPhoto].map((src) =>
+    getImage({ src, width: 720, format: "webp" }),
+  ),
+);
+const gallery = [
+  { src: photos[0].src },
+  { src: photos[1].src, portrait: true },
+  ...stops.flatMap((stop) => {
+    const media = stop.data.background;
+    if (!media) return [];
+    const still = media.type === "still" ? media.src : media.poster;
+    const portrait =
+      media.type === "still" ? media.portrait : media.portraitPoster;
+    return [
+      ...(still ? [{ src: still }] : []),
+      ...(portrait ? [{ src: portrait, portrait: true }] : []),
+    ];
+  }),
 ];
 ---
 
@@ -22,13 +46,14 @@ const links = [
   description="Amy Huang teaches kung fu, performs fire shows and Shaolin forms, does hair and flies drones. Here's what she offers and how to reach her."
   cardAlt={`${settings.name}: ${settings.line}`}
 >
-  <TopBar name={settings.name} role={settings.role} links={links} />
+  <TopBar name={settings.name} role={settings.role} links={links.bar} />
   <main>
-    <Hero {...settings.hero} line={settings.line} />
-    <Stops stops={stops} />
+    <Hero {...settings.hero} />
+    <Gallery sentence={settings.line} images={gallery} />
     <About entry={about} />
+    <Stops stops={stops} />
     <Ticker items={stops.map((stop) => stop.data.nav ?? stop.data.title)} />
-    <StopDetails stops={stops} contact={settings.contact} />
+    <Offerings stops={stops} />
     <Contact
       entry={contact}
       contact={settings.contact}
@@ -39,39 +64,7 @@ const links = [
     name={settings.name}
     currentlyIn={settings.currentlyIn}
     weddingsUrl={settings.weddingsUrl}
-    links={[...links, { label: "Say hi", href: `#${contact.id}` }]}
+    links={links.footer}
   />
+  <Effects />
 </Base>
-
-<script>
-  import { motionAllowed, onMotionChange } from "../scripts/motion";
-
-  // The motion code (GSAP and the hero's parallax, most of the page's script, plus
-  // video playback when a card has video) loads only when motion is allowed, and
-  // only once the page has loaded and gone idle, so it never delays the first
-  // paint. Until then, and without it, the page is complete and still.
-  let started = false;
-  const start = () => {
-    if (started) return;
-    started = true;
-    import("../scripts/parallax").then(({ initParallax }) => initParallax());
-    if (document.querySelector("[data-media]")) {
-      import("../scripts/play-in-view").then(({ initPlayInView }) =>
-        initPlayInView(),
-      );
-    }
-  };
-  const whenIdle = (task: () => void) =>
-    "requestIdleCallback" in window
-      ? requestIdleCallback(task, { timeout: 1500 })
-      : setTimeout(task, 200);
-
-  if (motionAllowed()) {
-    if (document.readyState === "complete") whenIdle(start);
-    else window.addEventListener("load", () => whenIdle(start), { once: true });
-  } else {
-    onMotionChange(() => {
-      if (motionAllowed()) start();
-    });
-  }
-</script>

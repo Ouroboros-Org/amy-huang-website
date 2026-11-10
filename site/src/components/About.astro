@@ -1,11 +1,17 @@
 ---
+import { Picture } from "astro:assets";
 import { render, type CollectionEntry } from "astro:content";
-import BackgroundMedia from "./BackgroundMedia.astro";
+import photo from "../assets/about/photo.webp";
 import FactRows from "./FactRows.astro";
 
 /**
- * Who she is: a large statement, then her paragraph beside a picture of her,
- * then a few facts as rows.
+ * Who she is, full-screen over a photo of her: a large statement, her paragraph,
+ * and a handwritten note pointing at her. A few facts follow as rows on the page.
+ *
+ * The photo is wide and Amy stands left of its centre. On wide screens the text
+ * keeps to the right, where a dusk shade makes it readable, and she stays clear
+ * on the left. On phones the section is taller: the text sits in the sky at the
+ * top and she stands below it.
  */
 interface Props {
   entry: CollectionEntry<"chapters">;
@@ -13,90 +19,190 @@ interface Props {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, lead, note, facts, background, draft } = entry.data;
+const { title, lead, note, facts, photoAlt, draft } = entry.data;
 ---
 
 <section
   class="about"
   id={entry.id}
   data-draft={draft ? "" : undefined}
+  data-drift-root
+  data-bar-tone="light"
   aria-labelledby={`${entry.id}-title`}
 >
-  <h2 class="about__statement" id={`${entry.id}-title`}>
-    {lead ?? title}
-  </h2>
-  <div class="about__grid">
-    <div class="about__text">
+  <div class="about__media" data-drift="5">
+    <Picture
+      src={photo}
+      alt={photoAlt ?? ""}
+      widths={[960, 1440, 2000]}
+      sizes="(orientation: portrait) 320vh, (max-aspect-ratio: 7/3) 234vh, 100vw"
+      formats={["avif", "webp"]}
+      fallbackFormat="webp"
+      loading="lazy"
+    />
+  </div>
+  <div class="about__shade" aria-hidden="true"></div>
+  <div class="about__content">
+    <h2 class="about__statement" id={`${entry.id}-title`} data-reveal>
+      {lead ?? title}
+    </h2>
+    <div class="about__bio" data-reveal="block">
       <p class="caption">{title}</p>
       <div class="prose">
         <Content />
       </div>
     </div>
-    {background && (
-      <figure class="about__figure">
-        <div class="about__media">
-          <BackgroundMedia {...background} />
-        </div>
-        {note && <figcaption class="hand">{note}</figcaption>}
-      </figure>
+    {note && (
+      <p class="about__note hand">
+        {note}
+        <svg
+          viewBox="0 0 64 32"
+          width="56"
+          height="28"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M3 22c14 8 34 6 52-10m0 0-11 1m11-1-3 11"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </p>
     )}
   </div>
-  {facts.length > 0 && <FactRows facts={facts} />}
 </section>
+{facts.length > 0 && (
+  <div class="about-facts">
+    <FactRows facts={facts} />
+  </div>
+)}
 
 <style>
   .about {
+    position: relative;
     display: grid;
-    gap: var(--space-8);
-    padding: var(--space-16) var(--page-margin) var(--space-12);
+    min-height: 135vh;
+    min-height: 135svh;
+    overflow: hidden;
+    background: var(--night);
+    color: var(--on-media);
+  }
+
+  /* Larger than the section, so the drift never shows an edge. */
+  .about__media {
+    position: absolute;
+    inset: -6% 0;
+  }
+
+  .about__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Amy stands about a third of the way across the photo. */
+    object-position: 31% 50%;
+  }
+
+  /* Dusk from the top, for the text in the sky; a little night at the foot, for the note. */
+  .about__shade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        to bottom,
+        oklch(0.2 0.045 262 / 0.9) 0%,
+        oklch(0.2 0.045 262 / 0.84) 46%,
+        oklch(0.2 0.045 262 / 0.2) 62%,
+        transparent 74%
+      ),
+      linear-gradient(to top, oklch(0.16 0.006 262 / 0.7), transparent 22%);
+  }
+
+  .about__content {
+    --text-2: oklch(0.97 0 0 / 0.78);
+    position: relative;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: var(--space-4);
+    padding: calc(var(--bar-height) + var(--space-4)) var(--page-margin)
+      var(--space-4);
   }
 
   .about__statement {
     justify-self: end;
-    max-width: 20ch;
+    max-width: 18ch;
     font-size: var(--step-3);
     line-height: 1.25;
     text-align: right;
   }
 
-  .about__grid {
+  .about__bio {
     display: grid;
-    gap: var(--space-6);
-  }
-
-  .about__text {
-    display: grid;
-    align-content: end;
     gap: var(--space-2);
+    justify-self: end;
+    max-width: 26rem;
   }
 
-  .about__figure {
-    margin: 0;
-  }
-
-  .about__media {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    border-radius: var(--radius-card);
-    background: var(--night);
-  }
-
-  .about__figure figcaption {
-    width: max-content;
-    max-width: 100%;
-    margin: var(--space-1) 0 0 var(--space-2);
+  .about__note {
+    display: flex;
+    align-items: end;
+    gap: var(--space-1);
+    align-self: end;
+    justify-self: start;
     rotate: var(--tilt-n2);
+    color: var(--on-media);
   }
 
-  @media (min-width: 48rem) {
+  .about-facts {
+    padding: var(--space-8) var(--page-margin) var(--space-12);
+  }
+
+  /* Wide screens: one screen tall, text on the right, Amy clear on the left. */
+  @media (min-width: 60rem) and (orientation: landscape) {
+    .about {
+      min-height: max(100vh, 44rem);
+      min-height: max(100svh, 44rem);
+    }
+
+    .about__shade {
+      background:
+        linear-gradient(
+          to left,
+          oklch(0.2 0.045 262 / 0.86) 0%,
+          oklch(0.2 0.045 262 / 0.78) 36%,
+          oklch(0.2 0.045 262 / 0.42) 54%,
+          oklch(0.2 0.045 262 / 0.12) 70%,
+          transparent 86%
+        ),
+        linear-gradient(to bottom, oklch(0.2 0.045 262 / 0.5), transparent 28%),
+        linear-gradient(to top, oklch(0.16 0.006 262 / 0.7), transparent 22%);
+    }
+
+    .about__content {
+      grid-template-rows: 1fr auto;
+      grid-template-columns: 1fr minmax(0, 34rem);
+      column-gap: var(--space-8);
+    }
+
     .about__statement {
+      grid-column: 2;
+      align-self: start;
       font-size: var(--step-4);
     }
 
-    .about__grid {
-      grid-template-columns: 5fr 7fr;
-      gap: var(--space-8);
+    .about__bio {
+      grid-column: 2;
+      grid-row: 2;
+      justify-self: end;
+      padding-bottom: var(--space-4);
+    }
+
+    .about__note {
+      grid-column: 1;
+      grid-row: 2;
+      margin-left: 6%;
     }
   }
 </style>

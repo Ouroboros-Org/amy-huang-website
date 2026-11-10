@@ -1,0 +1,187 @@
+---
+/**
+ * The gallery pin: a sentence in the middle of the screen while pictures fly
+ * outward past it, as if the reader moved through them. The section pins for
+ * the length of the flight (scripts/gallery.ts).
+ *
+ * Without the script, or with motion off, it is the sentence above a still grid
+ * of the pictures. The pictures are shown again, with their descriptions, where
+ * they belong, so here they are decorative.
+ */
+interface Props {
+  /** The sentence. Its last clause, after the last comma, is set muted. */
+  sentence: string;
+  images: { src: string; portrait?: boolean }[];
+}
+
+const { sentence, images } = Astro.props;
+const cut = sentence.lastIndexOf(", ");
+const lead = cut > 0 ? sentence.slice(0, cut + 1) : sentence;
+const tail = cut > 0 ? sentence.slice(cut + 1) : "";
+
+// Twelve cards in flight; the pictures repeat when there are fewer.
+const CARDS = 12;
+const cards = Array.from(
+  { length: Math.max(CARDS, images.length) },
+  (_, n) => ({
+    ...images[n % images.length],
+    repeat: n >= images.length,
+  }),
+);
+---
+
+<section
+  class="gallery"
+  id="gallery"
+  data-gallery
+  aria-labelledby="gallery-title"
+>
+  <div class="gallery__pin">
+    <div class="gallery__glow" aria-hidden="true"></div>
+    <h2 class="gallery__sentence" id="gallery-title">
+      {lead}
+      {tail && <span class="gallery__tail">{tail}</span>}
+    </h2>
+    <div class="gallery__cards" aria-hidden="true">
+      {cards.map((card) => (
+        <div
+          class:list={[
+            "gallery__card",
+            { "gallery__card--portrait": card.portrait },
+          ]}
+          data-gallery-card
+          data-repeat={card.repeat ? "" : undefined}
+        >
+          <img src={card.src} alt="" loading="lazy" decoding="async" />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .gallery {
+    position: relative;
+  }
+
+  .gallery__pin {
+    position: relative;
+    display: grid;
+    gap: var(--space-8);
+    padding: var(--space-16) var(--page-margin) var(--space-12);
+    overflow: hidden;
+  }
+
+  /* The accent as a soft light behind the sentence. */
+  .gallery__glow {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: min(70rem, 120vw);
+    aspect-ratio: 1;
+    translate: -50% -35%;
+    background: radial-gradient(
+      closest-side,
+      oklch(0.7 0.18 35 / 0.16),
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  .gallery__sentence {
+    position: relative;
+    z-index: 1;
+    justify-self: center;
+    max-width: 18ch;
+    font-size: var(--step-4);
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .gallery__tail {
+    color: var(--text-2);
+  }
+
+  /* Still: a grid of the pictures, each shown once. */
+  .gallery__cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .gallery__card {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: var(--night);
+  }
+
+  .gallery__card[data-repeat] {
+    display: none;
+  }
+
+  .gallery__card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (min-width: 48rem) {
+    .gallery__cards {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* In flight (scripts/gallery.ts adds .gallery--live): the section is three
+     screens long, its pin holds one screen, and every card starts at the centre. */
+  .gallery--live {
+    height: 320vh;
+    height: 320svh;
+  }
+
+  .gallery--live .gallery__pin {
+    position: sticky;
+    top: 0;
+    display: block;
+    height: 100vh;
+    height: 100svh;
+    padding: 0;
+  }
+
+  .gallery--live .gallery__glow {
+    top: 50%;
+    translate: -50% -50%;
+  }
+
+  .gallery--live .gallery__sentence {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    top: 50%;
+    width: calc(100% - 2 * var(--page-margin));
+    translate: -50% -50%;
+  }
+
+  /* The cards come from behind the sentence. */
+  .gallery--live .gallery__cards {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .gallery--live .gallery__card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: block;
+    width: clamp(9rem, 20vw, 20rem);
+    translate: -50% -50%;
+    opacity: 0;
+    will-change: transform;
+  }
+
+  .gallery--live .gallery__card--portrait {
+    width: clamp(7rem, 13vw, 14rem);
+    aspect-ratio: 3 / 4;
+  }
+</style>

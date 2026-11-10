@@ -1,0 +1,297 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BackgroundMedia from "./BackgroundMedia.astro";
+
+/**
+ * The offerings once more, step by step, each leading to its own page.
+ *
+ * As plain HTML it is a grid of panels: picture, name, lead, a few facts and a
+ * link. With motion allowed, scripts/switcher.ts pins one screen and steps
+ * through the offerings as the page scrolls: the list of names on the left marks
+ * the current one, its panel shows on the right, and a line fills along the
+ * bottom.
+ */
+interface Props {
+  stops: CollectionEntry<"chapters">[];
+}
+
+const { stops } = Astro.props;
+const two = (value: number) => String(value).padStart(2, "0");
+const name = (stop: CollectionEntry<"chapters">) =>
+  stop.data.nav ?? stop.data.title;
+---
+
+<section
+  class="offer"
+  id="offerings"
+  data-switcher
+  aria-labelledby="offerings-title"
+>
+  <div class="offer__track" data-switcher-track>
+    <div class="offer__stage">
+      <div class="offer__top">
+        <h2 class="caption" id="offerings-title">
+          Step by step
+        </h2>
+        <p class="caption offer__count" aria-hidden="true">
+          <span data-switcher-count>01</span> / {two(stops.length)}
+        </p>
+      </div>
+      <div class="offer__middle">
+        <ol class="offer__names">
+          {stops.map((stop) => (
+            <li>
+              <a href={`/${stop.id}/`} data-switcher-name>
+                {name(stop)}
+              </a>
+            </li>
+          ))}
+        </ol>
+        <div class="offer__panels">
+          {stops.map((stop) => (
+            <article class="panel" id={`panel-${stop.id}`} data-switcher-panel>
+              <div class="panel__media">
+                {stop.data.background && (
+                  <BackgroundMedia {...stop.data.background} alt="" />
+                )}
+              </div>
+              <h3 class="panel__name">
+                <a href={`/${stop.id}/`}>{name(stop)}</a>
+              </h3>
+              {stop.data.lead && <p class="panel__lead">{stop.data.lead}</p>}
+              {stop.data.facts.length > 0 && (
+                <ul class="panel__facts">
+                  {stop.data.facts.map((fact) => (
+                    <li>{fact.value}</li>
+                  ))}
+                </ul>
+              )}
+              <a class="panel__more" href={`/${stop.id}/`}>
+                More about {name(stop).toLowerCase()}
+                <span aria-hidden="true">→</span>
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+      <div class="offer__progress" aria-hidden="true">
+        <div data-switcher-fill></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .offer {
+    padding: var(--space-12) var(--page-margin);
+  }
+
+  .offer__top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .offer__count,
+  .offer__names,
+  .offer__progress {
+    display: none;
+  }
+
+  .offer__panels {
+    display: grid;
+    gap: var(--space-6) var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .panel {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: var(--space-2);
+  }
+
+  .panel__media {
+    position: relative;
+    justify-self: stretch;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background: var(--night);
+  }
+
+  .panel__name {
+    font-size: var(--step-3);
+  }
+
+  .panel__name a {
+    text-decoration: none;
+  }
+
+  .panel__lead {
+    max-width: 36ch;
+    line-height: 1.4;
+  }
+
+  .panel__facts {
+    display: grid;
+    gap: 0.15rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--text-2);
+  }
+
+  .panel__more {
+    display: inline-flex;
+    gap: 0.4em;
+    margin-top: var(--space-1);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--dur-state) var(--ease-out);
+  }
+
+  .panel__more:hover,
+  .panel__name a:hover {
+    color: var(--ink);
+  }
+
+  @media (min-width: 48rem) {
+    .offer__panels {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /*
+   * Live (scripts/switcher.ts adds .offer--live and sizes the track): one
+   * screen pins, the names list shows, and only the current panel is visible.
+   */
+  .offer--live {
+    padding-block: 0;
+  }
+
+  .offer--live .offer__stage {
+    position: sticky;
+    top: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: var(--space-3);
+    height: 100vh;
+    height: 100svh;
+    padding-block: calc(var(--bar-height) + var(--space-2)) var(--space-4);
+  }
+
+  .offer--live .offer__count {
+    display: block;
+  }
+
+  .offer--live .offer__middle {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: var(--space-3);
+    min-height: 0;
+  }
+
+  .offer--live .offer__names {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .offer__names a {
+    font-size: var(--step-1);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.04em;
+    text-decoration: none;
+    color: var(--text-2);
+    transition: color var(--dur-state) var(--ease-out);
+  }
+
+  .offer__names a[aria-current="true"],
+  .offer__names a:hover {
+    color: var(--text);
+  }
+
+  .offer--live .offer__panels {
+    position: relative;
+    display: block;
+    min-height: 0;
+    margin-top: 0;
+  }
+
+  .offer--live .panel {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.45s var(--ease-out),
+      visibility 0s 0.45s;
+  }
+
+  .offer--live .panel[data-active] {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.45s var(--ease-out),
+      visibility 0s;
+  }
+
+  .offer--live .panel__name {
+    display: none;
+  }
+
+  .offer--live .panel__media {
+    aspect-ratio: auto;
+    height: min(34vh, 60vw);
+    height: min(34svh, 60vw);
+  }
+
+  .offer--live .offer__progress {
+    display: block;
+    height: 2px;
+    background: var(--line);
+  }
+
+  .offer__progress div {
+    height: 100%;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @media (min-width: 60rem) {
+    .offer--live .offer__middle {
+      grid-template-rows: none;
+      grid-template-columns: 6fr 5fr;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .offer--live .offer__names {
+      display: grid;
+      gap: 0;
+    }
+
+    .offer__names a {
+      font-size: var(--step-4);
+    }
+
+    .offer--live .offer__panels {
+      align-self: stretch;
+    }
+
+    .offer--live .panel {
+      align-content: center;
+    }
+
+    .offer--live .panel__media {
+      height: min(42vh, 26rem);
+      height: min(42svh, 26rem);
+    }
+  }
+</style>

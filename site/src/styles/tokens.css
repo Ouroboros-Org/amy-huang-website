@@ -16,11 +16,17 @@
   --on-media: oklch(0.97 0 0);
   /* Keeps light type readable over any photo. */
   --scrim: oklch(0.16 0.006 262 / 0.5);
-  /* Amy's handwriting. */
-  --ink: var(--text);
+  /* Amy's handwriting on the light page: the accent, deepened to 5.8:1. */
+  --ink: oklch(0.48 0.17 35);
   /* Contact actions only. Night text on it reads at 6.8:1. */
   --signal: oklch(0.7 0.18 35);
   --signal-text: var(--night);
+  /* The accent's neighbours, for the footer's glow: fire into dusk. */
+  --glow-1: oklch(0.7 0.18 35);
+  --glow-2: oklch(0.66 0.2 12);
+  --glow-3: oklch(0.62 0.2 350);
+  --glow-4: oklch(0.56 0.18 305);
+  --glow-5: oklch(0.46 0.17 280);
 
   /* Type: one sans for everything readable, handwriting only for Amy's voice. */
   --font-sans: "Sora Variable", system-ui, sans-serif;
@@ -61,6 +67,7 @@
 
   /* Motion: ease out, no bounce. */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.45, 0, 0.55, 1);
   --dur-state: 220ms;
 }
 

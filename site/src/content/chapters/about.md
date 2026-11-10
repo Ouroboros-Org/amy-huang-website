@@ -11,13 +11,7 @@ facts:
     value: "[places]"
   - label: Styles
     value: Shaolin kung fu, [more]
-background:
-  type: still
-  src: /media/test/still.svg
-  portrait: /media/placeholder/intro-reel.svg
-  width: 1600
-  height: 1000
-  alt: Placeholder for Amy's intro footage
+photoAlt: Amy holding a kung fu stance with a staff on a mountain meadow, peaks behind her in the haze.
 draft: true
 ---
 
