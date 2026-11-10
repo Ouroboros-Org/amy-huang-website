@@ -17,6 +17,7 @@
     "test": "node --test \"scripts/*.test.mjs\"",
     "verify": "npm run check && npm run format:check && npm test && npm run build",
     "media:test": "bash scripts/make-test-clip.sh",
+    "media:hero": "node scripts/split-hero.mjs",
     "astro": "astro",
     "check:launch": "node scripts/check-launch.mjs dist"
   },

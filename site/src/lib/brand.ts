@@ -1,6 +1,6 @@
 /**
  * The site's mark and colours for images rendered at build time: the icons and
- * the social card. The mark is the hero's opening, lit from inside. tokens.css
+ * the social card. The mark is a lit opening, the site's first hero motif. tokens.css
  * holds the OKLCH originals of these colours; keep the two in step.
  */
 export const palette = {

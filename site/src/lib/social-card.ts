@@ -11,8 +11,8 @@ function bytes(dataUrl: string): Buffer {
 }
 
 /**
- * The picture a shared link previews with: her name and line beside the hero's
- * opening, lit from inside. Built from settings.json, so it follows her edits.
+ * The picture a shared link previews with: her name and line beside a lit
+ * opening. Built from settings.json, so it follows her edits.
  */
 export async function renderSocialCard({
   name,

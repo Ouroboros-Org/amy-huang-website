@@ -3,8 +3,8 @@ import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 /**
- * One layer's media, with an optional portrait cut for phones. For a cut-out or
- * the hero, `src` is the base path of the stacked-alpha files that
+ * One layer's media, with an optional portrait cut for phones. For a cut-out,
+ * `src` is the base path of the stacked-alpha files that
  * scripts/encode-alpha.sh writes (`<src>.av1.mp4`, `.hevc.mp4`, `.poster.webp`).
  */
 const media = z.object({
@@ -34,7 +34,7 @@ const chapters = defineCollection({
   schema: z.object({
     order: z.number().int().positive(),
     title: z.string(),
-    /** Label in the hero's chapter index; chapters without one stay off it. */
+    /** Label in the chapter index; chapters without one stay off it. */
     nav: z.string().optional(),
     layout: z.enum(["chapter", "contact"]).default("chapter"),
     /** Share of the scroll, in viewport heights. */
@@ -57,7 +57,7 @@ const chapters = defineCollection({
   }),
 });
 
-/** Site-wide details: who, where, how to reach her, and the hero's opening. */
+/** Site-wide details: who, where, how to reach her, and the hero's words. */
 const settings = defineCollection({
   loader: file("./src/content/settings.json"),
   schema: z.object({
@@ -71,7 +71,12 @@ const settings = defineCollection({
       instagram: z.string().optional(),
     }),
     weddingsUrl: z.url().optional(),
-    hero: media,
+    /** The opening photo's title, the line beneath it, and the photo's description. */
+    hero: z.object({
+      title: z.string(),
+      subtitle: z.string(),
+      alt: z.string(),
+    }),
   }),
 });
 

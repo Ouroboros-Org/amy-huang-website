@@ -1,7 +1,6 @@
 ---
 order: 1
 title: Hi, I'm Amy
-reveal: under
 length: 1.4
 lead: I teach martial arts and perform, mostly kung fu and fire. The classes and shows travel with me.
 note: that's me!

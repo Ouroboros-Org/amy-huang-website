@@ -18,7 +18,7 @@ gsap.registerPlugin(ScrollTrigger);
  * - `data-reveal="circle"` (default) opens the chapter over the previous one through
  *   a growing circle centred at `data-reveal-at` ("50% 50%"). `"under"` places it
  *   beneath the previous chapter from the start, which then has to clear the way
- *   itself, as the hero does by zooming through its opening.
+ *   itself through its own layers.
  * - `[data-layer]` elements animate on their own windows of their chapter's stretch:
  *   `data-in` / `data-in-window` from the given GSAP vars to the rendered state, and
  *   `data-out` / `data-out-window` from the rendered state to the given vars.

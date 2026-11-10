@@ -1,12 +1,12 @@
 ---
 /**
- * A transparent video layer from scripts/encode-alpha.sh output: a cut-out of
- * Amy, or the hero with its opening. Phones in portrait get the `portrait` cut
+ * A transparent video layer from scripts/encode-alpha.sh output, such as a
+ * cut-out of Amy. Phones in portrait get the `portrait` cut
  * when there is one. The poster shows until the first frame plays, and stays when
  * playback isn't wanted or allowed; scripts/media.ts controls playback.
  */
 interface Props {
-  /** Base path of the encoded files, e.g. "/media/test/portal". */
+  /** Base path of the encoded files, e.g. "/media/test/sticker". */
   src: string;
   portrait?: string;
   /** Size of the visible (colour) half of the landscape cut, to reserve space. */

@@ -1,0 +1,147 @@
+---
+import { Picture } from "astro:assets";
+import front from "../assets/hero/front.webp";
+import sky from "../assets/hero/sky.webp";
+
+/**
+ * The opening: Amy's photo in two layers (scripts/split-hero.mjs), with her name
+ * between them. The title sits in the sky and the main peak overlaps its lower
+ * edge; the subheadline sits on the mountain face below. With motion allowed,
+ * scripts/parallax.ts lets the sky and the title lag behind the mountains as the
+ * page scrolls, so the title sinks behind the peaks.
+ *
+ * Everything is placed on a stage with the photo's 4:5 proportions, sized to cover
+ * the screen, so text and ridge line up on any screen. Phones see the full height
+ * with the sides cropped; wide screens see the full width from just above the
+ * title down to the shore.
+ */
+interface Props {
+  title: string;
+  subtitle: string;
+  /** Describes the photo. */
+  alt: string;
+}
+
+const { title, subtitle, alt } = Astro.props;
+const widths = [640, 960, 1280, 1600];
+// The stage is 80% of the screen height wide on screens narrower than 4:5.
+const sizes = "(max-aspect-ratio: 4/5) 80vh, 100vw";
+---
+
+<section class="hero" id="top" data-parallax-root aria-labelledby="hero-title">
+  <div class="hero__stage">
+    <h1 class="hero__title" id="hero-title" data-parallax="0.3">
+      {title}
+    </h1>
+    <p class="hero__subtitle">{subtitle}</p>
+    <div class="hero__layer hero__layer--sky" data-parallax="0.45">
+      <Picture
+        src={sky}
+        alt=""
+        widths={widths}
+        sizes={sizes}
+        formats={["avif", "webp"]}
+        fallbackFormat="webp"
+        loading="eager"
+      />
+    </div>
+    <div class="hero__layer hero__layer--front">
+      <Picture
+        src={front}
+        alt={alt}
+        widths={widths}
+        sizes={sizes}
+        formats={["avif", "webp"]}
+        fallbackFormat="webp"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    container-type: inline-size;
+    /* The photo's sky, shown until the layers arrive. */
+    background: #a4bacd;
+  }
+
+  .hero__stage {
+    /* Cover the screen at the photo's 4:5. On wide screens the stage is taller than
+       the screen; it then starts 9% down the photo, just above the title. */
+    --stage-height: max(100svh, 125cqw);
+    position: absolute;
+    left: 50%;
+    top: max(
+      calc(100svh - var(--stage-height)),
+      calc(var(--stage-height) * -0.09)
+    );
+    width: calc(var(--stage-height) * 0.8);
+    height: var(--stage-height);
+    translate: -50% 0;
+    container-type: size;
+  }
+
+  .hero__layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero__layer :global(img) {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Back to front: sky, title, mountains, subheadline. */
+  .hero__layer--sky {
+    z-index: 0;
+  }
+
+  .hero__title {
+    z-index: 1;
+  }
+
+  .hero__layer--front {
+    z-index: 2;
+  }
+
+  .hero__subtitle {
+    z-index: 3;
+  }
+
+  /* Baseline 22.75% down the photo: the main peak's tip reaches into the letters. */
+  .hero__title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(22.75cqh - 0.86em);
+    margin: 0;
+    font-size: 12.5cqw;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    text-align: center;
+    white-space: nowrap;
+    color: var(--night);
+  }
+
+  /* On the dark mountain face below the peak, clear of the sky on both sides. */
+  .hero__subtitle {
+    position: absolute;
+    left: 50%;
+    top: 29cqh;
+    width: 31cqw;
+    max-width: none;
+    translate: -50% 0;
+    font-size: clamp(1.0625rem, 1.45cqw, 1.5rem);
+    line-height: 1.3;
+    text-align: center;
+    text-wrap: balance;
+    color: var(--text);
+  }
+</style>
