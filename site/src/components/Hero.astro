@@ -5,8 +5,9 @@
  * beneath.
  *
  * Right after the intro, which only the first load of a visit plays, it
- * breathes in: the video comes into focus from a blur, and the motto fades in,
- * grows and opens its letters out. Otherwise it is simply there.
+ * breathes in: the intro cuts hard to white, and the white fades softly into
+ * the video as it comes into focus from a blur. The motto is there from the
+ * start and opens its letters out wide. Otherwise it is simply there.
  *
  * With motion allowed, the footage and the words hold still while the page
  * scrolls up over them, and scrolling down fades the words out as their letters
@@ -51,6 +52,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     <source src="/media/hero/amy.mp4" type="video/mp4" />
   </video>
   <div class="hero__shade" aria-hidden="true"></div>
+  <div class="hero__veil" aria-hidden="true"></div>
   <div class="hero__words">
     <h1 class="hero__motto" id="hero-title">
       {phrases.map((phrase, index) => (
@@ -211,6 +213,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
   @media (prefers-reduced-motion: no-preference) {
     :global(:root:not([data-motion="off"])) .hero__video,
     :global(:root:not([data-motion="off"])) .hero__shade,
+    :global(:root:not([data-motion="off"])) .hero__veil,
     :global(:root:not([data-motion="off"])) .hero__words {
       position: fixed;
       inset: 0 0 auto;
@@ -231,7 +234,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* The breath in: the footage first, the words after it, slower. */
+    /* The breath in: the footage sharpens under the white as it clears. */
     transition:
       filter 4.5s cubic-bezier(0.33, 0, 0.2, 1),
       scale 6s var(--ease-out);
@@ -256,6 +259,17 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
       );
   }
 
+  /* The white the intro cuts to, over the footage and under the words: held a
+     beat after the cut, then clearing softly (see the breath in below). */
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    background: var(--on-media);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2.6s 0.3s var(--ease-soft);
+  }
+
   /* Fading out as the page scrolls over the hero, gone a little past halfway. */
   .hero__words {
     position: relative;
@@ -269,7 +283,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
 
   /* A film title: thin capitals set wide, the one place letters are tracked out. */
   .hero__motto {
-    --track-in: 0.62em;
+    --track-in: 0.75em;
     max-width: none;
     font-size: clamp(1rem, 2vw, 2.125rem);
     font-weight: 200;
@@ -279,10 +293,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     text-transform: uppercase;
     /* One line; widening it never breaks it in two. */
     white-space: nowrap;
-    transition:
-      --track-in 8s 1.2s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 5s 1.6s var(--ease-soft),
-      scale 8s 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: --track-in 7s 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   /* Each sentence holds together. The same space before it as after its last
@@ -298,6 +309,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
   /* Narrow screens: a sentence a line. */
   @media (max-width: 47.99rem) {
     .hero__motto {
+      --track-in: 0.62em;
       font-size: clamp(0.9375rem, 4.2vw, 1.125rem);
     }
 
@@ -317,9 +329,6 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     letter-spacing: 0.45em;
     text-transform: uppercase;
     color: oklch(0.97 0 0 / 0.85);
-    transition:
-      opacity 4s 4.2s var(--ease-soft),
-      translate 4s 4.2s var(--ease-out);
   }
 
   /* Each craft gives back its trailing space, so the dots sit midway. */
@@ -371,23 +380,21 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
 
   /*
    * Before the breath in (Intro.astro adds .hero-reveal when the intro plays;
-   * the script above marks the hero data-in the moment it ends): the footage
-   * blurred and a touch close, the words not yet there.
+   * the script above marks the hero data-in the moment it ends): white over
+   * the footage, which is softly blurred and a touch close, and the motto's
+   * letters set close together. The words are there throughout.
    */
+  :global(:root.hero-reveal) .hero:not([data-in]) .hero__veil {
+    opacity: 1;
+  }
+
   :global(:root.hero-reveal) .hero:not([data-in]) .hero__video {
-    filter: blur(36px);
-    scale: 1.12;
+    filter: blur(12px);
+    scale: 1.04;
   }
 
   :global(:root.hero-reveal) .hero:not([data-in]) .hero__motto {
-    --track-in: 0.2em;
-    opacity: 0;
-    scale: 0.88;
-  }
-
-  :global(:root.hero-reveal) .hero:not([data-in]) .hero__crafts {
-    opacity: 0;
-    translate: 0 0.75rem;
+    --track-in: 0em;
   }
 
   :global(:root.hero-reveal) .hero:not([data-in]) .hero__cue {
