@@ -1,0 +1,69 @@
+---
+/**
+ * A slow band of large words between sections, as in the theme. Decorative: the
+ * same words are real headings elsewhere, so it is hidden from assistive
+ * technology. It stands still when motion is paused or reduced.
+ */
+interface Props {
+  items: string[];
+}
+
+const { items } = Astro.props;
+// Enough repeats for one group to outrun the widest screen.
+const group = [...items, ...items, ...items];
+---
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    {[0, 1].map(() => (
+      <div class="ticker__group">
+        {group.map((item) => (
+          <span>{item}</span>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ticker {
+    overflow: hidden;
+    padding-block: var(--space-3);
+    border-block: 1px solid var(--line);
+  }
+
+  .ticker__track {
+    display: flex;
+    width: max-content;
+    animation: ticker 60s linear infinite;
+  }
+
+  .ticker__group {
+    display: flex;
+  }
+
+  .ticker span {
+    font-size: var(--step-5);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--text-2);
+  }
+
+  .ticker span::after {
+    content: "·";
+    margin-inline: 0.35em;
+  }
+
+  :global(:root[data-motion="off"]) .ticker__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes ticker {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

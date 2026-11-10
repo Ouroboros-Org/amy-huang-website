@@ -1,9 +1,7 @@
 ---
 order: 6
 title: Say hi.
-nav: Say hi
 layout: contact
-length: 1
 note: this is the easy part
 draft: true
 ---

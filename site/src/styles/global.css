@@ -1,15 +1,20 @@
 @import "./tokens.css";
 
 :root {
-  color-scheme: dark;
-  font-family: var(--font-grotesk);
+  color-scheme: light;
+  font-family: var(--font-sans);
   font-size: 100%;
   font-synthesis: none;
   font-optical-sizing: auto;
   color: var(--text);
-  background: var(--night);
+  background: var(--bg);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+/* In-page links glide only while motion is allowed (scripts/motion.ts). */
+:root[data-motion="on"] {
+  scroll-behavior: smooth;
 }
 
 *,
@@ -21,7 +26,8 @@
 body {
   margin: 0;
   font-size: var(--step-0);
-  line-height: var(--rule-gap);
+  line-height: 1.5;
+  letter-spacing: -0.015em;
 }
 
 img,
@@ -36,9 +42,9 @@ h1,
 h2,
 h3 {
   margin: 0;
-  font-weight: 650;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
   text-wrap: balance;
 }
 
@@ -55,11 +61,27 @@ a {
 }
 
 :focus-visible {
-  outline: 3px solid var(--signal);
+  outline: 3px solid var(--text);
   outline-offset: 3px;
 }
 
-/* Amy's voice: notes, captions, arrows. Never body copy, prices or contact details. */
+/* Sections jumped to by link stop below the fixed top bar. */
+[id] {
+  scroll-margin-top: calc(var(--bar-height) + var(--space-2));
+}
+
+/* Small label above a section, as in the theme: caps, never tracked out. */
+.caption {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+/* Amy's voice: short notes only. Never body copy, prices or contact details. */
 .hand {
   font-family: var(--font-hand);
   font-variation-settings: var(--hand-settings);
@@ -68,14 +90,6 @@ a {
   line-height: 1.2;
   letter-spacing: 0;
   color: var(--ink);
-}
-
-/* The Swiss skeleton: every block sits on these columns. */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-  column-gap: var(--gutter);
-  padding-inline: var(--page-margin);
 }
 
 .visually-hidden {
@@ -106,31 +120,11 @@ stacked-alpha-video video {
   }
 }
 
-/* Running text from content files: paragraphs on the ruling, at a readable measure. */
+/* Running text from content files. */
 .prose > * + * {
-  margin-top: var(--rule-gap);
+  margin-top: 1em;
 }
 
 .prose p {
   max-width: var(--measure);
-}
-
-/*
- * The journey. Without JavaScript, with reduced motion or with motion paused, the
- * chapters are a plain stack of full-screen sections. journey.ts adds
- * .journey--live when motion is allowed: one pinned stage, chapters on top of
- * each other.
- */
-.journey--live {
-  position: relative;
-  height: 100vh;
-  height: 100svh;
-  overflow: hidden;
-}
-
-/* Two classes outrank each chapter component's own scoped position rule. */
-.journey.journey--live > [data-chapter] {
-  position: absolute;
-  inset: 0;
-  min-height: 0;
 }

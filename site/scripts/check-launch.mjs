@@ -24,12 +24,20 @@ import { fileURLToPath } from "node:url";
 const PLACEHOLDER_MEDIA = /\/media\/(?:placeholder|test)\/[^"'\s,)]*/g;
 const BRACKETED = /\[[^\]\n]{1,200}\]/g;
 
-/** The content file a section's words come from. */
+/**
+ * The content file a section's words come from. The hero and the footer come
+ * from the settings; a stop's overview card (`card-<id>`) and every other
+ * section come from the chapter of that id.
+ */
 export function sourceOf(sectionId) {
   if (!sectionId) return "";
-  return sectionId === "top"
-    ? "src/content/settings.json"
-    : `src/content/chapters/${sectionId}.md`;
+  if (sectionId === "top" || sectionId === "footer") {
+    return "src/content/settings.json";
+  }
+  const chapter = sectionId.startsWith("card-")
+    ? sectionId.slice("card-".length)
+    : sectionId;
+  return `src/content/chapters/${chapter}.md`;
 }
 
 export function isNoindex(html) {
@@ -46,7 +54,9 @@ export function findPlaceholders(html) {
     .replace(/<!--[\s\S]*?-->/g, (m) => " ".repeat(m.length));
 
   const sections = [
-    ...page.matchAll(/<(?:section|header)\b[^>]*\sid="([^"]+)"/g),
+    ...page.matchAll(
+      /<(?:section|header|article|footer)\b[^>]*\sid="([^"]+)"/g,
+    ),
   ].map((match) => ({ start: match.index, id: match[1] }));
   const sectionAt = (index) =>
     sections.filter((section) => section.start <= index).at(-1)?.id ?? "";

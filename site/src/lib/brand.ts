@@ -4,12 +4,14 @@
  * holds the OKLCH originals of these colours; keep the two in step.
  */
 export const palette = {
+  /** --bg */
+  page: "#e7e8ea",
   /** --night */
   night: "#0c0d10",
-  /** --text */
-  text: "#f5f5f5",
-  /** --text-2 */
-  text2: "#b4b7be",
+  /** --on-media */
+  light: "#f5f5f5",
+  /** Muted light type on night. */
+  lightMuted: "#b4b7be",
   /** --signal */
   signal: "#f96c4a",
 };

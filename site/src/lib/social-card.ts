@@ -1,8 +1,8 @@
 import satori from "satori";
 import sharp from "sharp";
-// Static cuts of the site's grotesk: satori reads WOFF, not the variable WOFF2 the page uses.
-import regularFont from "@fontsource/schibsted-grotesk/files/schibsted-grotesk-latin-400-normal.woff?inline";
-import boldFont from "@fontsource/schibsted-grotesk/files/schibsted-grotesk-latin-700-normal.woff?inline";
+// Static cuts of the site's font: satori reads WOFF, not the variable WOFF2 the page uses.
+import regularFont from "@fontsource/sora/files/sora-latin-400-normal.woff?inline";
+import boldFont from "@fontsource/sora/files/sora-latin-600-normal.woff?inline";
 import { CARD_HEIGHT, CARD_WIDTH, palette } from "./brand";
 
 /** Vite inlines the fonts as data URLs; satori wants their bytes. */
@@ -32,8 +32,8 @@ export async function renderSocialCard({
           position: "relative",
           backgroundColor: palette.night,
           backgroundImage: `radial-gradient(circle at 80% 50%, #1e2027 0%, ${palette.night} 60%)`,
-          color: palette.text,
-          fontFamily: "Schibsted Grotesk",
+          color: palette.light,
+          fontFamily: "Sora",
         },
         children: [
           {
@@ -70,10 +70,10 @@ export async function renderSocialCard({
                   type: "div",
                   props: {
                     style: {
-                      fontSize: 116,
-                      fontWeight: 700,
+                      fontSize: 104,
+                      fontWeight: 600,
                       lineHeight: 1,
-                      letterSpacing: "-0.03em",
+                      letterSpacing: "-0.04em",
                     },
                     children: name,
                   },
@@ -83,9 +83,9 @@ export async function renderSocialCard({
                   props: {
                     style: {
                       marginTop: 36,
-                      fontSize: 42,
-                      lineHeight: 1.25,
-                      color: palette.text2,
+                      fontSize: 38,
+                      lineHeight: 1.3,
+                      color: palette.lightMuted,
                     },
                     children: line,
                   },
@@ -101,15 +101,15 @@ export async function renderSocialCard({
       height: CARD_HEIGHT,
       fonts: [
         {
-          name: "Schibsted Grotesk",
+          name: "Sora",
           data: bytes(regularFont),
           weight: 400,
           style: "normal",
         },
         {
-          name: "Schibsted Grotesk",
+          name: "Sora",
           data: bytes(boldFont),
-          weight: 700,
+          weight: 600,
           style: "normal",
         },
       ],

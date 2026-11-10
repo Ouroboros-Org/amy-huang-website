@@ -1,8 +1,8 @@
 ---
-import "@fontsource-variable/schibsted-grotesk";
+import "@fontsource-variable/sora";
 import "@fontsource-variable/shantell-sans/infm.css";
-// The Latin grotesk file: preloaded, because the hero heading is the page's largest paint.
-import groteskLatin from "@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-normal.woff2?url";
+// The Latin file of the page's font: preloaded, because the hero heading is the page's largest paint.
+import sansLatin from "@fontsource-variable/sora/files/sora-latin-wght-normal.woff2?url";
 import "../styles/global.css";
 import { CARD_HEIGHT, CARD_WIDTH, palette } from "../lib/brand";
 
@@ -33,7 +33,7 @@ const card = Astro.site ? new URL("/social-card.png", Astro.site) : undefined;
     <meta charset="utf-8" />
     <link
       rel="preload"
-      href={groteskLatin}
+      href={sansLatin}
       as="font"
       type="font/woff2"
       crossorigin
@@ -43,7 +43,7 @@ const card = Astro.site ? new URL("/social-card.png", Astro.site) : undefined;
     <meta name="description" content={description} />
     {(noindex || prelaunch) && <meta name="robots" content="noindex" />}
     {canonical && <link rel="canonical" href={canonical} />}
-    <meta name="theme-color" content={palette.night} />
+    <meta name="theme-color" content={palette.page} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

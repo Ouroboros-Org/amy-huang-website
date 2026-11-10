@@ -37,7 +37,6 @@ const { settings } = await getSite();
   .lost__opening {
     width: min(56vw, 16rem);
     aspect-ratio: 1;
-    border: 3px solid oklch(0.95 0.03 40 / 0.8);
     border-radius: 50%;
     background: radial-gradient(
       circle,
@@ -45,7 +44,6 @@ const { settings } = await getSite();
       var(--signal) 45%,
       oklch(0.66 0.18 35)
     );
-    box-shadow: 0 0 6rem 1rem oklch(0.7 0.18 35 / 0.3);
   }
 
   .lost__text {
@@ -66,8 +64,8 @@ const { settings } = await getSite();
 
   .lost__home {
     margin-top: var(--space-2);
-    padding: 0.6rem 1.1rem;
-    border: 2px solid var(--signal);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-pill);
     background: var(--signal);
     color: var(--signal-text);
     font-weight: 600;
