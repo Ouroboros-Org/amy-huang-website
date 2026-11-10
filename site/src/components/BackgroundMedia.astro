@@ -1,8 +1,8 @@
 ---
 /**
- * A chapter's full-screen background: a looping video or a still, cropped to
- * fill, with an optional portrait cut for phones. A video shows its poster until
- * the first frame plays; scripts/media.ts controls playback.
+ * Media that fills its parent card: a looping video or a still, cropped to fit,
+ * with an optional portrait cut for phones. A video shows its poster until the
+ * first frame plays; scripts/play-in-view.ts plays it while it is on screen.
  */
 interface Props {
   type: "video" | "still";

@@ -2,10 +2,10 @@
 order: 2
 title: I teach kung fu
 nav: Teaching
-revealAt: 70% 60%
+kicker: Kung fu classes
 lead: Classes where people of any level can show up, sweat a bit and leave a little stronger.
 note: my favourite part
-sticky: online classes, coming soon
+badge: online classes, coming soon
 facts:
   - label: What
     value: Shaolin kung fu, forms, [self-defence?]
@@ -23,11 +23,6 @@ background:
   width: 1500
   height: 1000
   alt: Placeholder for footage of Amy teaching a class
-cutout:
-  src: /media/test/sticker
-  width: 360
-  height: 640
-  alt: Placeholder for a cut-out of Amy in a kung fu stance
 draft: true
 ---
 

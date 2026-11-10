@@ -2,7 +2,7 @@
 order: 4
 title: I also do hair
 nav: Hair
-revealAt: 30% 50%
+kicker: Event styling
 lead: "Hair styling for events and special days. [Amy: what kind of styling, and for whom.]"
 note: before → after
 cta:

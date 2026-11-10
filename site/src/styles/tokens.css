@@ -1,25 +1,29 @@
 /*
- * Design tokens. A dark, cinematic base for the full-screen video journey: clean
- * type on video, one signal colour, and Amy's handwriting as the personality layer.
+ * Design tokens. A light grey page in the manner of the Elias Vent theme: Sora,
+ * semi-bold headings with tight tracking, muted secondary text, rounded media
+ * cards and pill buttons. Photos and video stay dark surfaces with light type.
  */
 :root {
-  /* Colour: near-black tinted toward the ink's hue, never pure #000. */
+  /* Colour: a light grey page, near-black type tinted toward the same hue. */
+  --bg: oklch(0.93 0.003 262);
+  /* 14.7:1 on the page. */
+  --text: oklch(0.2 0.008 262);
+  /* 6:1 on the page. */
+  --text-2: oklch(0.45 0.01 262);
+  --line: oklch(0.2 0.008 262 / 0.14);
+  /* Dark surfaces: photos, video, and the type colour on a light sky. */
   --night: oklch(0.16 0.006 262);
-  --text: oklch(0.97 0 0);
-  --text-2: oklch(0.78 0.01 262);
-  /* White gel pen: Amy's notes over video. */
-  --ink: oklch(0.97 0 0);
-  /* 6.8:1 on night, and night text on it reads at the same ratio. */
+  --on-media: oklch(0.97 0 0);
+  /* Keeps light type readable over any photo. */
+  --scrim: oklch(0.16 0.006 262 / 0.5);
+  /* Amy's handwriting. */
+  --ink: var(--text);
+  /* Contact actions only. Night text on it reads at 6.8:1. */
   --signal: oklch(0.7 0.18 35);
   --signal-text: var(--night);
-  /* Scrims keep type readable over any footage. */
-  --scrim: oklch(0.16 0.006 262 / 0.82);
-  /* Personality pieces: a sticky note with ballpoint on it. */
-  --sticky: oklch(0.93 0.1 98);
-  --sticky-ink: oklch(0.3 0.09 262);
 
-  /* Type: one grotesk for everything readable, handwriting only for Amy's voice. */
-  --font-grotesk: "Schibsted Grotesk Variable", system-ui, sans-serif;
+  /* Type: one sans for everything readable, handwriting only for Amy's voice. */
+  --font-sans: "Sora Variable", system-ui, sans-serif;
   --font-hand: "Shantell Sans Variable", "Segoe Print", "Bradley Hand", cursive;
   --hand-settings: "INFM" 100;
 
@@ -27,7 +31,6 @@
   --step--1: 0.875rem;
   --step-0: clamp(1.062rem, 1.042rem + 0.093vw, 1.125rem);
   --step-1: clamp(1.328rem, 1.271rem + 0.254vw, 1.5rem);
-  --step-2: clamp(1.66rem, 1.547rem + 0.502vw, 2rem);
   --step-3: clamp(2.075rem, 1.879rem + 0.873vw, 2.665rem);
   --step-4: clamp(2.594rem, 2.275rem + 1.419vw, 3.552rem);
   --step-5: clamp(3.242rem, 2.745rem + 2.211vw, 4.735rem);
@@ -35,7 +38,6 @@
 
   /* Space: an 8px unit. */
   --unit: 0.5rem;
-  --rule-gap: 1.75rem;
   --space-1: calc(var(--unit) * 1);
   --space-2: calc(var(--unit) * 2);
   --space-3: calc(var(--unit) * 3);
@@ -43,49 +45,33 @@
   --space-6: calc(var(--unit) * 6);
   --space-8: calc(var(--unit) * 8);
   --space-12: calc(var(--unit) * 12);
+  --space-16: calc(var(--unit) * 16);
 
-  /* Grid: 4 / 8 / 12 columns. */
-  --cols: 4;
-  --gutter: 1rem;
-  --page-margin: 1.25rem;
-  --measure: 65ch;
+  /* Layout. */
+  --page-margin: 1rem;
+  --bar-height: 4.5rem;
+  --measure: 60ch;
 
-  /* Scrapbook tilt: fixed per element, chosen from this set only. */
-  --tilt-n4: -4deg;
+  /* Shape. */
+  --radius-card: 1.25rem;
+  --radius-pill: 999px;
+
+  /* Handwriting tilt: fixed per note, chosen from this set only. */
   --tilt-n2: -2deg;
-  --tilt-n1: -1deg;
-  --tilt-p1: 1deg;
-  --tilt-p2: 2deg;
-  --tilt-p3: 3deg;
 
-  /* Material depth: soft and believable, never a hard offset. */
-  --shadow-paper:
-    0 1px 1px oklch(0.2 0.02 262 / 0.08),
-    0 6px 16px -6px oklch(0.2 0.02 262 / 0.22);
-  --shadow-lift:
-    0 2px 3px oklch(0.2 0.02 262 / 0.1),
-    0 14px 30px -10px oklch(0.2 0.02 262 / 0.3);
-
-  /* Motion: ease out, exits faster than entrances, no bounce. */
+  /* Motion: ease out, no bounce. */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-feedback: 120ms;
   --dur-state: 220ms;
-  --dur-layout: 400ms;
-  --dur-entrance: 700ms;
 }
 
 @media (min-width: 48rem) {
   :root {
-    --cols: 8;
-    --gutter: 1.25rem;
-    --page-margin: 3rem;
+    --page-margin: 2rem;
   }
 }
 
 @media (min-width: 72rem) {
   :root {
-    --cols: 12;
-    --gutter: 1.5rem;
-    --page-margin: 5rem;
+    --page-margin: 2.5rem;
   }
 }

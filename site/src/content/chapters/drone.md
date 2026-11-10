@@ -2,7 +2,7 @@
 order: 5
 title: And I fly drones
 nav: Drone
-revealAt: 50% 50%
+kicker: Aerial photo and video
 lead: "Aerial photos and video from wherever I happen to be. [Amy: what she shoots, and for whom.]"
 note: view from up here
 cta:

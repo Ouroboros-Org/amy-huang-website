@@ -1,7 +1,7 @@
 import "stacked-alpha-video";
 
 /**
- * Playback for the journey's videos: plain background loops and stacked-alpha
+ * Playback for the page's videos: plain background loops and stacked-alpha
  * cut-outs alike. A holder's `data-state` is "poster" until its first frame
  * plays, then "playing"; "refused" records a refused play() (iOS Low Power Mode,
  * data saver) and keeps the poster.

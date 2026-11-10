@@ -1,0 +1,78 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import ContactLinks from "./ContactLinks.astro";
+import type { ContactDetails } from "../lib/contact";
+
+/**
+ * The last section: a large invitation on one side, the ways to reach Amy on the
+ * other. Nothing moves here, so an action never shifts under a finger.
+ */
+interface Props {
+  entry: CollectionEntry<"chapters">;
+  contact: ContactDetails;
+  replyNote: string;
+}
+
+const { entry, contact, replyNote } = Astro.props;
+const { Content } = await render(entry);
+const { title, note, draft } = entry.data;
+---
+
+<section
+  class="contact"
+  id={entry.id}
+  data-draft={draft ? "" : undefined}
+  aria-labelledby={`${entry.id}-title`}
+>
+  <div class="contact__lead">
+    {note && <p class="contact__note hand">{note}</p>}
+    <h2 id={`${entry.id}-title`}>{title}</h2>
+  </div>
+  <div class="contact__side">
+    <p class="caption">Get in touch</p>
+    <div class="prose">
+      <Content />
+    </div>
+    <ContactLinks details={contact} size="large" />
+    <p class="contact__reply">{replyNote}</p>
+  </div>
+</section>
+
+<style>
+  .contact {
+    display: grid;
+    gap: var(--space-6);
+    padding: var(--space-12) var(--page-margin) var(--space-16);
+    border-top: 1px solid var(--line);
+  }
+
+  .contact__note {
+    width: max-content;
+    max-width: 100%;
+    margin-bottom: var(--space-1);
+    rotate: var(--tilt-n2);
+  }
+
+  .contact h2 {
+    font-size: var(--step-6);
+    line-height: 1.05;
+  }
+
+  .contact__side {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+  }
+
+  .contact__reply {
+    font-size: var(--step--1);
+    color: var(--text-2);
+  }
+
+  @media (min-width: 48rem) {
+    .contact {
+      grid-template-columns: 7fr 5fr;
+      gap: var(--space-8);
+    }
+  }
+</style>

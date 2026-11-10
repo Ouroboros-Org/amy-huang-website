@@ -7,8 +7,8 @@ import {
 } from "../lib/contact";
 
 /**
- * One way to reach Amy as a button-like link. While the detail is missing it
- * renders a dashed, dimmed placeholder instead of a dead or invented link.
+ * One way to reach Amy as a pill-shaped link. While the detail is missing it
+ * renders a dashed, muted placeholder instead of a dead or invented link.
  */
 interface Props {
   channel: Channel;
@@ -45,8 +45,9 @@ const classes = ["action", `action--${size}`, { "action--primary": primary }];
 <style>
   .action {
     display: inline-block;
-    padding: 0.6rem 1.1rem;
-    border: 2px solid currentColor;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--text);
+    border-radius: var(--radius-pill);
     font-size: var(--step-0);
     font-weight: 600;
     line-height: 1.2;
@@ -55,8 +56,7 @@ const classes = ["action", `action--${size}`, { "action--primary": primary }];
   }
 
   .action--large {
-    padding: 0.9rem 1.6rem;
-    font-size: var(--step-1);
+    padding: 0.8rem 1.5rem;
   }
 
   .action--primary {
@@ -74,7 +74,9 @@ const classes = ["action", `action--${size}`, { "action--primary": primary }];
   }
 
   span.action {
-    opacity: 0.55;
     border-style: dashed;
+    border-color: var(--text-2);
+    background: none;
+    color: var(--text-2);
   }
 </style>

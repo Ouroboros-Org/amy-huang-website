@@ -1,0 +1,102 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import BackgroundMedia from "./BackgroundMedia.astro";
+import FactRows from "./FactRows.astro";
+
+/**
+ * Who she is: a large statement, then her paragraph beside a picture of her,
+ * then a few facts as rows.
+ */
+interface Props {
+  entry: CollectionEntry<"chapters">;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, lead, note, facts, background, draft } = entry.data;
+---
+
+<section
+  class="about"
+  id={entry.id}
+  data-draft={draft ? "" : undefined}
+  aria-labelledby={`${entry.id}-title`}
+>
+  <h2 class="about__statement" id={`${entry.id}-title`}>
+    {lead ?? title}
+  </h2>
+  <div class="about__grid">
+    <div class="about__text">
+      <p class="caption">{title}</p>
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+    {background && (
+      <figure class="about__figure">
+        <div class="about__media">
+          <BackgroundMedia {...background} />
+        </div>
+        {note && <figcaption class="hand">{note}</figcaption>}
+      </figure>
+    )}
+  </div>
+  {facts.length > 0 && <FactRows facts={facts} />}
+</section>
+
+<style>
+  .about {
+    display: grid;
+    gap: var(--space-8);
+    padding: var(--space-16) var(--page-margin) var(--space-12);
+  }
+
+  .about__statement {
+    justify-self: end;
+    max-width: 20ch;
+    font-size: var(--step-3);
+    line-height: 1.25;
+    text-align: right;
+  }
+
+  .about__grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .about__text {
+    display: grid;
+    align-content: end;
+    gap: var(--space-2);
+  }
+
+  .about__figure {
+    margin: 0;
+  }
+
+  .about__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background: var(--night);
+  }
+
+  .about__figure figcaption {
+    width: max-content;
+    max-width: 100%;
+    margin: var(--space-1) 0 0 var(--space-2);
+    rotate: var(--tilt-n2);
+  }
+
+  @media (min-width: 48rem) {
+    .about__statement {
+      font-size: var(--step-4);
+    }
+
+    .about__grid {
+      grid-template-columns: 5fr 7fr;
+      gap: var(--space-8);
+    }
+  }
+</style>

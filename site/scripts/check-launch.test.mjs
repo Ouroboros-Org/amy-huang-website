@@ -40,7 +40,9 @@ test("finds each kind of placeholder and the section it is in", () => {
 
 test("maps sections to the content files they come from", () => {
   assert.equal(sourceOf("top"), "src/content/settings.json");
+  assert.equal(sourceOf("footer"), "src/content/settings.json");
   assert.equal(sourceOf("drone"), "src/content/chapters/drone.md");
+  assert.equal(sourceOf("card-drone"), "src/content/chapters/drone.md");
   assert.equal(sourceOf(""), "");
 });
 

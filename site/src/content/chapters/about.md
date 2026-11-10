@@ -1,7 +1,7 @@
 ---
 order: 1
-title: Hi, I'm Amy
-length: 1.4
+title: About
+layout: about
 lead: I teach martial arts and perform, mostly kung fu and fire. The classes and shows travel with me.
 note: that's me!
 facts:
@@ -18,11 +18,6 @@ background:
   width: 1600
   height: 1000
   alt: Placeholder for Amy's intro footage
-cutout:
-  src: /media/test/sticker
-  width: 360
-  height: 640
-  alt: Placeholder for a cut-out of Amy waving
 draft: true
 ---
 

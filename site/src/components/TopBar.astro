@@ -1,22 +1,29 @@
 ---
 /**
- * Always on screen: her name back to the start, the one main action, and the
- * control that stops all motion and video (WCAG 2.2.2). The control is hidden
- * when the reader's system already asks for reduced motion, because then nothing
- * moves. Each item carries its own dark backing, so it reads over the hero's light
- * sky and over dark chapters alike.
+ * Always on screen: her name and role back to the start, the section links, the
+ * control that stops all motion and video (WCAG 2.2.2), and the one main action.
+ * The motion control is hidden when the reader's system already asks for reduced
+ * motion, because then nothing moves.
  */
 interface Props {
   name: string;
+  role: string;
+  links: { label: string; href: string }[];
 }
 
-const { name } = Astro.props;
+const { name, role, links } = Astro.props;
 ---
 
 <header class="bar">
-  <a class="bar__name" href="#top">
-    {name}
+  <a class="bar__id" href="#top">
+    <span class="bar__name">{name}</span>
+    <span class="bar__role">{role}</span>
   </a>
+  <nav class="bar__nav" aria-label="Sections">
+    {links.map((link) => (
+      <a href={link.href}>{link.label}</a>
+    ))}
+  </nav>
   <div class="bar__actions">
     <!-- The label names the action; "motion" is hidden visually on narrow screens. -->
     <button class="bar__motion" type="button" data-motion-toggle>
@@ -57,36 +64,52 @@ const { name } = Astro.props;
     z-index: 1000;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--page-margin);
-    pointer-events: none;
-  }
-
-  .bar > * {
-    pointer-events: auto;
-  }
-
-  .bar__name,
-  .bar__motion,
-  .bar__hi {
-    padding: 0.4rem 0.85rem;
-    border: 2px solid transparent;
+    gap: var(--space-3);
+    height: var(--bar-height);
+    padding-inline: var(--page-margin);
+    background: color-mix(in oklch, var(--bg) 85%, transparent);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
     font-size: var(--step--1);
-    font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.35;
+  }
+
+  .bar a,
+  .bar button {
     text-decoration: none;
   }
 
-  .bar__name,
-  .bar__motion {
-    background: oklch(0.16 0.006 262 / 0.66);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+  .bar__id {
+    display: grid;
+    margin-right: auto;
+    min-width: 0;
   }
 
   .bar__name {
-    font-weight: 650;
+    font-weight: 600;
+  }
+
+  .bar__role {
+    color: var(--text-2);
+    white-space: nowrap;
+  }
+
+  .bar__nav {
+    display: none;
+    gap: var(--space-3);
+  }
+
+  .bar__nav a,
+  .bar__motion {
+    padding: 0.4rem 0;
+    font-weight: 600;
+    color: var(--text-2);
+    transition: color var(--dur-state) var(--ease-out);
+  }
+
+  .bar__nav a:hover,
+  .bar__motion:hover {
+    color: var(--text);
   }
 
   .bar__actions {
@@ -96,16 +119,33 @@ const { name } = Astro.props;
   }
 
   .bar__motion {
-    border-color: currentColor;
-    color: inherit;
+    border: 0;
+    background: none;
     font-family: inherit;
+    font-size: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    white-space: nowrap;
     cursor: pointer;
   }
 
   .bar__hi {
-    border-color: var(--signal);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
     background: var(--signal);
     color: var(--signal-text);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 48rem) {
+    .bar__nav {
+      display: flex;
+    }
+
+    .bar__actions {
+      gap: var(--space-3);
+    }
   }
 
   @media (max-width: 30rem) {
@@ -116,6 +156,10 @@ const { name } = Astro.props;
       overflow: hidden;
       clip-path: inset(50%);
       white-space: nowrap;
+    }
+
+    .bar__role {
+      font-size: 0.8125rem;
     }
   }
 
