@@ -31,8 +31,12 @@ Directory is `site`). `vercel.json` sets the build to `npm run build:vercel`:
 
 - **Preview deploys** (every branch and pull request) build normally, placeholders and all,
   so Amy can review work in progress.
-- **Production deploys** run the launch check after the build and fail while any
-  placeholder remains (#13), so a draft can't be published.
+- **Production deploys before launch**, while the production address is still a
+  `*.vercel.app` one, also build with placeholders. Every page carries `noindex`, and the
+  launch check lists what is left without failing.
+- **Production deploys on the real domain** run the launch check after the build and fail
+  while any placeholder remains (#13), so a draft can't be published. Attaching the
+  domain in Vercel is what turns this on.
 
 `vercel.json` also caches the hashed `/_astro/` files for a year and `/media/` for a day,
 and sets baseline security headers. Node is pinned to 24.x in `package.json`, matching

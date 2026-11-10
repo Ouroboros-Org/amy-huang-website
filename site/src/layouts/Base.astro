@@ -17,6 +17,10 @@ interface Props {
 
 const { title, description, cardAlt = "", noindex = false } = Astro.props;
 
+// Before launch the production address is Vercel's own (*.vercel.app). Those builds
+// stay out of search results, and scripts/check-launch.mjs lets them through.
+const prelaunch = Astro.site?.hostname.endsWith(".vercel.app") ?? false;
+
 // Absolute addresses need the production domain (astro.config.mjs).
 const canonical =
   Astro.site && !noindex ? new URL(Astro.url.pathname, Astro.site) : undefined;
@@ -37,7 +41,7 @@ const card = Astro.site ? new URL("/social-card.png", Astro.site) : undefined;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {(noindex || prelaunch) && <meta name="robots" content="noindex" />}
     {canonical && <link rel="canonical" href={canonical} />}
     <meta name="theme-color" content={palette.night} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />

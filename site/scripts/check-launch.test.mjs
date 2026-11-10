@@ -96,6 +96,20 @@ test("--production-only skips preview deploys and blocks production", () => {
   assert.equal(production.status, 1);
   assert.match(production.stdout, /#teaching .*draft/);
 
+  const prelaunch = runCheck(draft, {
+    VERCEL_ENV: "production",
+    VERCEL_PROJECT_PRODUCTION_URL: "amy-huang-website.vercel.app",
+  });
+  assert.equal(prelaunch.status, 0);
+  assert.match(prelaunch.stdout, /#teaching .*draft/);
+  assert.match(prelaunch.stdout, /not enforced/);
+
+  const launched = runCheck(draft, {
+    VERCEL_ENV: "production",
+    VERCEL_PROJECT_PRODUCTION_URL: "amyhuang.example",
+  });
+  assert.equal(launched.status, 1);
+
   const done = runCheck(
     page(`<section id="teaching"><p>Ready.</p></section>`),
     {
