@@ -139,6 +139,21 @@ Gradient"), with its settings and its five colours, fire into dusk (`--glow-1` t
 draws at half resolution only while on screen, and the pointer pushes it a little. Night
 covers the top seventh of the footer and fades out toward the foot, as in the theme.
 
+### Link previews and the icon
+
+A shared link previews with the opening screen of the home page
+(`src/lib/social-card.ts`): the hero video's first frame (its poster) under the hero's
+night shade, her name and role where the top bar sets them, and the motto above her
+crafts in the hero's thin, widely spaced capitals. The motto takes a line per sentence,
+as on phones, so it stays legible when the preview is small, and the words sit above her
+fire. It is a JPEG of 1200 by 630 pixels; every page uses it.
+
+The icon (`src/lib/icon.ts`) is the footer in small: the first letter of her name,
+bold as the wordmark, over night melting into the glow of fire and dusk at the foot.
+
+Both are drawn with satori in Sora (`src/lib/satori.ts`), which turns the text into
+outlines, so neither depends on a font where it is shown.
+
 ## Structure
 
 | Path                                                                    | Holds                                                                                             |
@@ -147,9 +162,9 @@ covers the top seventh of the footer and fades out toward the foot, as in the th
 | `src/content/settings.json`                                             | Name, role, line, "currently in", contact details, wedding-site link, the hero's words.           |
 | `src/content.config.ts`                                                 | The schema both are checked against at build time.                                                |
 | `src/pages/index.astro`, `[stop].astro`                                 | The home page, and the page each offering gets.                                                   |
-| `src/pages/404.astro`                                                   | The page for unknown addresses, with a way back.                                                  |
-| `src/pages/social-card.png.ts`, `src/lib/social-card.ts`                | The picture shared links preview with: her name and line, rendered at build time.                 |
-| `src/pages/favicon.svg.ts`, `favicon.ico.ts`, `apple-touch-icon.png.ts` | The icon for browser tabs and phone home screens, from the one drawing in `src/lib/brand.ts`.     |
+| `src/pages/404.astro`                                                   | The page for unknown addresses: the hero's first frame and a way back.                            |
+| `src/pages/social-card.jpg.ts`, `src/lib/social-card.ts`                | The picture shared links preview with, rendered at build time (see "Link previews and the icon"). |
+| `src/pages/favicon.svg.ts`, `favicon.ico.ts`, `apple-touch-icon.png.ts` | The icon for browser tabs and phone home screens, from the one drawing in `src/lib/icon.ts`.      |
 | `src/components/TopBar.astro`, `Footer.astro`                           | The fixed bar and the page's end.                                                                 |
 | `src/components/Intro.astro`, `public/media/intro/`                     | The cities at night, played once before the hero.                                                 |
 | `src/components/Hero.astro`, `public/media/hero/`                       | The opening video, with the motto and crafts over it.                                             |
@@ -162,7 +177,7 @@ covers the top seventh of the footer and fades out toward the foot, as in the th
 | `src/components/Effects.astro`, `src/scripts/`                          | The late loader for motion, and the scripts above plus `motion.ts`, `live.ts`, `play-in-view.ts`. |
 | `src/components/AlphaVideo.astro`                                       | Transparent video. Not on the page at the moment; kept for the cut-outs of Amy (#5).              |
 | `src/lib/site.ts`, `contact.ts`                                         | Loading the content in order; building WhatsApp, email and Instagram links.                       |
-| `src/lib/brand.ts`, `raster.ts`                                         | The icon, and colours for code that can't read CSS (kept in step with `tokens.css`); PNG and ICO. |
+| `src/lib/brand.ts`, `satori.ts`, `raster.ts`                            | Colours for code that can't read CSS (kept in step with `tokens.css`); drawing in Sora; PNG, ICO. |
 | `src/styles/tokens.css`, `global.css`                                   | The palette, type scale, spacing and shapes; base styles.                                         |
 | `scripts/encode-loop.sh`                                                | Encodes a full-screen video into the WebMs, MP4s and poster the page plays.                       |
 | `scripts/cut-intro.sh`                                                  | Cuts the intro's master from its Pexels clips.                                                    |
@@ -191,8 +206,9 @@ Words and media live in `src/content/`, not in the layout code:
   placeholder.
 - The hero's words are `hero` in `settings.json`: `motto` (each sentence keeps to one
   line), `crafts` (shown with dots between them) and `alt`, which describes the video.
-- The link preview shows `name` and `line` from `settings.json`, so editing them updates it
-  on the next build. Apps that already fetched the preview may keep the old one for a while.
+- The link preview shows `name`, `role` and the hero's `motto` and `crafts` from
+  `settings.json` over the hero video's poster, so editing them, or re-encoding the video,
+  updates it on the next build. Apps that already fetched the preview may keep the old one for a while.
 
 ## Design rules in code
 

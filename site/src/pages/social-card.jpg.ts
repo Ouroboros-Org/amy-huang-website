@@ -5,5 +5,5 @@ import { renderSocialCard } from "../lib/social-card";
 
 export const GET: APIRoute = async () => {
   const { settings } = await getSite();
-  return file(await renderSocialCard(settings), "image/png");
+  return file(await renderSocialCard(settings), "image/jpeg");
 };
