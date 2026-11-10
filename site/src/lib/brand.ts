@@ -1,7 +1,8 @@
 /**
- * The site's mark and colours for images rendered at build time: the icons and
- * the social card. The mark is a lit opening, the site's first hero motif. tokens.css
- * holds the OKLCH originals of these colours; keep the two in step.
+ * The site's mark and colours for code that can't read CSS: the icons and the
+ * social card, rendered at build time, and the work cards' canvas
+ * (scripts/stack.ts). The mark is a lit opening, the site's first hero motif.
+ * tokens.css holds the OKLCH originals of these colours; keep the two in step.
  */
 export const palette = {
   /** --bg */

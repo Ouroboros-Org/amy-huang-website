@@ -1,0 +1,32 @@
+---
+/**
+ * Loads the page's motion (scripts/effects.ts: GSAP, the lens canvas and the
+ * rest, most of the site's script) only when motion is allowed, and only once
+ * the page has loaded and gone idle, so it never delays the first paint. Until
+ * then, and without it, the page is complete and still.
+ */
+---
+
+<script>
+  import { motionAllowed, onMotionChange } from "../scripts/motion";
+
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    import("../scripts/effects").then(({ initEffects }) => initEffects());
+  };
+  const whenIdle = (task: () => void) =>
+    "requestIdleCallback" in window
+      ? requestIdleCallback(task, { timeout: 1500 })
+      : setTimeout(task, 200);
+
+  if (motionAllowed()) {
+    if (document.readyState === "complete") whenIdle(start);
+    else window.addEventListener("load", () => whenIdle(start), { once: true });
+  } else {
+    onMotionChange(() => {
+      if (motionAllowed()) start();
+    });
+  }
+</script>

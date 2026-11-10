@@ -1,0 +1,259 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import Base from "../layouts/Base.astro";
+import BackgroundMedia from "../components/BackgroundMedia.astro";
+import Contact from "../components/Contact.astro";
+import ContactAction from "../components/ContactAction.astro";
+import Effects from "../components/Effects.astro";
+import Footer from "../components/Footer.astro";
+import TopBar from "../components/TopBar.astro";
+import { getSite } from "../lib/site";
+
+/**
+ * One page per offering, in the manner of the theme's project pages: its name
+ * and facts, its picture, what it is and her words about it with the way to
+ * book, then the next offering and the contact section.
+ */
+export async function getStaticPaths() {
+  const { stops } = await getSite();
+  return stops.map((stop, index) => ({
+    params: { stop: stop.id },
+    props: { stop, next: stops[(index + 1) % stops.length] },
+  }));
+}
+
+interface Props {
+  stop: CollectionEntry<"chapters">;
+  next: CollectionEntry<"chapters">;
+}
+
+const { stop, next } = Astro.props;
+const { settings, contact, links } = await getSite();
+const { Content } = await render(stop);
+const { title, nav, kicker, lead, note, badge, facts, cta, background, draft } =
+  stop.data;
+const name = nav ?? title;
+const nextName = next.data.nav ?? next.data.title;
+---
+
+<Base
+  title={`${name}: ${settings.name}`}
+  description={lead ?? `${name} with ${settings.name}.`}
+  cardAlt={`${settings.name}: ${settings.line}`}
+>
+  <TopBar name={settings.name} role={settings.role} links={links.bar} />
+  <main>
+    <section
+      class="page"
+      id={stop.id}
+      data-draft={draft ? "" : undefined}
+      aria-labelledby="page-title"
+    >
+      <header class="page__head">
+        {kicker && <p class="page__kicker">{kicker}</p>}
+        <h1 id="page-title">{name}</h1>
+        {note && <p class="page__note hand">{note}</p>}
+        {facts.length > 0 && (
+          <dl class="page__meta">
+            {facts.map((fact) => (
+              <div>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </header>
+      {background && (
+        <div class="page__cover">
+          <BackgroundMedia {...background} />
+        </div>
+      )}
+      <div class="page__content">
+        <div class="page__col">
+          <h2 class="caption">{title}</h2>
+          {lead && <p class="page__lead">{lead}</p>}
+          {badge && <p class="page__badge">{badge}</p>}
+        </div>
+        <div class="page__col">
+          <h2 class="caption">In my words</h2>
+          <div class="prose">
+            <Content />
+          </div>
+          {cta && (
+            <ContactAction
+              channel={cta.channel}
+              details={settings.contact}
+              message={cta.message}
+              label={cta.label}
+              primary
+            />
+          )}
+        </div>
+      </div>
+    </section>
+
+    <section class="next" aria-label="Next">
+      <a class="next__link" href={`/${next.id}/`}>
+        {next.data.kicker && <span>{next.data.kicker}</span>}
+        <span class="next__name">{nextName}</span>
+        <span class="next__arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+            <path
+              d="M7 17 17 7m0 0H9m8 0v8"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </span>
+      </a>
+    </section>
+
+    <Contact
+      entry={contact}
+      contact={settings.contact}
+      replyNote={settings.replyNote}
+    />
+  </main>
+  <Footer
+    name={settings.name}
+    currentlyIn={settings.currentlyIn}
+    weddingsUrl={settings.weddingsUrl}
+    links={links.footer}
+  />
+  <Effects />
+</Base>
+
+<style>
+  .page {
+    display: grid;
+    gap: var(--space-6);
+    padding: calc(var(--bar-height) + var(--space-8)) var(--page-margin)
+      var(--space-12);
+  }
+
+  .page__head {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-2);
+    text-align: center;
+  }
+
+  .page__kicker {
+    font-weight: 600;
+  }
+
+  .page__head h1 {
+    font-size: var(--step-6);
+    line-height: 1.05;
+  }
+
+  .page__note {
+    rotate: var(--tilt-n2);
+  }
+
+  .page__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2) var(--space-6);
+    margin: var(--space-2) 0 0;
+    text-align: left;
+  }
+
+  .page__meta dt {
+    color: var(--text-2);
+  }
+
+  .page__meta dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .page__cover {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background: var(--night);
+  }
+
+  .page__content {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .page__col {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: var(--space-2);
+  }
+
+  .page__lead {
+    font-size: var(--step-1);
+    line-height: 1.35;
+    max-width: 30ch;
+  }
+
+  .page__badge {
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+
+  .next {
+    padding: var(--space-12) var(--page-margin) var(--space-16);
+    border-top: 1px solid var(--line);
+  }
+
+  .next__link {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-2);
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .next__name {
+    font-size: var(--step-5);
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+  }
+
+  .next__arrow {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-top: var(--space-2);
+    border: 1px solid var(--text);
+    border-radius: 50%;
+    transition:
+      background-color var(--dur-state) var(--ease-out),
+      border-color var(--dur-state) var(--ease-out);
+  }
+
+  .next__link:hover .next__arrow,
+  .next__link:focus-visible .next__arrow {
+    border-color: var(--signal);
+    background: var(--signal);
+    color: var(--signal-text);
+  }
+
+  @media (min-width: 48rem) {
+    .page__cover {
+      aspect-ratio: 16 / 9;
+    }
+
+    .page__content {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-8);
+    }
+  }
+</style>

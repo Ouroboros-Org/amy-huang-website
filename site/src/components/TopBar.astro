@@ -4,6 +4,12 @@
  * control that stops all motion and video (WCAG 2.2.2), and the one main action.
  * The motion control is hidden when the reader's system already asks for reduced
  * motion, because then nothing moves.
+ *
+ * The bar has two looks. Over the light page it is a blurred strip of the page
+ * colour with dark type. Over a section marked `data-bar-tone="light"` (the hero,
+ * the about photo, the footer) it is clear with light type on a soft shade. A
+ * small script switches between them; without it the bar keeps the strip, which
+ * reads everywhere.
  */
 interface Props {
   name: string;
@@ -14,8 +20,8 @@ interface Props {
 const { name, role, links } = Astro.props;
 ---
 
-<header class="bar">
-  <a class="bar__id" href="#top">
+<header class="bar" data-bar>
+  <a class="bar__id" href="/#top">
     <span class="bar__name">{name}</span>
     <span class="bar__role">{role}</span>
   </a>
@@ -55,6 +61,23 @@ const { name, role, links } = Astro.props;
     onMotionChange(render);
     render();
   }
+
+  // Light type while the bar lies over a section that asks for it.
+  const bar = document.querySelector<HTMLElement>("[data-bar]");
+  const toned = [...document.querySelectorAll<HTMLElement>("[data-bar-tone]")];
+  if (bar && toned.length > 0) {
+    const tone = () => {
+      const middle = bar.offsetHeight / 2;
+      const over = toned.find((section) => {
+        const { top, bottom } = section.getBoundingClientRect();
+        return top <= middle && bottom > middle;
+      });
+      bar.dataset.tone = over?.dataset.barTone ?? "";
+    };
+    window.addEventListener("scroll", tone, { passive: true });
+    window.addEventListener("resize", tone);
+    tone();
+  }
 </script>
 
 <style>
@@ -72,6 +95,21 @@ const { name, role, links } = Astro.props;
     backdrop-filter: blur(14px);
     font-size: var(--step--1);
     line-height: 1.35;
+    transition:
+      background-color var(--dur-state) var(--ease-out),
+      color var(--dur-state) var(--ease-out);
+  }
+
+  .bar[data-tone="light"] {
+    --text-2: oklch(0.97 0 0 / 0.78);
+    background: linear-gradient(
+      to bottom,
+      oklch(0.16 0.006 262 / 0.5),
+      transparent
+    );
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    color: var(--on-media);
   }
 
   .bar a,
@@ -109,7 +147,7 @@ const { name, role, links } = Astro.props;
 
   .bar__nav a:hover,
   .bar__motion:hover {
-    color: var(--text);
+    color: inherit;
   }
 
   .bar__actions {
@@ -136,6 +174,10 @@ const { name, role, links } = Astro.props;
     color: var(--signal-text);
     font-weight: 600;
     white-space: nowrap;
+  }
+
+  .bar[data-tone="light"] :focus-visible {
+    outline-color: var(--on-media);
   }
 
   @media (min-width: 48rem) {

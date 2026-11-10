@@ -1,8 +1,9 @@
 import { getCollection, getEntry } from "astro:content";
 
 /**
- * Everything the page needs from the content files: the site settings, the
- * things Amy does (the stops) in order, and the about and contact sections.
+ * Everything the pages need from the content files: the site settings, the
+ * things Amy does (the stops) in order, the about and contact sections, and
+ * the links for the top bar and the footer.
  */
 export async function getSite() {
   const settingsEntry = await getEntry("settings", "site");
@@ -21,10 +22,21 @@ export async function getSite() {
     }
     return entry;
   };
+  const about = only("about");
+  const contact = only("contact");
+  // Root-relative, so they work from the offering pages too.
+  const bar = [
+    { label: "What I do", href: "/#work" },
+    { label: "About", href: `/#${about.id}` },
+  ];
   return {
     settings: settingsEntry.data,
     stops: chapters.filter((chapter) => chapter.data.layout === "stop"),
-    about: only("about"),
-    contact: only("contact"),
+    about,
+    contact,
+    links: {
+      bar,
+      footer: [...bar, { label: "Say hi", href: `#${contact.id}` }],
+    },
   };
 }

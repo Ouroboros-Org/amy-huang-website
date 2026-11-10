@@ -25,18 +25,20 @@ const PLACEHOLDER_MEDIA = /\/media\/(?:placeholder|test)\/[^"'\s,)]*/g;
 const BRACKETED = /\[[^\]\n]{1,200}\]/g;
 
 /**
- * The content file a section's words come from. The hero and the footer come
- * from the settings; a stop's overview card (`card-<id>`) and every other
- * section come from the chapter of that id.
+ * The content file a section's words come from:
+ * - the hero and the footer come from the settings;
+ * - the gallery shows pictures from several chapters;
+ * - a stop's work card (`card-<id>`) and its offerings panel (`panel-<id>`)
+ *   come from the chapter of that id, as does every other section.
  */
 export function sourceOf(sectionId) {
   if (!sectionId) return "";
   if (sectionId === "top" || sectionId === "footer") {
     return "src/content/settings.json";
   }
-  const chapter = sectionId.startsWith("card-")
-    ? sectionId.slice("card-".length)
-    : sectionId;
+  if (sectionId === "gallery") return "src/content/chapters/";
+  const prefix = ["card-", "panel-"].find((p) => sectionId.startsWith(p));
+  const chapter = prefix ? sectionId.slice(prefix.length) : sectionId;
   return `src/content/chapters/${chapter}.md`;
 }
 
