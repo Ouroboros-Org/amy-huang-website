@@ -21,12 +21,13 @@
   /* Contact actions only. Night text on it reads at 6.8:1. */
   --signal: oklch(0.7 0.18 35);
   --signal-text: var(--night);
-  /* The accent's neighbours, for the footer's glow: fire into dusk. */
-  --glow-1: oklch(0.7 0.18 35);
-  --glow-2: oklch(0.66 0.2 12);
-  --glow-3: oklch(0.62 0.2 350);
-  --glow-4: oklch(0.56 0.18 305);
-  --glow-5: oklch(0.46 0.17 280);
+  /* The accent's neighbours, for the footer: fire into dusk, as the theme's
+     footer shader (brand.ts holds them as hex for it). */
+  --glow-1: oklch(0.71 0.164 41);
+  --glow-2: oklch(0.69 0.183 14);
+  --glow-3: oklch(0.67 0.192 355);
+  --glow-4: oklch(0.6 0.172 306);
+  --glow-5: oklch(0.51 0.182 282);
 
   /* Type: one sans for everything readable, handwriting only for Amy's voice. */
   --font-sans: "Sora Variable", system-ui, sans-serif;

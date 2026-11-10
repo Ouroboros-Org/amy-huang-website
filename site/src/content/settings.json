@@ -8,9 +8,9 @@
     "replyNote": "I usually reply within [a day or two]",
     "contact": {},
     "hero": {
-      "title": "I'm Amy",
-      "subtitle": "I'll help you make your journey yours",
-      "alt": "Amy spinning fire on a meadow at dusk, below dark mountains mirrored in a still lake."
+      "motto": "More within. More without.",
+      "crafts": ["Kung Fu", "Fire", "Flow"],
+      "alt": "Amy spinning fire on a ridge below the mountains and on a lawn at night, then stretching and training kung fu with a group in a courtyard."
     }
   }
 ]

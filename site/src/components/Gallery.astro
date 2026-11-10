@@ -1,8 +1,10 @@
 ---
 /**
  * The gallery pin: a sentence in the middle of the screen while pictures fly
- * outward past it, as if the reader moved through them. The section pins for
- * the length of the flight (scripts/gallery.ts).
+ * outward past it, as if the reader moved through them. It arrives with the
+ * flight already under way, the screen full of pictures, and scrolling carries
+ * the reader through them until the sentence stands alone. The section pins
+ * for the length of the flight (scripts/gallery.ts).
  *
  * Without the script, or with motion off, it is the sentence above a still grid
  * of the pictures. The pictures are shown again, with their descriptions, where
@@ -19,8 +21,8 @@ const cut = sentence.lastIndexOf(", ");
 const lead = cut > 0 ? sentence.slice(0, cut + 1) : sentence;
 const tail = cut > 0 ? sentence.slice(cut + 1) : "";
 
-// Twelve cards in flight; the pictures repeat when there are fewer.
-const CARDS = 12;
+// Twenty cards in flight; the pictures repeat when there are fewer.
+const CARDS = 20;
 const cards = Array.from(
   { length: Math.max(CARDS, images.length) },
   (_, n) => ({
@@ -132,11 +134,11 @@ const cards = Array.from(
     }
   }
 
-  /* In flight (scripts/gallery.ts adds .gallery--live): the section is three
+  /* In flight (scripts/gallery.ts adds .gallery--live): the section is 2.4
      screens long, its pin holds one screen, and every card starts at the centre. */
   .gallery--live {
-    height: 320vh;
-    height: 320svh;
+    height: 240vh;
+    height: 240svh;
   }
 
   .gallery--live .gallery__pin {

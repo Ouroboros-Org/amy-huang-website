@@ -1,8 +1,9 @@
 /**
  * The site's mark and colours for code that can't read CSS: the icons and the
- * social card, rendered at build time, and the work cards' canvas
- * (scripts/stack.ts). The mark is a lit opening, the site's first hero motif.
- * tokens.css holds the OKLCH originals of these colours; keep the two in step.
+ * social card, rendered at build time, and the footer's shader
+ * (scripts/footer-shader.ts). The mark is a lit opening, the site's first hero
+ * motif. tokens.css holds the OKLCH originals of these colours; keep the two
+ * in step.
  */
 export const palette = {
   /** --bg */
@@ -15,6 +16,8 @@ export const palette = {
   lightMuted: "#b4b7be",
   /** --signal */
   signal: "#f96c4a",
+  /** --glow-1 to --glow-5: fire into dusk, the footer's five stops (the theme's own). */
+  glow: ["#f5794a", "#f56078", "#e9569a", "#9a5fd0", "#5a4ec8"],
 };
 
 /** The social card's size: the 1.91:1 that link previews expect. */

@@ -2,11 +2,10 @@
 import { Picture } from "astro:assets";
 import { render, type CollectionEntry } from "astro:content";
 import photo from "../assets/about/photo.webp";
-import FactRows from "./FactRows.astro";
 
 /**
  * Who she is, full-screen over a photo of her: a large statement, her paragraph,
- * and a handwritten note pointing at her. A few facts follow as rows on the page.
+ * and a handwritten note pointing at her.
  *
  * The photo is wide and Amy stands left of its centre. On wide screens the text
  * keeps to the right, where a dusk shade makes it readable, and she stays clear
@@ -19,7 +18,7 @@ interface Props {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, lead, note, facts, photoAlt, draft } = entry.data;
+const { title, lead, note, photoAlt, draft } = entry.data;
 ---
 
 <section
@@ -74,11 +73,6 @@ const { title, lead, note, facts, photoAlt, draft } = entry.data;
     )}
   </div>
 </section>
-{facts.length > 0 && (
-  <div class="about-facts">
-    <FactRows facts={facts} />
-  </div>
-)}
 
 <style>
   .about {
@@ -153,10 +147,6 @@ const { title, lead, note, facts, photoAlt, draft } = entry.data;
     justify-self: start;
     rotate: var(--tilt-n2);
     color: var(--on-media);
-  }
-
-  .about-facts {
-    padding: var(--space-8) var(--page-margin) var(--space-12);
   }
 
   /* Wide screens: one screen tall, text on the right, Amy clear on the left. */
