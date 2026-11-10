@@ -5,6 +5,10 @@
 //
 // With --production-only it runs only when VERCEL_ENV is "production", so preview
 // deploys (for review) still build while a production deploy refuses to publish.
+// Before launch, while the production address is still a *.vercel.app one, it lists
+// what is left without failing: those builds are noindex (src/layouts/Base.astro),
+// so work in progress can be looked at there. Attaching the real domain turns the
+// refusal on.
 //
 // Reads every built page except noindex ones and reports, per section and the content
 // file it comes from:
@@ -103,12 +107,18 @@ function htmlFiles(dir) {
   });
 }
 
-function main(dist = "dist") {
+/** Whether a production address is Vercel's own, not the site's real domain. */
+export function isPrelaunchDomain(domain) {
+  return (domain ?? "").toLowerCase().endsWith(".vercel.app");
+}
+
+function main(dist = "dist", { enforce = true } = {}) {
   let pages = 0;
   let total = 0;
   for (const file of htmlFiles(dist)) {
     const html = readFileSync(file, "utf8");
-    if (isNoindex(html)) continue;
+    // Before launch every page is noindex, so that can't tell work benches apart.
+    if (enforce && isNoindex(html)) continue;
     pages += 1;
     const findings = findPlaceholders(html);
     if (findings.length === 0) continue;
@@ -128,6 +138,12 @@ function main(dist = "dist") {
       `No publishable pages found in ${dist}. Build the site first.`,
     );
     return 2;
+  }
+  if (total > 0 && !enforce) {
+    console.log(
+      `\nLaunch check not enforced: ${total} placeholders in ${pages} page(s). The production address is still a vercel.app one and the pages are noindex. Attaching the real domain turns the refusal on.`,
+    );
+    return 0;
   }
   if (total > 0) {
     console.log(
@@ -149,5 +165,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     );
     process.exit(0);
   }
-  process.exit(main(dist));
+  const enforce = !(
+    productionOnly &&
+    isPrelaunchDomain(process.env.VERCEL_PROJECT_PRODUCTION_URL)
+  );
+  process.exit(main(dist, { enforce }));
 }
