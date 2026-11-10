@@ -43,7 +43,7 @@
     <source src="/media/intro/city.webm" type='video/webm; codecs="vp9"' />
     <source src="/media/intro/city.mp4" type="video/mp4" />
   </video>
-  <div class="intro__progress" aria-hidden="true">
+  <div class="intro__loader" aria-hidden="true">
     <span data-intro-progress></span>
   </div>
 </div>
@@ -101,6 +101,8 @@
   /** How long the video may take to start, and to recover from a stall. */
   const START_WAIT = 3500;
   const STALL_WAIT = 2000;
+  /** How hard the loader front-loads: it shows log(1 + k·t) / log(1 + k) of t. */
+  const LOADER_CURVE = 9;
   const SKIP_KEYS = ["Escape", "Enter", " ", "ArrowDown", "PageDown", "End"];
 
   const root = document.documentElement;
@@ -111,6 +113,7 @@
     const progress = intro.querySelector<HTMLElement>("[data-intro-progress]");
     let done = false;
     let stall = 0;
+    let frame = 0;
 
     // A hard cut: the city is gone at once, and the hero takes over.
     const finish = () => {
@@ -118,6 +121,7 @@
       done = true;
       window.clearTimeout(start);
       window.clearTimeout(stall);
+      cancelAnimationFrame(frame);
       removeEventListener("wheel", finish);
       removeEventListener("touchmove", finish);
       removeEventListener("keydown", onKey);
@@ -146,11 +150,18 @@
       stall = window.setTimeout(finish, STALL_WAIT);
     });
     video.addEventListener("playing", () => window.clearTimeout(stall));
-    video.addEventListener("timeupdate", () => {
+    // A loader for show: quick at first, slower as it goes, full as the video
+    // ends. It follows the video, so a stall holds it too.
+    const draw = () => {
       if (progress && video.duration) {
-        progress.style.transform = `scaleX(${video.currentTime / video.duration})`;
+        const played = Math.min(1, video.currentTime / video.duration);
+        const shown =
+          Math.log1p(LOADER_CURVE * played) / Math.log1p(LOADER_CURVE);
+        progress.style.width = `${(shown * 100).toFixed(2)}%`;
       }
-    });
+      frame = requestAnimationFrame(draw);
+    };
+    frame = requestAnimationFrame(draw);
     // An unplayable source reports its error on the <source>, not the video. A
     // source for other screens reports one too, so only the last one counts.
     video
@@ -188,21 +199,26 @@
     object-fit: cover;
   }
 
-  /* A hairline that fills while the city plays, as a loader would. */
-  .intro__progress {
+  /* A rounded loading bar in the middle of the screen: white on grey. The
+     script sets the fill's width every frame (a width, so its ends stay round). */
+  .intro__loader {
     position: absolute;
-    inset: auto 0 0;
-    height: 2px;
-    background: oklch(0.97 0 0 / 0.16);
+    top: 50%;
+    left: 50%;
+    width: clamp(9rem, 22vw, 15rem);
+    height: 5px;
+    translate: -50% -50%;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: oklch(0.52 0 0 / 0.7);
   }
 
-  .intro__progress span {
+  .intro__loader span {
     display: block;
+    width: 0;
     height: 100%;
+    border-radius: inherit;
     background: var(--on-media);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.25s linear;
   }
 
   /* While it plays, the page beneath stays at its top. */

@@ -52,7 +52,8 @@ From top to bottom:
 
 - **Intro:** on the first load of a visit, five seconds of busy cities at night, cut
   faster and faster and ending on a traffic light switching to red, play once, full
-  screen, while the page loads behind it, with a hairline filling at the foot as a loader would.
+  screen, while the page loads behind it. A rounded loading bar in the middle fills quickly,
+  then slower, and is full as the video ends; it is for show and leaves with the video.
   A click or tap (or scrolling, or Escape, Enter, Space, the arrows down) skips it. It
   cuts hard to the hero. It doesn't play again in the same tab, when coming from another
   page of the site, on a link to a section, with reduced motion, motion paused or data
