@@ -10,17 +10,18 @@ aren't used.
 
 Use the Node version in `.node-version` (24.22.2), then from this folder:
 
-| Command                | Does                                                                                 |
-| :--------------------- | :----------------------------------------------------------------------------------- |
-| `npm ci`               | Install the locked dependencies.                                                     |
-| `npm run dev`          | Start the dev server at http://localhost:4321.                                       |
-| `npm run verify`       | Type-check, check formatting, run the tests and build, as CI does.                   |
-| `npm run format`       | Apply Prettier formatting.                                                           |
-| `npm run build`        | Build the static site into `dist/`.                                                  |
-| `npm test`             | Run the script tests (`scripts/*.test.mjs`).                                         |
-| `npm run check:launch` | After a build: list every placeholder left on public pages; fails until none remain. |
-| `npm run media:test`   | Regenerate the synthetic test media in `public/media/test/`.                         |
-| `npm run media:loop`   | Encode a full-screen video (the intro, the hero) for the page. See "Videos".         |
+| Command                   | Does                                                                                 |
+| :------------------------ | :----------------------------------------------------------------------------------- |
+| `npm ci`                  | Install the locked dependencies.                                                     |
+| `npm run dev`             | Start the dev server at http://localhost:4321.                                       |
+| `npm run verify`          | Type-check, check formatting, run the tests and build, as CI does.                   |
+| `npm run format`          | Apply Prettier formatting.                                                           |
+| `npm run build`           | Build the static site into `dist/`.                                                  |
+| `npm test`                | Run the script tests (`scripts/*.test.mjs`).                                         |
+| `npm run check:launch`    | After a build: list every placeholder left on public pages; fails until none remain. |
+| `npm run media:test`      | Regenerate the synthetic test media in `public/media/test/`.                         |
+| `npm run media:loop`      | Encode a full-screen video (the intro, the hero) for the page. See "Videos".         |
+| `npm run media:cut-intro` | Cut the intro from its Pexels clips. See "Videos".                                   |
 
 ## Deploy
 
@@ -49,8 +50,9 @@ leaves those two out. Vercel serves the built `404.html` for unknown paths.
 
 From top to bottom:
 
-- **Intro:** on the first load of a visit, a busy city at night plays once, full screen,
-  while the page loads behind it, with a hairline filling at the foot as a loader would.
+- **Intro:** on the first load of a visit, five seconds of busy cities at night, cut
+  faster and faster and ending on a traffic light switching to red, play once, full
+  screen, while the page loads behind it, with a hairline filling at the foot as a loader would.
   A click or tap (or scrolling, or Escape, Enter, Space, the arrows down) skips it. It
   cuts hard to the hero. It doesn't play again in the same tab, when coming from another
   page of the site, on a link to a section, with reduced motion, motion paused or data
@@ -147,7 +149,7 @@ covers the top seventh of the footer and fades out toward the foot, as in the th
 | `src/pages/social-card.png.ts`, `src/lib/social-card.ts`                | The picture shared links preview with: her name and line, rendered at build time.                 |
 | `src/pages/favicon.svg.ts`, `favicon.ico.ts`, `apple-touch-icon.png.ts` | The icon for browser tabs and phone home screens, from the one drawing in `src/lib/brand.ts`.     |
 | `src/components/TopBar.astro`, `Footer.astro`                           | The fixed bar and the page's end.                                                                 |
-| `src/components/Intro.astro`, `public/media/intro/`                     | The city at night, played once before the hero.                                                   |
+| `src/components/Intro.astro`, `public/media/intro/`                     | The cities at night, played once before the hero.                                                 |
 | `src/components/Hero.astro`, `public/media/hero/`                       | The opening video, with the motto and crafts over it.                                             |
 | `src/components/Gallery.astro`, `src/assets/gallery/`                   | The gallery pin, and its photos and stills from the hero's video.                                 |
 | `src/components/About.astro`, `src/assets/about/`                       | The about section and its photo.                                                                  |
@@ -160,9 +162,10 @@ covers the top seventh of the footer and fades out toward the foot, as in the th
 | `src/lib/site.ts`, `contact.ts`                                         | Loading the content in order; building WhatsApp, email and Instagram links.                       |
 | `src/lib/brand.ts`, `raster.ts`                                         | The icon, and colours for code that can't read CSS (kept in step with `tokens.css`); PNG and ICO. |
 | `src/styles/tokens.css`, `global.css`                                   | The palette, type scale, spacing and shapes; base styles.                                         |
-| `scripts/encode-loop.sh`                                                | Encodes a full-screen video into the MP4s and poster the page plays.                              |
+| `scripts/encode-loop.sh`                                                | Encodes a full-screen video into the WebMs, MP4s and poster the page plays.                       |
+| `scripts/cut-intro.sh`                                                  | Cuts the intro's master from its Pexels clips.                                                    |
 | `scripts/encode-alpha.sh`                                               | Encodes a master clip with alpha into the stacked AV1, HEVC and poster files.                     |
-| `THIRD-PARTY-NOTICES.md`                                                | The licence of the theme code the work cards and the footer are adapted from.                     |
+| `THIRD-PARTY-NOTICES.md`                                                | The licence of the theme code the work cards and the footer are adapted from; the intro's clips.  |
 | `scripts/check-launch.mjs`                                              | The launch check (#13).                                                                           |
 | `public/media/test/`, `public/media/placeholder/`                       | Synthetic test clips and labelled placeholder images.                                             |
 
@@ -219,12 +222,20 @@ spec is on #2.
 
 ## Videos
 
-The intro (`public/media/intro/city*`) and the hero (`public/media/hero/amy*`) are the
-footage as supplied, re-encoded for the web, not cut or changed:
-`npm run media:loop -- <source> <output base> [crf]` writes `<base>.mp4` (1920 wide),
-`<base>-720.mp4` (1280 wide, for screens up to 60rem) and `<base>.poster.webp` (the first
-frame), H.264 without sound. The city uses crf 30 (2.4 MB), Amy's loop 28 (6.2 MB); the
-sources stay out of the repository.
+The intro (`public/media/intro/city*`) is a 5-second cut of Pexels clips (listed in
+`THIRD-PARTY-NOTICES.md`): `npm run media:cut-intro -- <clips dir> <master.mp4>` writes
+the master from the clips saved as `<Pexels id>.mp4`, and the script lists each shot's
+clip, size, in-point and speed. The hero (`public/media/hero/amy*`) is the footage as
+supplied, not cut or changed.
+
+Both are encoded for the web with
+`npm run media:loop -- <source> <output base> [crf] [webm crf]`, which writes
+`<base>.webm` and `<base>.mp4` (1920 wide), `<base>-720.webm` and `<base>-720.mp4` (1280
+wide, for screens up to 60rem) and `<base>.poster.webp` (the first frame), without sound.
+The WebMs are VP9; the MP4s are H.264, the fallback for browsers without VP9. The city
+uses crf 30 for the MP4s (2.4 MB) and 46 for the WebMs (2.0 MB, 1.3 MB at 720p), which
+look alike. Amy's loop uses crf 28 (6.2 MB) and plays only its MP4s so far. Clips,
+masters and sources stay out of the repository.
 
 The gallery's `src/assets/gallery/amy-*.webp` are stills from the hero's video, one or two
 from each of its shots. `lake.webp` is the mountain-lake photo that opened the page before.

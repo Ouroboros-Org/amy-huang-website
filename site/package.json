@@ -18,6 +18,7 @@
     "verify": "npm run check && npm run format:check && npm test && npm run build",
     "media:test": "bash scripts/make-test-clip.sh",
     "media:loop": "bash scripts/encode-loop.sh",
+    "media:cut-intro": "bash scripts/cut-intro.sh",
     "astro": "astro",
     "check:launch": "node scripts/check-launch.mjs dist"
   },

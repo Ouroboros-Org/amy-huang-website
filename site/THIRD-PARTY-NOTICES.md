@@ -30,3 +30,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## Intro footage
+
+The intro (`public/media/intro/`) is cut from these videos on Pexels, edited (trimmed,
+sped up, reframed; the traffic light reversed) under the Pexels license,
+https://www.pexels.com/license/. `scripts/cut-intro.sh` lists how each is used.
+
+- https://www.pexels.com/video/time-lapse-video-of-cars-on-the-road-10161875/
+- https://www.pexels.com/video/a-crowded-city-street-at-night-with-many-people-walking-19743527/
+- https://www.pexels.com/video/time-lapse-video-of-cars-on-the-road-10443582/
+- https://www.pexels.com/video/time-lapse-footage-of-moving-vehicles-on-the-road-at-night-10161871/
+- https://www.pexels.com/video/vibrant-night-scene-at-shibuya-crossing-31177207/
+- https://www.pexels.com/video/time-lapse-footage-of-a-city-at-night-time-10443584/
+- https://www.pexels.com/video/bustling-tokyo-night-intersection-38006965/
+- https://www.pexels.com/video/time-lapse-video-of-a-cars-and-buildings-10161877/
+- https://www.pexels.com/video/vehicles-crossing-on-the-street-at-night-9609447/
+- https://www.pexels.com/video/video-of-a-cars-and-buildings-10161874/
+- https://www.pexels.com/video/a-group-of-people-walking-at-shibuya-crossing-at-night-14952031/
+- https://www.pexels.com/video/jakarta-traffic-lights-at-night-scene-31989388/
