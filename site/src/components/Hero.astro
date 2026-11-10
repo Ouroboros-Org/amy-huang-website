@@ -5,9 +5,9 @@
  * beneath.
  *
  * Right after the intro, which only the first load of a visit plays, it
- * breathes in: the intro cuts hard to white, and the white fades softly into
- * the video as it comes into focus from a blur. The motto is there from the
- * start and opens its letters out wide. Otherwise it is simply there.
+ * breathes in: the intro cuts hard to the video, which comes into focus from a
+ * light blur, and the words fade in, the motto's letters already apart and
+ * opening out wider. Otherwise it is simply there.
  *
  * With motion allowed, the footage and the words hold still while the page
  * scrolls up over them, and scrolling down fades the words out as their letters
@@ -52,7 +52,6 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     <source src="/media/hero/amy.mp4" type="video/mp4" />
   </video>
   <div class="hero__shade" aria-hidden="true"></div>
-  <div class="hero__veil" aria-hidden="true"></div>
   <div class="hero__words">
     <h1 class="hero__motto" id="hero-title">
       {phrases.map((phrase, index) => (
@@ -213,7 +212,6 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
   @media (prefers-reduced-motion: no-preference) {
     :global(:root:not([data-motion="off"])) .hero__video,
     :global(:root:not([data-motion="off"])) .hero__shade,
-    :global(:root:not([data-motion="off"])) .hero__veil,
     :global(:root:not([data-motion="off"])) .hero__words {
       position: fixed;
       inset: 0 0 auto;
@@ -234,7 +232,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* The breath in: the footage sharpens under the white as it clears. */
+    /* The breath in: the footage sharpens, the words fade in over it. */
     transition:
       filter 4.5s cubic-bezier(0.33, 0, 0.2, 1),
       scale 6s var(--ease-out);
@@ -257,17 +255,6 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
         oklch(0.16 0.006 262 / 0.22) 70%,
         oklch(0.16 0.006 262 / 0.55)
       );
-  }
-
-  /* The white the intro cuts to, over the footage and under the words: held a
-     beat after the cut, then clearing softly (see the breath in below). */
-  .hero__veil {
-    position: absolute;
-    inset: 0;
-    background: var(--on-media);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 2.6s 0.3s var(--ease-soft);
   }
 
   /* Fading out as the page scrolls over the hero, gone a little past halfway. */
@@ -293,7 +280,9 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     text-transform: uppercase;
     /* One line; widening it never breaks it in two. */
     white-space: nowrap;
-    transition: --track-in 7s 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+      --track-in 7s 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 2.4s 0.5s var(--ease-soft);
   }
 
   /* Each sentence holds together. The same space before it as after its last
@@ -329,6 +318,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     letter-spacing: 0.45em;
     text-transform: uppercase;
     color: oklch(0.97 0 0 / 0.85);
+    transition: opacity 2.4s 1.4s var(--ease-soft);
   }
 
   /* Each craft gives back its trailing space, so the dots sit midway. */
@@ -380,21 +370,22 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
 
   /*
    * Before the breath in (Intro.astro adds .hero-reveal when the intro plays;
-   * the script above marks the hero data-in the moment it ends): white over
-   * the footage, which is softly blurred and a touch close, and the motto's
-   * letters set close together. The words are there throughout.
+   * the script above marks the hero data-in the moment it ends): the footage
+   * softly blurred and a touch close, the words not yet there, the motto's
+   * letters already a little apart.
    */
-  :global(:root.hero-reveal) .hero:not([data-in]) .hero__veil {
-    opacity: 1;
-  }
-
   :global(:root.hero-reveal) .hero:not([data-in]) .hero__video {
     filter: blur(12px);
     scale: 1.04;
   }
 
   :global(:root.hero-reveal) .hero:not([data-in]) .hero__motto {
-    --track-in: 0em;
+    --track-in: 0.35em;
+    opacity: 0;
+  }
+
+  :global(:root.hero-reveal) .hero:not([data-in]) .hero__crafts {
+    opacity: 0;
   }
 
   :global(:root.hero-reveal) .hero:not([data-in]) .hero__cue {
