@@ -5,17 +5,18 @@ import "@fontsource-variable/shantell-sans/infm.css";
 import sansLatin from "@fontsource-variable/sora/files/sora-latin-wght-normal.woff2?url";
 import "../styles/global.css";
 import { CARD_HEIGHT, CARD_WIDTH, palette } from "../lib/brand";
+import { getSite } from "../lib/site";
+import { socialCardAlt } from "../lib/social-card";
 
 interface Props {
   title: string;
   description: string;
-  /** Describes the social card for readers who can't see it. */
-  cardAlt?: string;
   /** Keep pages such as the 404 out of search results and link previews. */
   noindex?: boolean;
 }
 
-const { title, description, cardAlt = "", noindex = false } = Astro.props;
+const { title, description, noindex = false } = Astro.props;
+const { settings } = await getSite();
 
 // Before launch the production address is Vercel's own (*.vercel.app). Those builds
 // stay out of search results, and scripts/check-launch.mjs lets them through.
@@ -24,7 +25,7 @@ const prelaunch = Astro.site?.hostname.endsWith(".vercel.app") ?? false;
 // Absolute addresses need the production domain (astro.config.mjs).
 const canonical =
   Astro.site && !noindex ? new URL(Astro.url.pathname, Astro.site) : undefined;
-const card = Astro.site ? new URL("/social-card.png", Astro.site) : undefined;
+const card = Astro.site ? new URL("/social-card.jpg", Astro.site) : undefined;
 ---
 
 <!doctype html>
@@ -50,16 +51,17 @@ const card = Astro.site ? new URL("/social-card.png", Astro.site) : undefined;
     {!noindex && (
       <>
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content={settings.name} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         {canonical && <meta property="og:url" content={canonical} />}
         {card && (
           <>
             <meta property="og:image" content={card} />
-            <meta property="og:image:type" content="image/png" />
+            <meta property="og:image:type" content="image/jpeg" />
             <meta property="og:image:width" content={String(CARD_WIDTH)} />
             <meta property="og:image:height" content={String(CARD_HEIGHT)} />
-            <meta property="og:image:alt" content={cardAlt} />
+            <meta property="og:image:alt" content={socialCardAlt(settings)} />
             <meta name="twitter:card" content="summary_large_image" />
           </>
         )}

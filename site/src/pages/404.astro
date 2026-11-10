@@ -11,9 +11,9 @@ const { settings } = await getSite();
   noindex
 >
   <main class="lost">
-    <div class="lost__opening" aria-hidden="true"></div>
-    <div class="lost__text">
-      <h1>This page isn't here</h1>
+    <div class="lost__shade" aria-hidden="true"></div>
+    <div class="lost__words">
+      <h1 class="lost__title">Page not found</h1>
       <p>The link may be old, or the address has a typo.</p>
       <a class="lost__home" href="/">
         Back to {settings.name}
@@ -23,47 +23,76 @@ const { settings } = await getSite();
 </Base>
 
 <style>
-  /* The site's lit opening, beside a way back. */
+  /*
+   * The opening screen of the home page, held still: the first frame of her
+   * video under the hero's night shade, the title set like the motto (thin
+   * capitals, widely spaced), and the way back.
+   */
+  /* The words end a little above the middle: below it, in every crop of the
+     frame, are her raised fire and the ridge. */
   .lost {
+    position: relative;
     display: grid;
-    align-content: center;
-    gap: var(--space-6);
+    grid-template-rows: 46fr 54fr;
+    justify-items: center;
     min-height: 100vh;
     min-height: 100svh;
     padding: var(--space-8) var(--page-margin);
     overflow: hidden;
+    background: var(--night) url("/media/hero/amy.poster.webp") center / cover;
+    color: var(--on-media);
   }
 
-  .lost__opening {
-    width: min(56vw, 16rem);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      oklch(0.78 0.14 38),
-      var(--signal) 45%,
-      oklch(0.66 0.18 35)
-    );
+  /* As the hero's shade (Hero.astro). */
+  .lost__shade {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        60% 46% at 50% 50%,
+        oklch(0.16 0.006 262 / 0.42),
+        transparent
+      ),
+      linear-gradient(
+        to bottom,
+        oklch(0.16 0.006 262 / 0.5),
+        oklch(0.16 0.006 262 / 0.22) 30%,
+        oklch(0.16 0.006 262 / 0.22) 70%,
+        oklch(0.16 0.006 262 / 0.55)
+      );
   }
 
-  .lost__text {
+  .lost__words {
+    position: relative;
+    align-self: end;
     display: grid;
-    justify-items: start;
+    justify-items: center;
     gap: var(--space-3);
+    text-align: center;
   }
 
-  .lost h1 {
-    font-size: var(--step-5);
+  /* The hero's film title; the space before it evens the one after its last letter. */
+  .lost__title {
+    --track: 0.75em;
+    max-width: none;
+    padding-inline-start: var(--track);
+    font-size: clamp(1rem, 2vw, 2.125rem);
+    font-weight: 200;
+    line-height: 1.9;
+    letter-spacing: var(--track);
+    text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .lost p {
-    color: var(--text-2);
-    font-size: var(--step-1);
-    line-height: 1.35;
+    color: oklch(0.97 0 0 / 0.85);
+    font-size: var(--step-0);
+    line-height: 1.5;
+    text-wrap: balance;
   }
 
   .lost__home {
-    margin-top: var(--space-2);
+    margin-top: var(--space-3);
     padding: 0.6rem 1.2rem;
     border-radius: var(--radius-pill);
     background: var(--signal);
@@ -72,16 +101,14 @@ const { settings } = await getSite();
     text-decoration: none;
   }
 
-  @media (min-width: 48rem) {
-    .lost {
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
-      column-gap: var(--space-12);
-    }
+  .lost__home:focus-visible {
+    outline-color: var(--on-media);
+  }
 
-    .lost__opening {
-      order: 2;
-      width: min(36vw, 26rem);
+  @media (max-width: 47.99rem) {
+    .lost__title {
+      --track: 0.62em;
+      font-size: clamp(0.9375rem, 4.2vw, 1.125rem);
     }
   }
 </style>
