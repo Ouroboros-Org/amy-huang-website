@@ -2,7 +2,7 @@ import { getCollection, getEntry } from "astro:content";
 
 /**
  * Everything the page needs from the content files: the site settings, the
- * chapters in journey order, and the hero's chapter index derived from them.
+ * chapters in journey order, and the chapter index derived from them.
  */
 export async function getSite() {
   const settingsEntry = await getEntry("settings", "site");

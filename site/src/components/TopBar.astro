@@ -3,7 +3,8 @@
  * Always on screen: her name back to the start, the one main action, and the
  * control that stops all motion and video (WCAG 2.2.2). The control is hidden
  * when the reader's system already asks for reduced motion, because then nothing
- * moves.
+ * moves. Each item carries its own dark backing, so it reads over the hero's light
+ * sky and over dark chapters alike.
  */
 interface Props {
   name: string;
@@ -59,11 +60,6 @@ const { name } = Astro.props;
     justify-content: space-between;
     gap: var(--space-2);
     padding: var(--space-2) var(--page-margin);
-    background: linear-gradient(
-      to bottom,
-      oklch(0.16 0.006 262 / 0.6),
-      transparent
-    );
     pointer-events: none;
   }
 
@@ -71,9 +67,26 @@ const { name } = Astro.props;
     pointer-events: auto;
   }
 
+  .bar__name,
+  .bar__motion,
+  .bar__hi {
+    padding: 0.4rem 0.85rem;
+    border: 2px solid transparent;
+    font-size: var(--step--1);
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+
+  .bar__name,
+  .bar__motion {
+    background: oklch(0.16 0.006 262 / 0.66);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
   .bar__name {
     font-weight: 650;
-    text-decoration: none;
   }
 
   .bar__actions {
@@ -82,17 +95,10 @@ const { name } = Astro.props;
     gap: var(--space-2);
   }
 
-  .bar__motion,
-  .bar__hi {
-    padding: 0.4rem 0.85rem;
-    border: 2px solid currentColor;
-    background: transparent;
+  .bar__motion {
+    border-color: currentColor;
     color: inherit;
-    font: inherit;
-    font-size: var(--step--1);
-    font-weight: 600;
-    line-height: 1.2;
-    text-decoration: none;
+    font-family: inherit;
     cursor: pointer;
   }
 

@@ -7,11 +7,9 @@
     "replyNote": "I usually reply within [a day or two]",
     "contact": {},
     "hero": {
-      "src": "/media/test/portal",
-      "portrait": "/media/test/portal-portrait",
-      "width": 1280,
-      "height": 720,
-      "alt": ""
+      "title": "I'm Amy",
+      "subtitle": "I'll help you make your journey yours",
+      "alt": "Amy spinning fire on a meadow at dusk, below dark mountains mirrored in a still lake."
     }
   }
 ]

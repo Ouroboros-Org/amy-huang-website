@@ -128,8 +128,8 @@ stacked-alpha-video video {
   overflow: hidden;
 }
 
-/* main.… outranks each chapter component's own scoped position rule. */
-main.journey--live > [data-chapter] {
+/* Two classes outrank each chapter component's own scoped position rule. */
+.journey.journey--live > [data-chapter] {
   position: absolute;
   inset: 0;
   min-height: 0;
