@@ -64,8 +64,9 @@ From top to bottom:
   like a film title (thin capitals, widely spaced) and her crafts beneath, separated by
   dots. After the intro it breathes in: the video comes into focus from a blur, then,
   later and slower, the motto fades in, grows and opens its letters out, then the crafts
-  and the hairline arrow at the foot. Scrolling down opens the letters a little further.
-  On narrow screens each sentence takes a line.
+  and the hairline arrow at the foot. The video and the words hold still while the page
+  scrolls up over them, and the words fade out as their letters open wider; with motion
+  off the hero scrolls with the page. On narrow screens each sentence takes a line.
 - **Gallery pin:** her line in the middle of the screen while pictures fly outward past
   it: Amy's photos, stills from the hero's video, and the offerings' pictures. It arrives
   halfway into the flight, the screen already full, and ends on the line alone. The

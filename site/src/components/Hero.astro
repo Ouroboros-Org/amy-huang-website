@@ -6,9 +6,12 @@
  *
  * Right after the intro, which only the first load of a visit plays, it
  * breathes in: the video comes into focus from a blur, and the motto fades in,
- * grows and opens its letters out. Otherwise it is simply there. With motion
- * allowed, scrolling down opens the letters a little further. Without motion
- * the video rests on its first frame.
+ * grows and opens its letters out. Otherwise it is simply there.
+ *
+ * With motion allowed, the footage and the words hold still while the page
+ * scrolls up over them, and scrolling down fades the words out as their letters
+ * open wider. Without motion the hero scrolls with the page and the video rests
+ * on its first frame.
  *
  * The motto is set like a film title: thin capitals, widely spaced. On wide
  * screens it is one line; on narrow ones each sentence takes a line.
@@ -49,7 +52,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
   </video>
   <div class="hero__shade" aria-hidden="true"></div>
   <div class="hero__words">
-    <h1 class="hero__motto" id="hero-title" data-hero-motto>
+    <h1 class="hero__motto" id="hero-title">
       {phrases.map((phrase, index) => (
         <>
           {index > 0 && " "}
@@ -94,17 +97,14 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
 <script>
   import { motionAllowed, onMotionChange } from "../scripts/motion";
 
-  /** How far scrolling opens the motto's letters, on top of its resting width. */
-  const SCROLL_TRACK = 0.14;
-  /** Share of the remaining distance the scroll widening covers per frame. */
+  /** Share of the remaining distance the scroll fade covers per frame. */
   const EASE = 0.08;
 
   const root = document.documentElement;
   const hero = document.querySelector<HTMLElement>("[data-hero]");
   const video = hero?.querySelector("video");
-  const motto = hero?.querySelector<HTMLElement>("[data-hero-motto]");
 
-  if (hero && video && motto) {
+  if (hero && video) {
     let revealed = false;
     let inView = true;
 
@@ -150,7 +150,8 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     }).observe(hero);
     onMotionChange(sync);
 
-    // Scrolling down opens the letters a little further, softly.
+    // How far the page has scrolled over the hero, 0 to 1, followed softly:
+    // the styles fade the words out and open their letters by it.
     let current = 0;
     let frame = 0;
     const step = () => {
@@ -159,10 +160,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
         : 0;
       current += (target - current) * EASE;
       if (Math.abs(target - current) < 0.001) current = target;
-      motto.style.setProperty(
-        "--track-scroll",
-        `${(current * SCROLL_TRACK).toFixed(4)}em`,
-      );
+      hero.style.setProperty("--hero-out", current.toFixed(4));
       frame = current === target ? 0 : requestAnimationFrame(step);
     };
     const wake = () => {
@@ -181,13 +179,15 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     initial-value: 0px;
   }
 
-  @property --track-scroll {
-    syntax: "<length>";
+  /* How far the page has scrolled over the hero, 0 to 1 (set by the script). */
+  @property --hero-out {
+    syntax: "<number>";
     inherits: true;
-    initial-value: 0px;
+    initial-value: 0;
   }
 
   .hero {
+    --track-out: 0.8em;
     position: relative;
     display: grid;
     place-items: center;
@@ -195,8 +195,34 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     height: 100svh;
     min-height: 32rem;
     overflow: hidden;
+    /* Also clips the pinned layers below, which overflow can't. */
+    clip-path: inset(0);
     background: var(--night);
     color: var(--on-media);
+  }
+
+  /*
+   * Pinned: the footage, its shade and the words hold still at the top of the
+   * screen while the page scrolls up over them; the hero's clip shows them only
+   * within its box. One small-viewport screen tall, as the hero is, so they
+   * frame the same as when they scroll. Left out with motion off: a still
+   * background under a moving page is parallax.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(:root:not([data-motion="off"])) .hero__video,
+    :global(:root:not([data-motion="off"])) .hero__shade,
+    :global(:root:not([data-motion="off"])) .hero__words {
+      position: fixed;
+      inset: 0 0 auto;
+      height: 100vh;
+      height: 100svh;
+      min-height: 32rem;
+    }
+
+    :global(:root:not([data-motion="off"])) .hero__words {
+      align-content: center;
+      pointer-events: none;
+    }
   }
 
   .hero__video {
@@ -230,6 +256,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
       );
   }
 
+  /* Fading out as the page scrolls over the hero, gone a little past halfway. */
   .hero__words {
     position: relative;
     display: grid;
@@ -237,6 +264,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     gap: var(--space-4);
     padding-inline: var(--page-margin);
     text-align: center;
+    opacity: calc(1 - var(--hero-out) * 1.8);
   }
 
   /* A film title: thin capitals set wide, the one place letters are tracked out. */
@@ -246,9 +274,11 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     font-size: clamp(1rem, 2vw, 2.125rem);
     font-weight: 200;
     line-height: 1.9;
-    letter-spacing: calc(var(--track-in) + var(--track-scroll));
+    /* Opening wider as it fades out. */
+    letter-spacing: calc(var(--track-in) + var(--hero-out) * var(--track-out));
     text-transform: uppercase;
-    text-wrap: wrap;
+    /* One line; widening it never breaks it in two. */
+    white-space: nowrap;
     transition:
       --track-in 8s 1.2s cubic-bezier(0.22, 1, 0.36, 1),
       opacity 5s 1.6s var(--ease-soft),
@@ -259,7 +289,9 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
      letter, so it centres on its own line and the sentences breathe apart. */
   .hero__phrase {
     display: inline-block;
-    padding-inline-start: calc(var(--track-in) + var(--track-scroll));
+    padding-inline-start: calc(
+      var(--track-in) + var(--hero-out) * var(--track-out)
+    );
     white-space: nowrap;
   }
 
@@ -310,6 +342,9 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     height: 4.5rem;
     translate: -50% 0;
     color: oklch(0.97 0 0 / 0.8);
+    /* Gone early on the way down, before it rises into the words. (Not
+       opacity, which the breath in transitions.) */
+    filter: opacity(max(0, 1 - var(--hero-out) * 4));
     transition:
       opacity 2.5s 7s var(--ease-soft),
       color var(--dur-state) var(--ease-out);
