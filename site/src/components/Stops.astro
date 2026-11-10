@@ -3,14 +3,16 @@ import type { CollectionEntry } from "astro:content";
 import BackgroundMedia from "./BackgroundMedia.astro";
 
 /**
- * The work cards: one per thing Amy does, each a picture with its name and a
- * handwritten note, linking to that offering's own page.
+ * The work cards: one per thing Amy does, each a darkened picture with its
+ * kind, its name and a round arrow, linking to that offering's own page. The
+ * Elias Vent theme's project carousel, on night as there.
  *
- * As plain HTML the cards stick below the top bar and each next card slides up
- * over the last (`position: sticky`). With motion allowed, scripts/stack.ts
- * takes over: one screen pins, the cards scroll through it at native speed, and
- * a canvas draws their pictures through a soft lens with a slow water wobble
- * and a little colour split, all of which swell while scrolling.
+ * As plain HTML each card is a screen of its own, the picture centred in it.
+ * With motion allowed, scripts/carousel.ts takes over: one screen pins, a
+ * canvas draws the pictures as planes on a slight cylinder that roll past at
+ * scroll speed with a soft liquid wobble and colour split, the current card's
+ * name rises in letter by letter, and a column of bars on the right shows and
+ * picks the card.
  */
 interface Props {
   stops: CollectionEntry<"chapters">[];
@@ -19,241 +21,371 @@ interface Props {
 const { stops } = Astro.props;
 ---
 
-<section class="stops" id="work" data-stack aria-labelledby="work-title">
-  <h2 class="caption" id="work-title">
+<section
+  class="stops"
+  id="work"
+  data-carousel
+  data-bar-tone="light"
+  aria-labelledby="work-title"
+  style={`--n: ${stops.length}`}
+>
+  <h2 class="visually-hidden" id="work-title">
     What I do
   </h2>
-  <div class="stops__track" data-stack-track>
-    <div class="stops__stage" data-stack-stage>
-      <canvas
-        class="stops__canvas"
-        data-stack-canvas
-        aria-hidden="true"
-      ></canvas>
-      <div class="stops__stack">
-        {stops.map((stop) => (
-          <article class="stop" id={`card-${stop.id}`} data-stack-card>
+  <div class="stops__stage" data-carousel-stage>
+    <canvas
+      class="stops__canvas"
+      data-carousel-canvas
+      aria-hidden="true"
+    ></canvas>
+    {stops.map((stop, index) => {
+      const name = stop.data.nav ?? stop.data.title;
+      return (
+        <article
+          class="slide"
+          id={`card-${stop.id}`}
+          data-carousel-slide
+          data-active={index === 0 ? "" : undefined}
+        >
+          <div class="slide__media">
             {stop.data.background && (
               <BackgroundMedia {...stop.data.background} />
             )}
-            <div class="stop__scrim" />
-            <a class="stop__link" href={`/${stop.id}/`}>
-              {stop.data.kicker && (
-                <span class="stop__kicker">{stop.data.kicker}</span>
-              )}
-              <h3 class="stop__name">{stop.data.nav ?? stop.data.title}</h3>
-              <span class="stop__arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
-                  <path
-                    d="M7 17 17 7m0 0H9m8 0v8"
-                    stroke="currentColor"
-                    stroke-width="1.75"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+          </div>
+          <a class="slide__link" href={`/${stop.id}/`}>
+            {stop.data.kicker && (
+              <span class="slide__kind ltr">{stop.data.kicker}</span>
+            )}
+            <h3 class="slide__name">
+              <span class="visually-hidden">{name}</span>
+              <span class="slide__letters" aria-hidden="true">
+                {name.split("").map((letter, at) => (
+                  <span
+                    class="ltr"
+                    style={`transition-delay: ${(0.12 + at * 0.03).toFixed(2)}s`}
+                  >
+                    {letter}
+                  </span>
+                ))}
               </span>
-            </a>
-            {stop.data.note && <p class="stop__note hand">{stop.data.note}</p>}
-          </article>
-        ))}
-      </div>
-      <div class="stops__ticks">
-        {stops.map((stop) => (
+            </h3>
+            <span class="slide__button" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+                <path
+                  d="M7 17L17 7M7 7H17V17"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </a>
+        </article>
+      );
+    })}
+    {stops.length > 1 && (
+      <div class="stops__bars" data-carousel-bars>
+        {stops.map((stop, index) => (
           <button
             type="button"
-            data-stack-tick
+            data-carousel-goto
             aria-label={`Show ${stop.data.nav ?? stop.data.title}`}
-          />
+            aria-current={index === 0 ? "true" : undefined}
+          >
+            <span />
+          </button>
         ))}
       </div>
-    </div>
+    )}
   </div>
 </section>
 
 <style>
+  /* Measures from the theme: the picture's share of the screen and the scroll per card. */
   .stops {
-    padding-top: var(--space-8);
+    --sp: 75;
+    --media-w: 80%;
+    --media-h: 68vh;
+    --gutter: 128px;
+    position: relative;
+    background: var(--night);
+    color: var(--on-media);
+    overflow-x: clip;
   }
 
-  .stops > .caption {
-    padding-inline: var(--page-margin);
+  @supports (height: 1svh) {
+    .stops {
+      --media-h: 68svh;
+    }
   }
 
-  .stops__stage {
-    margin-top: var(--space-2);
-    padding-inline: var(--page-margin);
+  @media (max-width: 74.99rem) {
+    .stops {
+      --media-w: 84%;
+      --media-h: 58vh;
+    }
+
+    @supports (height: 1svh) {
+      .stops {
+        --media-h: 58svh;
+      }
+    }
+  }
+
+  @media (max-width: 50.6rem) {
+    .stops {
+      --sp: 60;
+      --media-w: 92%;
+      --media-h: 50vh;
+    }
+
+    @supports (height: 1svh) {
+      .stops {
+        --media-h: 50svh;
+      }
+    }
+  }
+
+  @media (max-width: 37.49rem) {
+    .stops {
+      --gutter: 40px;
+      --media-w: 100%;
+    }
   }
 
   .stops__canvas,
-  .stops__ticks {
+  .stops__bars {
     display: none;
   }
 
-  .stop {
-    position: sticky;
-    top: calc(var(--bar-height) + var(--space-1));
-    display: grid;
-    place-items: center;
-    height: calc(100vh - var(--bar-height) - var(--space-4));
-    height: calc(100svh - var(--bar-height) - var(--space-4));
-    min-height: 20rem;
-    max-height: 52rem;
-    margin-bottom: var(--space-3);
+  /* Plain: each card a screen, its picture centred and darkened by 40%. */
+  .slide {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .slide__media {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* scripts/carousel.ts sizes the canvas's planes from this box. */
+    width: min(var(--media-w), 87.5rem, 100% - var(--gutter));
+    height: var(--media-h);
+    translate: -50% -50%;
     overflow: hidden;
     border-radius: var(--radius-card);
-    background: var(--night);
-    color: var(--on-media);
-    container-type: inline-size;
+    background: oklch(0.2 0.006 262);
   }
 
-  .stop__scrim {
+  .slide__media::after {
+    content: "";
     position: absolute;
     inset: 0;
-    background: var(--scrim);
+    background: rgb(0 0 0 / 0.4);
   }
 
-  /* The whole card is the link. */
-  .stop__link {
+  .slide__link {
     position: absolute;
     inset: 0;
-    display: grid;
-    place-content: center;
-    justify-items: center;
-    gap: var(--space-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
     padding: var(--space-3);
     text-align: center;
     text-decoration: none;
   }
 
-  .stop__link:focus-visible {
-    outline-color: var(--on-media);
-    outline-offset: -6px;
-    border-radius: var(--radius-card);
+  .slide__link:focus-visible {
+    outline: none;
   }
 
-  .stop__kicker {
+  .slide__link:focus-visible .slide__button {
+    outline: 3px solid var(--on-media);
+    outline-offset: 4px;
+  }
+
+  .slide__kind {
+    font-size: 0.9375rem;
     font-weight: 600;
     line-height: 1.3;
+    letter-spacing: 0.02em;
+    color: oklch(0.92 0 0);
+    transition-delay: 0.05s;
   }
 
-  .stop__name {
-    font-size: clamp(3rem, 11cqw, 8rem);
-    line-height: 1.05;
-    letter-spacing: -0.03em;
+  .slide__name {
+    max-width: 94vw;
+    font-size: clamp(3.5rem, 9vw, 8.25rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
   }
 
-  .stop__arrow {
-    display: grid;
-    place-items: center;
-    width: 3.25rem;
-    height: 3.25rem;
-    margin-top: var(--space-2);
-    border: 1px solid oklch(0.97 0 0 / 0.5);
-    border-radius: 50%;
-    background: oklch(0.16 0.006 262 / 0.35);
-    transition:
-      background-color var(--dur-state) var(--ease-out),
-      border-color var(--dur-state) var(--ease-out),
-      color var(--dur-state) var(--ease-out);
+  @media (min-width: 50.6rem) and (max-width: 74.99rem) {
+    .slide__name {
+      line-height: 0.9;
+    }
   }
 
-  .stop__link:hover .stop__arrow,
-  .stop__link:focus-visible .stop__arrow {
-    border-color: var(--signal);
-    background: var(--signal);
-    color: var(--signal-text);
+  @media (max-width: 47.4rem) {
+    .slide__name {
+      font-size: clamp(1.875rem, 11vw, 3.25rem);
+    }
   }
 
-  .stop__note {
-    position: absolute;
-    left: var(--space-3);
-    bottom: var(--space-3);
-    max-width: 60%;
-    rotate: var(--tilt-n2);
+  .slide__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 66px;
+    height: 66px;
+    border: 1px solid oklch(1 0 0 / 0.14);
+    border-radius: var(--radius-pill);
+    background: var(--night);
     color: var(--on-media);
-    pointer-events: none;
+    transition:
+      transform 0.3s ease,
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .slide__link:hover .slide__button {
+      background: var(--on-media);
+      color: var(--night);
+      transform: scale(1.08);
+    }
+  }
+
+  /* A name never breaks inside the word. */
+  .slide__letters {
+    white-space: nowrap;
+  }
+
+  /* Letters rise in when their card is current; plain cards are all current. */
+  .ltr {
+    display: inline-block;
+    white-space: pre;
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   /*
-   * Live (scripts/stack.ts adds .stops--live and sizes the track and the cards):
-   * the stage pins for one screen, the canvas draws the pictures, and the cards
-   * keep only their words, moved by the script.
+   * Live (scripts/carousel.ts adds .stops--live): the section is one screen plus
+   * the scroll per card for each card after the first. The stage pins, the
+   * canvas draws the pictures, and each card keeps only its words, moved by
+   * the script.
    */
+  .stops--live {
+    height: calc((var(--n) - 1) * var(--sp) * 1vh + 100vh);
+    height: calc((var(--n) - 1) * var(--sp) * 1svh + 100svh);
+  }
+
   .stops--live .stops__stage {
     position: sticky;
     top: 0;
     height: 100vh;
     height: 100svh;
-    margin-top: 0;
-    padding: 0;
     overflow: hidden;
   }
 
   .stops--live .stops__canvas {
     position: absolute;
     inset: 0;
+    z-index: 0;
     display: block;
     width: 100%;
     height: 100%;
   }
 
-  .stops--live .stop {
+  .stops--live .slide {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    width: var(--card-w);
-    height: var(--card-h);
-    min-height: 0;
-    max-height: none;
-    margin: calc(var(--card-h) / -2) 0 0 calc(var(--card-w) / -2);
-    background: none;
+    inset: 0;
+    z-index: 1;
+    height: auto;
+    overflow: visible;
+    pointer-events: none;
     will-change: transform;
   }
 
-  .stops--live .stop :global(.background),
-  .stops--live .stop__scrim {
+  .stops--live .slide__media {
     visibility: hidden;
   }
 
-  .stops--live .stops__ticks {
-    position: absolute;
-    right: var(--page-margin);
+  .stops--live .slide__link {
+    inset: auto;
+    left: 50%;
     top: 50%;
-    display: grid;
-    gap: 0.15rem;
+    width: max-content;
+    max-width: 100%;
+    padding: var(--space-3);
+    translate: -50% -50%;
+    pointer-events: auto;
+  }
+
+  .stops--live .slide:not([data-active]) .ltr {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .stops--live .stops__bars {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
     translate: 0 -50%;
   }
 
-  .stops__ticks button {
-    display: grid;
+  .stops__bars button {
+    display: flex;
     align-items: center;
-    justify-items: end;
-    width: 1.75rem;
-    height: 0.9rem;
-    padding: 0;
+    justify-content: center;
+    margin: 0;
+    padding: 3px 12px;
     border: 0;
-    background: none;
+    background: transparent;
     cursor: pointer;
   }
 
-  .stops__ticks button::before {
-    content: "";
-    width: 0.75rem;
+  .stops__bars span {
+    display: block;
+    width: 28px;
     height: 2px;
-    background: var(--text-2);
+    border-radius: 2px;
+    background: oklch(1 0 0 / 0.35);
+    transform: scaleX(0.5714);
     transition:
-      width var(--dur-state) var(--ease-out),
-      background-color var(--dur-state) var(--ease-out);
+      transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .stops__ticks button[aria-current="true"]::before {
-    width: 1.5rem;
-    background: var(--ink);
+  .stops__bars [aria-current="true"] span {
+    background: var(--on-media);
+    transform: scaleX(1);
   }
 
-  @media (max-width: 47.99rem) {
-    .stops--live .stops__ticks {
+  @media (hover: hover) and (pointer: fine) {
+    .stops__bars button:hover span {
+      background: oklch(1 0 0 / 0.85);
+    }
+  }
+
+  .stops__bars button:focus-visible {
+    outline-color: var(--on-media);
+  }
+
+  @media (max-width: 37.4rem) {
+    .stops--live .stops__bars {
       display: none;
     }
   }

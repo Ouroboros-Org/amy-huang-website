@@ -72,10 +72,13 @@ const settings = defineCollection({
       instagram: z.string().optional(),
     }),
     weddingsUrl: z.url().optional(),
-    /** The opening photo's title, the line beneath it, and the photo's description. */
+    /**
+     * The opening: her motto, set wide over the video (one line per sentence on
+     * narrow screens), the crafts beneath it, and the video's description.
+     */
     hero: z.object({
-      title: z.string(),
-      subtitle: z.string(),
+      motto: z.string(),
+      crafts: z.array(z.string()).min(1),
       alt: z.string(),
     }),
   }),

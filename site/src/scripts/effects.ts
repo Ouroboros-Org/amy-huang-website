@@ -1,9 +1,10 @@
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { initCarousel } from "./carousel";
+import { initFooterShader } from "./footer-shader";
 import { initGallery } from "./gallery";
 import { onMotionChange } from "./motion";
 import { initParallax } from "./parallax";
 import { initReveal } from "./reveal";
-import { initStack } from "./stack";
 import { initSwitcher } from "./switcher";
 
 /**
@@ -14,10 +15,11 @@ export function initEffects(): void {
   // The effects that change the page's length come first, so the scroll-tied
   // ones after them measure the final layout.
   initGallery();
-  initStack();
+  initCarousel();
   initSwitcher();
   initParallax();
   initReveal();
+  initFooterShader();
   if (document.querySelector("[data-media]")) {
     void import("./play-in-view").then(({ initPlayInView }) =>
       initPlayInView(),

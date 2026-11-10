@@ -1,7 +1,13 @@
 ---
 import { getImage } from "astro:assets";
 import aboutPhoto from "../assets/about/photo.webp";
-import heroPhoto from "../assets/hero/photo.webp";
+import amy1 from "../assets/gallery/amy-1.webp";
+import amy2 from "../assets/gallery/amy-2.webp";
+import amy3 from "../assets/gallery/amy-3.webp";
+import amy4 from "../assets/gallery/amy-4.webp";
+import amy5 from "../assets/gallery/amy-5.webp";
+import amy6 from "../assets/gallery/amy-6.webp";
+import lakePhoto from "../assets/gallery/lake.webp";
 import Base from "../layouts/Base.astro";
 import About from "../components/About.astro";
 import Contact from "../components/Contact.astro";
@@ -9,6 +15,7 @@ import Effects from "../components/Effects.astro";
 import Footer from "../components/Footer.astro";
 import Gallery from "../components/Gallery.astro";
 import Hero from "../components/Hero.astro";
+import Intro from "../components/Intro.astro";
 import Offerings from "../components/Offerings.astro";
 import Stops from "../components/Stops.astro";
 import Ticker from "../components/Ticker.astro";
@@ -17,16 +24,16 @@ import { getSite } from "../lib/site";
 
 const { settings, stops, about, contact, links } = await getSite();
 
-// The gallery's pictures: the two photos of Amy, then each offering's still
-// (a video's poster) and its portrait cut.
+// The gallery's pictures: Amy's photos and stills from the hero's video (the
+// lake photo is portrait), then each offering's still (a video's poster) and
+// its portrait cut.
 const photos = await Promise.all(
-  [aboutPhoto, heroPhoto].map((src) =>
+  [amy1, amy4, aboutPhoto, amy2, lakePhoto, amy5, amy3, amy6].map((src) =>
     getImage({ src, width: 720, format: "webp" }),
   ),
 );
 const gallery = [
-  { src: photos[0].src },
-  { src: photos[1].src, portrait: true },
+  ...photos.map((photo, index) => ({ src: photo.src, portrait: index === 4 })),
   ...stops.flatMap((stop) => {
     const media = stop.data.background;
     if (!media) return [];
@@ -46,6 +53,7 @@ const gallery = [
   description="Amy Huang teaches kung fu, performs fire shows and Shaolin forms, does hair and flies drones. Here's what she offers and how to reach her."
   cardAlt={`${settings.name}: ${settings.line}`}
 >
+  <Intro />
   <TopBar name={settings.name} role={settings.role} links={links.bar} />
   <main>
     <Hero {...settings.hero} />

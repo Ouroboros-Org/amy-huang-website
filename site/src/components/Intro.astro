@@ -1,0 +1,202 @@
+---
+/**
+ * The way in: a busy city at night, full screen, played once while the page
+ * loads behind it. When it ends, or the reader clicks or taps it, it cuts hard
+ * to the hero, which breathes in from a blur (Hero.astro): she is the calm
+ * after the rush.
+ *
+ * It plays on the first load of a visit only (once per browser tab), and not
+ * when the reader comes from another page of this site or follows a link to a
+ * section. Without JavaScript, with reduced motion, with motion paused or with
+ * data saver on, the page starts at the hero. If the video can't start within
+ * a few seconds, or stalls, the page stops waiting for it. Scrolling or a key
+ * (Escape, Enter, Space, the arrows down) skips it too.
+ *
+ * Place it first in <body>: its inline script decides before the first paint
+ * whether it plays.
+ */
+---
+
+<div class="intro" data-intro hidden>
+  <video
+    class="intro__video"
+    muted
+    playsinline
+    preload="none"
+    poster="/media/intro/city.poster.webp"
+    aria-hidden="true"
+  >
+    <source
+      media="(max-width: 60rem)"
+      src="/media/intro/city-720.mp4"
+      type="video/mp4"
+    />
+    <source src="/media/intro/city.mp4" type="video/mp4" />
+  </video>
+  <div class="intro__progress" aria-hidden="true">
+    <span data-intro-progress></span>
+  </div>
+</div>
+
+<script is:inline>
+  // Runs while the page is parsed, before the first paint. Mirrors
+  // scripts/motion.ts, which isn't loaded yet.
+  (() => {
+    const root = document.documentElement;
+    const intro = document.querySelector("[data-intro]");
+    let paused = false;
+    let seen = false;
+    try {
+      paused = localStorage.getItem("motion-paused") === "1";
+      seen = sessionStorage.getItem("intro-seen") === "1";
+    } catch {}
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Another page of the site; a reload keeps this page as its referrer.
+    let fromHere = false;
+    try {
+      const from = new URL(document.referrer);
+      fromHere =
+        from.origin === location.origin && from.pathname !== location.pathname;
+    } catch {}
+    const saveData = navigator.connection && navigator.connection.saveData;
+    if (!intro || paused || reduce || seen || fromHere || saveData) return;
+    if (location.hash) return;
+
+    try {
+      sessionStorage.setItem("intro-seen", "1");
+    } catch {}
+    // Hero.astro holds the hero in its blur until the intro ends.
+    root.classList.add("intro-on", "hero-reveal");
+    intro.hidden = false;
+    // The intro always starts at the top of the page.
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+    intro
+      .querySelector("video")
+      .play()
+      .catch(() => {});
+    // If the page's script never arrives, let the reader in anyway.
+    setTimeout(() => {
+      if (!root.classList.contains("intro-on")) return;
+      root.classList.remove("intro-on");
+      intro.hidden = true;
+      document.querySelector("[data-hero]")?.setAttribute("data-in", "");
+    }, 20000);
+  })();
+</script>
+
+<script>
+  import { motionAllowed, onMotionChange } from "../scripts/motion";
+
+  /** How long the video may take to start, and to recover from a stall. */
+  const START_WAIT = 3500;
+  const STALL_WAIT = 2000;
+  const SKIP_KEYS = ["Escape", "Enter", " ", "ArrowDown", "PageDown", "End"];
+
+  const root = document.documentElement;
+  const intro = document.querySelector<HTMLElement>("[data-intro]");
+  const video = intro?.querySelector("video");
+
+  if (intro && video && root.classList.contains("intro-on")) {
+    const progress = intro.querySelector<HTMLElement>("[data-intro-progress]");
+    let done = false;
+    let stall = 0;
+
+    // A hard cut: the city is gone at once, and the hero takes over.
+    const finish = () => {
+      if (done) return;
+      done = true;
+      window.clearTimeout(start);
+      window.clearTimeout(stall);
+      removeEventListener("wheel", finish);
+      removeEventListener("touchmove", finish);
+      removeEventListener("keydown", onKey);
+      video.pause();
+      intro.remove();
+      root.classList.remove("intro-on");
+      // Hero.astro waits for this.
+      dispatchEvent(new Event("intro:end"));
+    };
+
+    const onKey = (event: KeyboardEvent) => {
+      if (SKIP_KEYS.includes(event.key)) {
+        event.preventDefault();
+        finish();
+      }
+    };
+
+    // Don't wait for a video that won't start.
+    const start = window.setTimeout(() => {
+      if (video.currentTime === 0) finish();
+    }, START_WAIT);
+
+    video.addEventListener("ended", finish);
+    video.addEventListener("waiting", () => {
+      window.clearTimeout(stall);
+      stall = window.setTimeout(finish, STALL_WAIT);
+    });
+    video.addEventListener("playing", () => window.clearTimeout(stall));
+    video.addEventListener("timeupdate", () => {
+      if (progress && video.duration) {
+        progress.style.transform = `scaleX(${video.currentTime / video.duration})`;
+      }
+    });
+    // An unplayable source reports its error on the <source>, not the video. A
+    // source for other screens reports one too, so only the last one counts.
+    video
+      .querySelector("source:last-of-type")
+      ?.addEventListener("error", finish);
+    intro.addEventListener("click", finish);
+    // The page's own scroll is locked meanwhile; trying to scroll means "let me in".
+    addEventListener("wheel", finish, { passive: true });
+    addEventListener("touchmove", finish, { passive: true });
+    addEventListener("keydown", onKey);
+    onMotionChange(() => {
+      if (!motionAllowed()) finish();
+    });
+    if (video.ended || video.error) finish();
+  }
+</script>
+
+<style>
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    overflow: hidden;
+    background: var(--night);
+    cursor: pointer;
+  }
+
+  .intro[hidden] {
+    display: none;
+  }
+
+  .intro__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* A hairline that fills while the city plays, as a loader would. */
+  .intro__progress {
+    position: absolute;
+    inset: auto 0 0;
+    height: 2px;
+    background: oklch(0.97 0 0 / 0.16);
+  }
+
+  .intro__progress span {
+    display: block;
+    height: 100%;
+    background: var(--on-media);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s linear;
+  }
+
+  /* While it plays, the page beneath stays at its top. */
+  :global(:root.intro-on) {
+    overflow: hidden;
+  }
+</style>

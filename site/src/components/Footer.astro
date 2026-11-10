@@ -1,8 +1,12 @@
 ---
 /**
- * The page's end, on night with the accent glowing up from below: where she is,
- * the wedding-hair link, the page's links, and her name as a wordmark across the
- * full width. The glow drifts slowly while motion is allowed.
+ * The page's end, as the Elias Vent theme's footer: night at the top melting
+ * into a liquid gradient of fire and dusk (scripts/footer-shader.ts), where she
+ * is with a small live dot, the wedding-hair link, the page's links, her name
+ * as a wordmark across the full width, and the copyright line.
+ *
+ * Without the shader (no WebGL2, or before the page's motion has loaded) a CSS
+ * glow of the same colours stands in, drifting slowly while motion is allowed.
  */
 interface Props {
   name: string;
@@ -17,10 +21,13 @@ const year = new Date().getFullYear();
 
 <footer class="footer" id="footer" data-bar-tone="light">
   <div class="footer__glow" aria-hidden="true"></div>
+  <div class="footer__shader" aria-hidden="true">
+    <canvas data-shader></canvas>
+  </div>
   <div class="footer__fade" aria-hidden="true"></div>
-  <div class="footer__row">
+  <div class="footer__top">
     <p class="footer__where">Currently in {currentlyIn}</p>
-    <p>
+    <div class="footer__col">
       {weddingsUrl ? (
         <a href={weddingsUrl}>Wedding hair in Canada</a>
       ) : (
@@ -28,41 +35,46 @@ const year = new Date().getFullYear();
           [Wedding hair in Canada link]
         </span>
       )}
-    </p>
-    <nav aria-label="Footer">
-      <ul>
-        {links.map((link) => (
-          <li>
-            <a href={link.href}>{link.label}</a>
-          </li>
-        ))}
-      </ul>
+    </div>
+    <nav class="footer__col" aria-label="Footer">
+      {links.map((link) => (
+        <a href={link.href}>{link.label}</a>
+      ))}
     </nav>
   </div>
   <p class="footer__wordmark" aria-hidden="true">
     {name}
   </p>
   <p class="footer__legal">
-    © {year} {name}
+    © {year} {name}. All rights reserved.
   </p>
 </footer>
 
 <style>
   .footer {
-    --text-2: oklch(0.97 0 0 / 0.8);
+    --text-2: oklch(0.97 0 0 / 0.78);
     position: relative;
-    display: grid;
-    gap: var(--space-12);
-    padding: var(--space-8) var(--page-margin) var(--space-3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 80px;
+    padding: 80px var(--page-margin) 40px;
     overflow: hidden;
     container-type: inline-size;
     background: var(--night);
     color: var(--on-media);
   }
 
-  /* Fire into dusk, rising from below the footer's edge. */
-  .footer__glow {
+  .footer__glow,
+  .footer__shader,
+  .footer__fade {
     position: absolute;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Stand-in for the shader: the same colours rising from below. */
+  .footer__glow {
     inset: 8% -12% -22%;
     background:
       radial-gradient(46% 70% at 12% 62%, var(--glow-1), transparent 72%),
@@ -74,80 +86,142 @@ const year = new Date().getFullYear();
     animation: glow 26s var(--ease-soft) infinite alternate;
   }
 
-  /* Night at the very top and bottom, so the small type reads at 4.5:1 or better. */
-  .footer__fade {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(to bottom, var(--night) 0%, transparent 34%),
-      linear-gradient(to top, oklch(0.16 0.006 262 / 0.6), transparent 14%);
+  .footer:has(canvas[data-drawn]) .footer__glow {
+    display: none;
   }
 
-  .footer__row,
+  .footer__shader {
+    inset: 0;
+  }
+
+  .footer__shader canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* The theme's fade: solid night (--night) for the top seventh, easing out to the foot. */
+  .footer__fade {
+    inset: 0 0 -3px;
+    background: linear-gradient(
+      180deg,
+      var(--night) 0%,
+      var(--night) 14%,
+      rgb(12 13 16 / 0.97) 22%,
+      rgb(12 13 16 / 0.9) 30%,
+      rgb(12 13 16 / 0.79) 38%,
+      rgb(12 13 16 / 0.66) 46%,
+      rgb(12 13 16 / 0.52) 54%,
+      rgb(12 13 16 / 0.38) 62%,
+      rgb(12 13 16 / 0.26) 70%,
+      rgb(12 13 16 / 0.16) 78%,
+      rgb(12 13 16 / 0.08) 86%,
+      rgb(12 13 16 / 0.03) 93%,
+      transparent 100%
+    );
+  }
+
+  .footer__top,
   .footer__wordmark,
   .footer__legal {
     position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 77.5rem;
   }
 
-  .footer__row {
+  .footer__top {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
-    gap: var(--space-2) var(--space-6);
-    color: var(--text-2);
+    align-items: flex-start;
+    gap: var(--space-3);
   }
 
-  .footer__row p {
+  .footer p {
     max-width: none;
   }
 
+  .footer__col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+    width: 350px;
+    text-align: end;
+  }
+
   /* A small live dot, as the theme marks availability. */
+  .footer__where {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
   .footer__where::before {
     content: "";
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-right: 0.5rem;
+    flex: none;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
     background: var(--signal);
-    vertical-align: 0.05em;
   }
 
-  .footer ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1) var(--space-3);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .footer a {
+  .footer a,
+  .footer__col span {
+    color: var(--text-2);
     text-decoration: none;
-    transition: color var(--dur-state) var(--ease-out);
+    transition: color 0.2s ease;
   }
 
-  .footer a:hover {
-    color: var(--on-media);
+  @media (hover: hover) and (pointer: fine) {
+    .footer a:hover {
+      color: var(--on-media);
+    }
   }
 
   .footer :focus-visible {
     outline-color: var(--on-media);
   }
 
-  /* Sized to span the footer: nine letters of Sora bold are about 5.4em wide. */
+  /* Sized to span the footer: "Amy Huang" in Sora bold is about 5.75em wide. */
   .footer__wordmark {
-    max-width: none;
-    font-size: 17.6cqw;
+    font-size: min(17cqw, 13.5rem);
     font-weight: 700;
-    line-height: 0.95;
-    letter-spacing: -0.04em;
+    line-height: 1;
+    letter-spacing: 0;
+    text-align: center;
     white-space: nowrap;
+    color: oklch(0.92 0 0);
   }
 
+  /* Full white: it sits on the brightest part of the gradient. */
   .footer__legal {
-    font-size: var(--step--1);
-    color: var(--text-2);
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 74.99rem) {
+    .footer__col {
+      width: auto;
+    }
+  }
+
+  @media (max-width: 50.6rem) {
+    .footer {
+      padding-bottom: 32px;
+    }
+
+    .footer__top {
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer__col {
+      width: 100%;
+      align-items: flex-start;
+      text-align: start;
+    }
   }
 
   :global(:root[data-motion="off"]) .footer__glow {
