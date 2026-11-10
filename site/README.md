@@ -55,7 +55,7 @@ From top to bottom:
   screen, while the page loads behind it. A rounded loading bar in the middle fills quickly,
   then slower, and is full as the video ends; it is for show and leaves with the video.
   A click or tap (or scrolling, or Escape, Enter, Space, the arrows down) skips it. It
-  cuts hard to white, which fades softly into the hero. It doesn't play again in the same tab, when coming from another
+  cuts hard to the hero. It doesn't play again in the same tab, when coming from another
   page of the site, on a link to a section, with reduced motion, motion paused or data
   saver on, or without JavaScript (`components/Intro.astro`).
 - **Top bar:** her name and role, the section links, the pause-motion control and "Say hi".
@@ -63,10 +63,9 @@ From top to bottom:
   hero, the about photo, the work cards and the footer it turns clear with light type.
 - **Hero:** one screen of Amy's video, looping, under a night shade, with her motto set
   like a film title (thin capitals, widely spaced) and her crafts beneath, separated by
-  dots. After the intro it breathes in: the white the intro cut to clears softly while
-  the video comes into focus from a light blur. The words are there from the start; the
-  motto's letters open out from close together to wide, then the hairline arrow shows at
-  the foot. The video and the words hold still while the page
+  dots. After the intro it breathes in: the video comes into focus from a light blur, and
+  the words fade in, the motto's letters already a little apart and opening out wide,
+  then the hairline arrow shows at the foot. The video and the words hold still while the page
   scrolls up over them, and the words fade out as their letters open wider; with motion
   off the hero scrolls with the page. On narrow screens each sentence takes a line.
 - **Gallery pin:** her line in the middle of the screen while pictures fly outward past
