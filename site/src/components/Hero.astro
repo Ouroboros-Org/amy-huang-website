@@ -15,16 +15,20 @@
  * on its first frame.
  *
  * The motto is set like a film title: thin capitals, widely spaced. On wide
- * screens it is one line; on narrow ones each sentence takes a line.
+ * screens it is one line; on narrow ones each sentence takes a line, and so
+ * does each craft. At the foot, a few words over a hairline arrow lead on into
+ * the page.
  */
 interface Props {
   motto: string;
   crafts: string[];
+  /** The words over the arrow at the foot. */
+  cue: string;
   /** Describes the video. */
   alt: string;
 }
 
-const { motto, crafts, alt } = Astro.props;
+const { motto, crafts, cue, alt } = Astro.props;
 const phrases = motto.split(/(?<=[.!?])\s+/);
 ---
 
@@ -75,7 +79,7 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     </p>
   </div>
   <a class="hero__cue" href="#gallery">
-    <span class="visually-hidden">Scroll down</span>
+    <span class="hero__cue-words">{cue}</span>
     <svg
       class="hero__cue-arrow"
       viewBox="0 0 14 56"
@@ -330,17 +334,32 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
     letter-spacing: 0;
   }
 
-  /* A hairline arrow at the foot of the screen. */
+  /* Narrow screens: a craft a line, so no dot is left hanging at a line's end. */
+  @media (max-width: 47.99rem) {
+    .hero__crafts {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5em;
+    }
+
+    .hero__dot {
+      display: none;
+    }
+  }
+
+  /* A few words over a hairline arrow at the foot of the screen. */
   .hero__cue {
     position: absolute;
     left: 50%;
     bottom: var(--space-3);
     display: grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 4.5rem;
+    justify-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2) 0;
     translate: -50% 0;
     color: oklch(0.97 0 0 / 0.8);
+    text-decoration: none;
+    white-space: nowrap;
     /* Gone early on the way down, before it rises into the words. (Not
        opacity, which the breath in transitions.) */
     filter: opacity(max(0, 1 - var(--hero-out) * 4));
@@ -349,7 +368,18 @@ const phrases = motto.split(/(?<=[.!?])\s+/);
       color var(--dur-state) var(--ease-out);
   }
 
+  /* In the crafts' manner: small thin capitals set wide. */
+  .hero__cue-words {
+    margin-inline-end: -0.4em;
+    font-size: 0.6875rem;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+  }
+
   .hero__cue-arrow {
+    height: 3rem;
     animation: cue 2.4s var(--ease-soft) infinite;
   }
 

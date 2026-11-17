@@ -1,33 +1,62 @@
 ---
+import { Picture } from "astro:assets";
+import fire from "../assets/gallery/amy-3.webp";
+
 /**
- * The page's end, as the Elias Vent theme's footer: night at the top melting
- * into a liquid gradient of fire and dusk (scripts/footer-shader.ts), where she
- * is with a small live dot, the wedding-hair link, the page's links, her name
- * as a wordmark across the full width, and the copyright line.
+ * The page's end, as the end of a film: her name and crafts set like the
+ * hero's title (thin capitals, widely spaced) on night, and below them Amy
+ * spinning fire at night, rising out of the dark. Along the foot: where she is
+ * with a small live dot, the page's links and the wedding-hair link, a way back
+ * to the start, and the copyright line.
  *
- * Without the shader (no WebGL2, or before the page's motion has loaded) a CSS
- * glow of the same colours stands in, drifting slowly while motion is allowed.
+ * Nothing in it moves, so it needs no pause and no fallback.
  */
 interface Props {
   name: string;
+  crafts: string[];
   currentlyIn: string;
   weddingsUrl?: string;
   links: { label: string; href: string }[];
 }
 
-const { name, currentlyIn, weddingsUrl, links } = Astro.props;
+const { name, crafts, currentlyIn, weddingsUrl, links } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer" id="footer" data-bar-tone="light">
-  <div class="footer__glow" aria-hidden="true"></div>
-  <div class="footer__shader" aria-hidden="true">
-    <canvas data-shader></canvas>
+  <div class="footer__media" aria-hidden="true">
+    <Picture
+      src={fire}
+      alt=""
+      widths={[720, 1440]}
+      sizes="(orientation: portrait) 180vh, 100vw"
+      formats={["avif", "webp"]}
+      fallbackFormat="webp"
+      loading="lazy"
+    />
   </div>
-  <div class="footer__fade" aria-hidden="true"></div>
-  <div class="footer__top">
+  <div class="footer__shade" aria-hidden="true"></div>
+  <div class="footer__credits">
+    <p class="footer__name">{name}</p>
+    <p class="footer__crafts">
+      {crafts.map((craft, index) => (
+        <>
+          {index > 0 && (
+            <span class="footer__dot" aria-hidden="true">
+              ·
+            </span>
+          )}
+          <span>{craft}</span>
+        </>
+      ))}
+    </p>
+  </div>
+  <div class="footer__foot">
     <p class="footer__where">Currently in {currentlyIn}</p>
-    <div class="footer__col">
+    <nav class="footer__links" aria-label="Footer">
+      {links.map((link) => (
+        <a href={link.href}>{link.label}</a>
+      ))}
       {weddingsUrl ? (
         <a href={weddingsUrl}>Wedding hair in Canada</a>
       ) : (
@@ -35,123 +64,143 @@ const year = new Date().getFullYear();
           [Wedding hair in Canada link]
         </span>
       )}
-    </div>
-    <nav class="footer__col" aria-label="Footer">
-      {links.map((link) => (
-        <a href={link.href}>{link.label}</a>
-      ))}
     </nav>
+    <a class="footer__back" href="#">
+      Back to the start
+      <svg
+        viewBox="0 0 14 28"
+        width="10"
+        height="20"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M7 27V2M1.5 7.5 7 2l5.5 5.5"
+          stroke="currentColor"
+          stroke-width="1.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
+      </svg>
+    </a>
+    <p class="footer__legal">
+      © {year} {name}
+    </p>
   </div>
-  <p class="footer__wordmark" aria-hidden="true">
-    {name}
-  </p>
-  <p class="footer__legal">
-    © {year} {name}. All rights reserved.
-  </p>
 </footer>
 
 <style>
   .footer {
-    --text-2: oklch(0.97 0 0 / 0.78);
+    --text-2: oklch(0.97 0 0 / 0.72);
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 80px;
-    padding: 80px var(--page-margin) 40px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: max(40rem, 100vh);
+    min-height: max(40rem, 100svh);
     overflow: hidden;
-    container-type: inline-size;
     background: var(--night);
     color: var(--on-media);
   }
 
-  .footer__glow,
-  .footer__shader,
-  .footer__fade {
+  /* The fire fills the lower part; the credits sit on night above it. */
+  .footer__media {
     position: absolute;
-    z-index: 0;
-    pointer-events: none;
+    inset: 28% 0 0;
   }
 
-  /* Stand-in for the shader: the same colours rising from below. */
-  .footer__glow {
-    inset: 8% -12% -22%;
-    background:
-      radial-gradient(46% 70% at 12% 62%, var(--glow-1), transparent 72%),
-      radial-gradient(40% 62% at 34% 84%, var(--glow-2), transparent 74%),
-      radial-gradient(44% 72% at 55% 68%, var(--glow-3), transparent 74%),
-      radial-gradient(42% 66% at 76% 86%, var(--glow-4), transparent 74%),
-      radial-gradient(48% 76% at 94% 64%, var(--glow-5), transparent 74%);
-    filter: blur(30px);
-    animation: glow 26s var(--ease-soft) infinite alternate;
-  }
-
-  .footer:has(canvas[data-drawn]) .footer__glow {
-    display: none;
-  }
-
-  .footer__shader {
-    inset: 0;
-  }
-
-  .footer__shader canvas {
-    position: absolute;
-    inset: 0;
+  .footer__media :global(img) {
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    object-position: 50% 55%;
   }
 
-  /* The theme's fade: solid night (--night) for the top seventh, easing out to the foot. */
-  .footer__fade {
-    inset: 0 0 -3px;
+  /* Night melting into the photo from the top, and back at the foot for the links. */
+  .footer__shade {
+    position: absolute;
+    inset: 0;
     background: linear-gradient(
-      180deg,
-      var(--night) 0%,
-      var(--night) 14%,
-      rgb(12 13 16 / 0.97) 22%,
-      rgb(12 13 16 / 0.9) 30%,
-      rgb(12 13 16 / 0.79) 38%,
-      rgb(12 13 16 / 0.66) 46%,
-      rgb(12 13 16 / 0.52) 54%,
-      rgb(12 13 16 / 0.38) 62%,
-      rgb(12 13 16 / 0.26) 70%,
-      rgb(12 13 16 / 0.16) 78%,
-      rgb(12 13 16 / 0.08) 86%,
-      rgb(12 13 16 / 0.03) 93%,
-      transparent 100%
+      to bottom,
+      var(--night) 28%,
+      oklch(0.16 0.006 262 / 0.82) 38%,
+      oklch(0.16 0.006 262 / 0.35) 54%,
+      oklch(0.16 0.006 262 / 0.2) 68%,
+      oklch(0.16 0.006 262 / 0.75) 92%
     );
   }
 
-  .footer__top,
-  .footer__wordmark,
-  .footer__legal {
+  .footer__credits,
+  .footer__foot {
     position: relative;
     z-index: 1;
-    width: 100%;
-    max-width: 77.5rem;
-  }
-
-  .footer__top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--space-3);
   }
 
   .footer p {
     max-width: none;
   }
 
-  .footer__col {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 20px;
-    width: 350px;
-    text-align: end;
+  .footer__credits {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3);
+    padding: calc(var(--bar-height) + var(--space-8)) var(--page-margin) 0;
+    text-align: center;
   }
 
-  /* A small live dot, as the theme marks availability. */
+  /* The hero's film title: thin capitals set wide, the space after the last
+     letter given back so the name centres. */
+  .footer__name {
+    margin-inline-end: -0.5em;
+    font-size: clamp(1.75rem, 1.2rem + 3vw, 4rem);
+    font-weight: 200;
+    line-height: 1.2;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+  }
+
+  .footer__crafts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4em 1.1em;
+    font-size: clamp(0.6875rem, 0.62rem + 0.25vw, 0.875rem);
+    font-weight: 300;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+
+  .footer__crafts > span:not(.footer__dot) {
+    margin-inline-end: -0.45em;
+  }
+
+  .footer__dot {
+    letter-spacing: 0;
+  }
+
+  /* Narrow screens: a craft a line, as in the hero. */
+  @media (max-width: 47.99rem) {
+    .footer__crafts {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5em;
+    }
+
+    .footer__dot {
+      display: none;
+    }
+  }
+
+  .footer__foot {
+    grid-row: 3;
+    display: grid;
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-4) var(--page-margin) var(--space-3);
+    font-size: var(--step--1);
+    line-height: 1.4;
+  }
+
+  /* A small live dot, for where she is now. */
   .footer__where {
     display: flex;
     align-items: center;
@@ -161,17 +210,34 @@ const year = new Date().getFullYear();
   .footer__where::before {
     content: "";
     flex: none;
-    width: 9px;
-    height: 9px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: var(--signal);
   }
 
+  .footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+  }
+
   .footer a,
-  .footer__col span {
+  .footer__links span {
     color: var(--text-2);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color var(--dur-state) var(--ease-out);
+  }
+
+  .footer__back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    justify-self: start;
+  }
+
+  .footer__legal {
+    color: var(--text-2);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -184,56 +250,15 @@ const year = new Date().getFullYear();
     outline-color: var(--on-media);
   }
 
-  /* Sized to span the footer: "Amy Huang" in Sora bold is about 5.75em wide. */
-  .footer__wordmark {
-    font-size: min(17cqw, 13.5rem);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0;
-    text-align: center;
-    white-space: nowrap;
-    color: oklch(0.92 0 0);
-  }
-
-  /* Full white: it sits on the brightest part of the gradient. */
-  .footer__legal {
-    font-size: 0.75rem;
-    line-height: 1.4;
-  }
-
-  @media (max-width: 74.99rem) {
-    .footer__col {
-      width: auto;
-    }
-  }
-
-  @media (max-width: 50.6rem) {
-    .footer {
-      padding-bottom: 32px;
+  /* Wide screens: one line along the foot. */
+  @media (min-width: 60rem) {
+    .footer__foot {
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
     }
 
-    .footer__top {
-      flex-direction: column;
-      gap: 32px;
-    }
-
-    .footer__col {
-      width: 100%;
-      align-items: flex-start;
-      text-align: start;
-    }
-  }
-
-  :global(:root[data-motion="off"]) .footer__glow {
-    animation-play-state: paused;
-  }
-
-  @keyframes glow {
-    from {
-      transform: translate3d(-4%, 2%, 0) scale(1);
-    }
-    to {
-      transform: translate3d(4%, -3%, 0) scale(1.12);
+    .footer__links {
+      justify-content: center;
     }
   }
 </style>

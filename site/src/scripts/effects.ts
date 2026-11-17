@@ -1,11 +1,9 @@
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { initCarousel } from "./carousel";
-import { initFooterShader } from "./footer-shader";
 import { initGallery } from "./gallery";
 import { onMotionChange } from "./motion";
 import { initParallax } from "./parallax";
 import { initReveal } from "./reveal";
-import { initSwitcher } from "./switcher";
 
 /**
  * Everything on the page that moves, started together. Each effect builds
@@ -16,10 +14,8 @@ export function initEffects(): void {
   // ones after them measure the final layout.
   initGallery();
   initCarousel();
-  initSwitcher();
   initParallax();
   initReveal();
-  initFooterShader();
   if (document.querySelector("[data-media]")) {
     void import("./play-in-view").then(({ initPlayInView }) =>
       initPlayInView(),

@@ -1,0 +1,174 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BackgroundMedia from "./BackgroundMedia.astro";
+
+/**
+ * "Beyond the practice": what Amy also offers beside her martial arts and
+ * movement (stops marked `beyond: true`), kept smaller than the work cards on
+ * purpose. Each entry is a small picture, its kind, its name and its lead, and
+ * leads to its own page.
+ */
+interface Props {
+  stops: CollectionEntry<"chapters">[];
+}
+
+const { stops } = Astro.props;
+---
+
+{stops.length > 0 && (
+  <section class="beyond" id="beyond" aria-labelledby="beyond-title">
+    <div class="beyond__head">
+      <p class="caption">Also offered</p>
+      <h2 id="beyond-title">Beyond the practice</h2>
+    </div>
+    <ul class="beyond__list">
+      {stops.map((stop) => {
+        const name = stop.data.nav ?? stop.data.title;
+        return (
+          <li>
+            <article
+              class="item"
+              id={`beyond-${stop.id}`}
+              data-draft={stop.data.draft ? "" : undefined}
+            >
+              <div class="item__media">
+                {stop.data.background && (
+                  <BackgroundMedia {...stop.data.background} alt="" />
+                )}
+              </div>
+              <div class="item__text">
+                {stop.data.kicker && <p class="caption">{stop.data.kicker}</p>}
+                <h3 class="item__name">
+                  <a href={`/${stop.id}/`}>{name}</a>
+                </h3>
+                {stop.data.lead && <p class="item__lead">{stop.data.lead}</p>}
+              </div>
+              <span class="item__arrow" aria-hidden="true">
+                →
+              </span>
+            </article>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+)}
+
+<style>
+  .beyond {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-12) var(--page-margin);
+  }
+
+  .beyond__head {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .beyond__head h2 {
+    font-size: var(--step-3);
+  }
+
+  .beyond__list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .beyond__list > li {
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* The whole row answers to its name's link. */
+  .item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 7rem 1fr auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: var(--space-3);
+  }
+
+  .item__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: var(--night);
+  }
+
+  .item__media :global(img) {
+    transition: scale 0.6s var(--ease-out);
+  }
+
+  .item__text {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .item__name {
+    font-size: var(--step-1);
+    line-height: 1.2;
+  }
+
+  .item__name a {
+    text-decoration: none;
+  }
+
+  .item__name a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .item__lead {
+    font-size: var(--step--1);
+    color: var(--text-2);
+  }
+
+  .item__arrow {
+    font-size: var(--step-1);
+    color: var(--text-2);
+    transition:
+      translate var(--dur-state) var(--ease-out),
+      color var(--dur-state) var(--ease-out);
+  }
+
+  .item:has(a:focus-visible) {
+    outline: 3px solid var(--text);
+    outline-offset: 3px;
+    border-radius: 0.75rem;
+  }
+
+  .item a:focus-visible {
+    outline: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .item:hover .item__arrow {
+      translate: 0.25rem 0;
+      color: var(--text);
+    }
+
+    .item:hover .item__media :global(img) {
+      scale: 1.04;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .beyond {
+      grid-template-columns: 5fr 7fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .item {
+      grid-template-columns: 9rem 1fr auto;
+      gap: var(--space-4);
+    }
+  }
+</style>

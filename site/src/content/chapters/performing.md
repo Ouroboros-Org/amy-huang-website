@@ -1,9 +1,9 @@
 ---
-order: 3
+order: 4
 title: I perform
 nav: Performing
-kicker: Fire and Shaolin shows
-lead: Fire shows and Shaolin kung fu for festivals, events and parties.
+kicker: Fire and LED performance
+lead: Fire and LED shows for events and performances.
 note: after dark
 facts:
   - label: Fire

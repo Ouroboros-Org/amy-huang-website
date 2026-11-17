@@ -4,13 +4,14 @@ import { render, type CollectionEntry } from "astro:content";
 import photo from "../assets/about/photo.webp";
 
 /**
- * Who she is, full-screen over a photo of her: a large statement, her paragraph,
- * and a handwritten note pointing at her.
+ * Who she is, over a photo of her: a large statement, her words, and a
+ * handwritten note pointing at her.
  *
- * The photo is wide and Amy stands left of its centre. On wide screens the text
- * keeps to the right, where a dusk shade makes it readable, and she stays clear
- * on the left. On phones the section is taller: the text sits in the sky at the
- * top and she stands below it.
+ * The photo is wide and Amy stands left of its centre. On wide screens the
+ * section is a screen tall: the text keeps to the right, where a dusk shade
+ * makes it readable, and she stays clear on the left. On narrow ones the text
+ * comes first on dusk, and the photo rises out of the dusk below it, with room
+ * kept for her, so the text never runs over her.
  */
 interface Props {
   entry: CollectionEntry<"chapters">;
@@ -34,7 +35,7 @@ const { title, lead, note, photoAlt, draft } = entry.data;
       src={photo}
       alt={photoAlt ?? ""}
       widths={[960, 1440, 2000]}
-      sizes="(orientation: portrait) 320vh, (max-aspect-ratio: 7/3) 234vh, 100vw"
+      sizes="(orientation: portrait) 220vh, (max-aspect-ratio: 7/3) 234vh, 100vw"
       formats={["avif", "webp"]}
       fallbackFormat="webp"
       loading="lazy"
@@ -76,19 +77,29 @@ const { title, lead, note, photoAlt, draft } = entry.data;
 
 <style>
   .about {
+    --dusk: oklch(0.2 0.045 262);
+    --photo-h: 92vh;
     position: relative;
     display: grid;
-    min-height: 135vh;
-    min-height: 135svh;
     overflow: hidden;
-    background: var(--night);
+    background: var(--dusk);
     color: var(--on-media);
   }
 
-  /* Larger than the section, so the drift never shows an edge. */
+  @supports (height: 1svh) {
+    .about {
+      --photo-h: 92svh;
+    }
+  }
+
+  /* Narrow: the photo at the foot, fading up into the dusk behind the text.
+     Taller than its place, so the drift never shows an edge. */
   .about__media {
     position: absolute;
-    inset: -6% 0;
+    inset: auto 0 -6%;
+    height: var(--photo-h);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%);
+    mask-image: linear-gradient(to bottom, transparent, #000 30%);
   }
 
   .about__media :global(img) {
@@ -99,26 +110,23 @@ const { title, lead, note, photoAlt, draft } = entry.data;
     object-position: 31% 50%;
   }
 
-  /* Dusk from the top, for the text in the sky; a little night at the foot, for the note. */
+  /* A little night at the foot, for the note. */
   .about__shade {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(
-        to bottom,
-        oklch(0.2 0.045 262 / 0.9) 0%,
-        oklch(0.2 0.045 262 / 0.84) 46%,
-        oklch(0.2 0.045 262 / 0.2) 62%,
-        transparent 74%
-      ),
-      linear-gradient(to top, oklch(0.16 0.006 262 / 0.7), transparent 22%);
+    background: linear-gradient(
+      to top,
+      oklch(0.16 0.006 262 / 0.7),
+      transparent 12rem
+    );
   }
 
+  /* The last row keeps most of a screen clear for her, the note at its foot. */
   .about__content {
     --text-2: oklch(0.97 0 0 / 0.78);
     position: relative;
     display: grid;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto minmax(calc(var(--photo-h) * 0.72), 1fr);
     gap: var(--space-4);
     padding: calc(var(--bar-height) + var(--space-4)) var(--page-margin)
       var(--space-4);
@@ -149,11 +157,19 @@ const { title, lead, note, photoAlt, draft } = entry.data;
     color: var(--on-media);
   }
 
-  /* Wide screens: one screen tall, text on the right, Amy clear on the left. */
+  /* Wide screens: a screen tall at least, text on the right, Amy clear on the left. */
   @media (min-width: 60rem) and (orientation: landscape) {
     .about {
       min-height: max(100vh, 44rem);
       min-height: max(100svh, 44rem);
+      background: var(--night);
+    }
+
+    .about__media {
+      inset: -6% 0;
+      height: auto;
+      -webkit-mask-image: none;
+      mask-image: none;
     }
 
     .about__shade {
@@ -172,7 +188,7 @@ const { title, lead, note, photoAlt, draft } = entry.data;
 
     .about__content {
       grid-template-rows: 1fr auto;
-      grid-template-columns: 1fr minmax(0, 34rem);
+      grid-template-columns: 1fr minmax(0, 36rem);
       column-gap: var(--space-8);
     }
 

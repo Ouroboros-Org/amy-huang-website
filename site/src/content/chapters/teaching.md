@@ -1,5 +1,5 @@
 ---
-order: 2
+order: 3
 title: I teach kung fu
 nav: Teaching
 kicker: Kung fu classes
@@ -8,7 +8,7 @@ note: my favourite part
 badge: online classes, coming soon
 facts:
   - label: What
-    value: Shaolin kung fu, forms, [self-defence?]
+    value: Shaolin kung fu, weapons, qigong, tai chi
   - label: Who
     value: Kids, adults, beginners [confirm]
   - label: How

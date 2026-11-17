@@ -2,10 +2,9 @@
 
 ## Elias Vent theme
 
-The work cards' carousel (`src/scripts/carousel.ts`) and the footer's shader
-(`src/scripts/footer-shader.ts`) are adapted from the Elias Vent portfolio theme,
-https://github.com/agnilem/elias-vent-astro (`src/scripts/carousel.ts` and
-`src/scripts/shader.ts` at commit 20cd1a8), under this licence:
+The work cards' carousel (`src/scripts/carousel.ts`) is adapted from the Elias
+Vent portfolio theme, https://github.com/agnilem/elias-vent-astro
+(`src/scripts/carousel.ts` at commit 20cd1a8), under this licence:
 
 ```
 MIT License

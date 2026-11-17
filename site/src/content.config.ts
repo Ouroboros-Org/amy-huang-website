@@ -22,8 +22,11 @@ const channel = z.enum(["whatsapp", "email", "instagram"]);
  * short paragraph in Amy's voice; the frontmatter holds the parts the layout
  * places separately. `draft: true` marks words that aren't hers yet.
  *
- * - `layout: stop` (the default) is one thing she does: a work card, a step in
- *   the offerings and a page of its own at `/<file name>/`.
+ * - `layout: stop` (the default) is one thing she does, with a page of its own
+ *   at `/<file name>/`: a work card, or with `beyond: true` a smaller entry
+ *   under "Beyond the practice".
+ * - `layout: practice` is the gallery's sentence (its title) and the words
+ *   below it (its body).
  * - `layout: about` and `layout: contact` are the two sections of that name.
  */
 const chapters = defineCollection({
@@ -32,7 +35,7 @@ const chapters = defineCollection({
     order: z.number().int().positive(),
     /** The section's heading. */
     title: z.string(),
-    layout: z.enum(["stop", "about", "contact"]).default("stop"),
+    layout: z.enum(["stop", "practice", "about", "contact"]).default("stop"),
     /** A stop's one-word name, large on its card. */
     nav: z.string().optional(),
     /** A stop's short description, small above its name on the card. */
@@ -40,6 +43,11 @@ const chapters = defineCollection({
     lead: z.string().optional(),
     /** A short note in Amy's handwriting. */
     note: z.string().optional(),
+    /**
+     * Also offered, beside her practice: a stop listed under "Beyond the
+     * practice" instead of getting a work card.
+     */
+    beyond: z.boolean().default(false),
     /** A short announcement, shown as a small pill. */
     badge: z.string().optional(),
     facts: z
@@ -63,7 +71,6 @@ const settings = defineCollection({
     name: z.string(),
     /** What she is, in a few words, under her name in the top bar. */
     role: z.string(),
-    line: z.string(),
     currentlyIn: z.string(),
     replyNote: z.string(),
     contact: z.object({
@@ -74,11 +81,13 @@ const settings = defineCollection({
     weddingsUrl: z.url().optional(),
     /**
      * The opening: her motto, set wide over the video (one line per sentence on
-     * narrow screens), the crafts beneath it, and the video's description.
+     * narrow screens), the crafts beneath it, the words over the arrow at its
+     * foot, and the video's description.
      */
     hero: z.object({
       motto: z.string(),
       crafts: z.array(z.string()).min(1),
+      cue: z.string(),
       alt: z.string(),
     }),
   }),

@@ -2,8 +2,8 @@ import { getCollection, getEntry } from "astro:content";
 
 /**
  * Everything the pages need from the content files: the site settings, the
- * things Amy does (the stops) in order, the about and contact sections, and
- * the links for the top bar and the footer.
+ * things Amy does (the stops) in order, the practice, about and contact
+ * sections, and the links for the top bar and the footer.
  */
 export async function getSite() {
   const settingsEntry = await getEntry("settings", "site");
@@ -13,7 +13,7 @@ export async function getSite() {
   const chapters = (await getCollection("chapters")).sort(
     (a, b) => a.data.order - b.data.order,
   );
-  const only = (layout: "about" | "contact") => {
+  const only = (layout: "practice" | "about" | "contact") => {
     const entry = chapters.find((chapter) => chapter.data.layout === layout);
     if (!entry) {
       throw new Error(
@@ -22,6 +22,7 @@ export async function getSite() {
     }
     return entry;
   };
+  const practice = only("practice");
   const about = only("about");
   const contact = only("contact");
   // Root-relative, so they work from the offering pages too.
@@ -32,6 +33,7 @@ export async function getSite() {
   return {
     settings: settingsEntry.data,
     stops: chapters.filter((chapter) => chapter.data.layout === "stop"),
+    practice,
     about,
     contact,
     links: {

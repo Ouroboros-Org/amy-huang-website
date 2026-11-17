@@ -5,8 +5,8 @@ import { draw } from "./satori";
 const night = (alpha: number) => `rgba(12, 13, 16, ${alpha})`;
 
 /**
- * The icon, as the footer in small: the initial of her wordmark, bold, over
- * night that melts into the footer's glow of fire and dusk at the foot.
+ * The icon: the initial of her name, bold, over night that melts into a glow
+ * of fire and dusk at the foot.
  * `rounded` gives the browser-tab version its own corners; the home-screen
  * version stays square because phones round it themselves.
  */
