@@ -10,9 +10,11 @@ import TopBar from "../components/TopBar.astro";
 import { getSite } from "../lib/site";
 
 /**
- * One page per offering, in the manner of the theme's project pages: its name
- * and facts, its picture, what it is and her words about it with the way to
- * book, then the next offering and the contact section.
+ * One page per offering, on the light page. It opens as its work card does on
+ * the home page: the picture darkened in a rounded card, its kind and its name
+ * over it, and her handwritten note. Then what it is (her lead, the facts, any
+ * announcement) beside her words about it and the way to book, the next
+ * offering, and the contact section.
  */
 export async function getStaticPaths() {
   const { stops } = await getSite();
@@ -43,17 +45,31 @@ const nextName = next.data.nav ?? next.data.title;
   <TopBar name={settings.name} role={settings.role} links={links.bar} />
   <main>
     <section
-      class="page"
+      class="cover"
       id={stop.id}
       data-draft={draft ? "" : undefined}
       aria-labelledby="page-title"
     >
-      <header class="page__head">
-        {kicker && <p class="page__kicker">{kicker}</p>}
+      <div class="cover__media">
+        {background && <BackgroundMedia {...background} />}
+      </div>
+      <div class="cover__words">
+        {kicker && <p class="cover__kind">{kicker}</p>}
         <h1 id="page-title">{name}</h1>
-        {note && <p class="page__note hand">{note}</p>}
+        {note && <p class="cover__note hand">{note}</p>}
+      </div>
+    </section>
+
+    <div class="story">
+      <div class="story__col">
+        <h2 class="caption">{title}</h2>
+        {lead && (
+          <p class="story__lead" data-reveal>
+            {lead}
+          </p>
+        )}
         {facts.length > 0 && (
-          <dl class="page__meta">
+          <dl class="story__facts">
             {facts.map((fact) => (
               <div>
                 <dt>{fact.label}</dt>
@@ -62,46 +78,36 @@ const nextName = next.data.nav ?? next.data.title;
             ))}
           </dl>
         )}
-      </header>
-      {background && (
-        <div class="page__cover">
-          <BackgroundMedia {...background} />
-        </div>
-      )}
-      <div class="page__content">
-        <div class="page__col">
-          <h2 class="caption">{title}</h2>
-          {lead && <p class="page__lead">{lead}</p>}
-          {badge && <p class="page__badge">{badge}</p>}
-        </div>
-        <div class="page__col">
-          <h2 class="caption">In my words</h2>
-          <div class="prose">
-            <Content />
-          </div>
-          {cta && (
-            <ContactAction
-              channel={cta.channel}
-              details={settings.contact}
-              message={cta.message}
-              label={cta.label}
-              primary
-            />
-          )}
-        </div>
+        {badge && <p class="story__badge">{badge}</p>}
       </div>
-    </section>
+      <div class="story__col">
+        <h2 class="caption">In my words</h2>
+        <div class="prose story__words" data-reveal="block">
+          <Content />
+        </div>
+        {cta && (
+          <ContactAction
+            channel={cta.channel}
+            details={settings.contact}
+            message={cta.message}
+            label={cta.label}
+            primary
+          />
+        )}
+      </div>
+    </div>
 
     <section class="next" aria-label="Next">
       <a class="next__link" href={`/${next.id}/`}>
-        {next.data.kicker && <span>{next.data.kicker}</span>}
+        <span class="next__label">Next</span>
+        {next.data.kicker && <span class="next__kind">{next.data.kicker}</span>}
         <span class="next__name">{nextName}</span>
-        <span class="next__arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+        <span class="next__button" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
             <path
-              d="M7 17 17 7m0 0H9m8 0v8"
+              d="M7 17L17 7M7 7H17V17"
               stroke="currentColor"
-              stroke-width="1.75"
+              stroke-width="1.5"
               stroke-linecap="round"
               stroke-linejoin="round"
             ></path>
@@ -126,78 +132,169 @@ const nextName = next.data.nav ?? next.data.title;
 </Base>
 
 <style>
-  .page {
+  /* The work card's measures (Stops.astro): the picture's share of the screen. */
+  .cover {
+    --media-w: 80%;
+    --media-h: 68vh;
+    --gutter: 128px;
+    position: relative;
     display: grid;
-    gap: var(--space-6);
-    padding: calc(var(--bar-height) + var(--space-8)) var(--page-margin)
-      var(--space-12);
+    place-items: center;
+    height: 100vh;
+    height: 100svh;
+    min-height: 32rem;
+    overflow: hidden;
   }
 
-  .page__head {
+  @supports (height: 1svh) {
+    .cover {
+      --media-h: 68svh;
+    }
+  }
+
+  @media (max-width: 74.99rem) {
+    .cover {
+      --media-w: 84%;
+      --media-h: 58vh;
+    }
+
+    @supports (height: 1svh) {
+      .cover {
+        --media-h: 58svh;
+      }
+    }
+  }
+
+  @media (max-width: 50.6rem) {
+    .cover {
+      --media-w: 92%;
+      --media-h: 50vh;
+    }
+
+    @supports (height: 1svh) {
+      .cover {
+        --media-h: 50svh;
+      }
+    }
+  }
+
+  @media (max-width: 37.49rem) {
+    .cover {
+      --gutter: 40px;
+      --media-w: 100%;
+    }
+  }
+
+  .cover__media {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(var(--media-w), 87.5rem, 100% - var(--gutter));
+    height: var(--media-h);
+    translate: -50% -50%;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background: oklch(0.2 0.006 262);
+  }
+
+  /* Darkened by 40%, as the cards. */
+  .cover__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 0.4);
+  }
+
+  /* Kept inside the card, since light type off it would vanish into the page. */
+  .cover__words {
+    position: relative;
     display: grid;
     justify-items: center;
-    gap: var(--space-2);
+    gap: var(--space-3);
+    max-width: min(var(--media-w), 87.5rem, 100% - var(--gutter));
+    padding: var(--space-3);
+    color: var(--on-media);
     text-align: center;
   }
 
-  .page__kicker {
+  .cover__kind {
+    font-size: 0.9375rem;
     font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    color: oklch(0.92 0 0);
   }
 
-  .page__head h1 {
-    font-size: var(--step-6);
+  .cover h1 {
+    max-width: 100%;
+    font-size: clamp(3.5rem, 9vw, 8.25rem);
+    font-weight: 600;
     line-height: 1.05;
+    letter-spacing: -0.01em;
   }
 
-  .page__note {
+  @media (max-width: 47.4rem) {
+    .cover h1 {
+      font-size: clamp(2.5rem, 13vw, 3.75rem);
+    }
+  }
+
+  .cover__note {
     rotate: var(--tilt-n2);
+    color: var(--on-media);
   }
 
-  .page__meta {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-2) var(--space-6);
-    margin: var(--space-2) 0 0;
-    text-align: left;
-  }
-
-  .page__meta dt {
-    color: var(--text-2);
-  }
-
-  .page__meta dd {
-    margin: 0;
-    font-weight: 600;
-  }
-
-  .page__cover {
-    position: relative;
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    border-radius: var(--radius-card);
-    background: var(--night);
-  }
-
-  .page__content {
+  /* What it is, beside her words. */
+  .story {
     display: grid;
-    gap: var(--space-6);
+    gap: var(--space-8);
+    padding: var(--space-12) var(--page-margin) var(--space-16);
   }
 
-  .page__col {
+  .story__col {
     display: grid;
     align-content: start;
     justify-items: start;
+    gap: var(--space-3);
+  }
+
+  .story__lead {
+    max-width: 22ch;
+    font-size: var(--step-3);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+  }
+
+  .story__facts {
+    display: grid;
+    width: 100%;
+    max-width: 34rem;
+    margin: var(--space-2) 0 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .story__facts > div {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
     gap: var(--space-2);
+    padding-block: var(--space-2);
+    border-bottom: 1px solid var(--line);
   }
 
-  .page__lead {
-    font-size: var(--step-1);
-    line-height: 1.35;
-    max-width: 30ch;
+  .story__facts dt {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.6;
+    text-transform: uppercase;
+    color: var(--text-2);
   }
 
-  .page__badge {
+  .story__facts dd {
+    margin: 0;
+  }
+
+  .story__badge {
     padding: 0.3rem 0.8rem;
     border: 1px solid var(--line);
     border-radius: var(--radius-pill);
@@ -205,6 +302,23 @@ const nextName = next.data.nav ?? next.data.title;
     font-weight: 600;
   }
 
+  .story__words {
+    color: var(--text-2);
+  }
+
+  .story__words :global(p:first-child) {
+    color: var(--text);
+  }
+
+  .story__words :global(em) {
+    font-family: var(--font-hand);
+    font-size: 1.35em;
+    font-style: normal;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* The next offering, as a work card's words: its kind, its name, a round arrow. */
   .next {
     padding: var(--space-12) var(--page-margin) var(--space-16);
     border-top: 1px solid var(--line);
@@ -214,45 +328,67 @@ const nextName = next.data.nav ?? next.data.title;
     display: grid;
     justify-items: center;
     gap: var(--space-2);
-    font-weight: 600;
     text-align: center;
     text-decoration: none;
   }
 
-  .next__name {
-    font-size: var(--step-5);
-    line-height: 1.1;
-    letter-spacing: -0.04em;
+  .next__label {
+    margin-inline-end: -0.45em;
+    font-size: 0.8125rem;
+    font-weight: 300;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--text-2);
   }
 
-  .next__arrow {
+  .next__kind {
+    margin-top: var(--space-2);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+
+  .next__name {
+    font-size: var(--step-6);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  .next__button {
     display: grid;
     place-items: center;
-    width: 3.25rem;
-    height: 3.25rem;
+    width: 66px;
+    height: 66px;
     margin-top: var(--space-2);
-    border: 1px solid var(--text);
-    border-radius: 50%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
     transition:
-      background-color var(--dur-state) var(--ease-out),
-      border-color var(--dur-state) var(--ease-out);
+      transform 0.3s ease,
+      background-color 0.3s ease,
+      color 0.3s ease;
   }
 
-  .next__link:hover .next__arrow,
-  .next__link:focus-visible .next__arrow {
-    border-color: var(--signal);
-    background: var(--signal);
-    color: var(--signal-text);
+  .next__link:focus-visible {
+    outline: none;
+  }
+
+  .next__link:focus-visible .next__button {
+    outline: 3px solid var(--text);
+    outline-offset: 4px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .next__link:hover .next__button {
+      background: var(--text);
+      color: var(--bg);
+      transform: scale(1.08);
+    }
   }
 
   @media (min-width: 48rem) {
-    .page__cover {
-      aspect-ratio: 16 / 9;
-    }
-
-    .page__content {
+    .story {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-8);
     }
   }
 </style>

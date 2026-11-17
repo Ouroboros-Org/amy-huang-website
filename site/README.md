@@ -60,58 +60,66 @@ From top to bottom:
   saver on, or without JavaScript (`components/Intro.astro`).
 - **Top bar:** her name and role, the section links, the pause-motion control and "Say hi".
   Over the light page it is a blurred strip of the page colour with dark type. Over the
-  hero, the about photo, the work cards and the footer it turns clear with light type.
+  hero, the about photo and the night of her work after it, it turns clear with light
+  type.
 - **Hero:** one screen of Amy's video, looping, under a night shade, with her motto set
   like a film title (thin capitals, widely spaced) and her crafts beneath, separated by
   dots. After the intro it breathes in: the video comes into focus from a light blur, and
   the words fade in, the motto's letters already a little apart and opening out wide,
-  then the hairline arrow shows at the foot. The video and the words hold still while the page
-  scrolls up over them, and the words fade out as their letters open wider; with motion
-  off the hero scrolls with the page. On narrow screens each sentence takes a line.
-- **Gallery pin:** her line in the middle of the screen while pictures fly outward past
-  it: Amy's photos, stills from the hero's video, and the offerings' pictures. It arrives
-  halfway into the flight, the screen already full, and ends on the line alone. The
-  section is 2.4 screens long and pins for the flight.
-- **About:** full-screen over the photo of Amy with her staff: a large statement, her
-  paragraph, and a handwritten note pointing at her.
-- **Work cards:** the theme's project carousel, on night: one card per offering, its
-  picture darkened, its kind, its name and a round arrow, linking to the offering's page.
-  One screen pins while the cards roll past on a slight cylinder, drawn on a canvas (see
-  "The work cards" below).
-- **Ticker:** a slow band of the offerings' names. It is decorative and hidden from
-  assistive technology.
-- **Step by step:** one screen pins and steps through the offerings: the names on the
-  left, the current one's picture, lead and facts on the right, a counter and a line that
-  fills. Names and panels link to the offering pages.
-- **Contact and footer:** the ways to reach her, then a night footer with the accent
-  glowing up from below, the links and her name as a wordmark.
+  then a few words ("Enter my world") over a hairline arrow show at the foot. The video
+  and the words hold still while the page scrolls up over them, and the words fade out as
+  their letters open wider; with motion off the hero scrolls with the page. On narrow
+  screens each sentence takes a line, and so does each craft.
+- **Gallery pin:** her sentence about her practice in the middle of the screen while
+  pictures fly outward past it: Amy's photos, stills from the hero's video, and the
+  offerings' pictures. It arrives halfway into the flight, the screen already full, and
+  ends on the sentence alone. The section is 2.4 screens long and pins for the flight.
+- **About:** over the photo of Amy with her staff: a large statement, her words, and a
+  handwritten note pointing at her. On wide screens it is a screen tall with the text on
+  the right; on narrow ones the text comes first on dusk and the photo rises out of it.
+  Its foot melts into night, which carries her work through "Beyond the practice".
+- **My practice:** her words about her practice open the work: her first line large on
+  the left, the rest beside it.
+- **Work cards:** the theme's project carousel: one card per offering of her practice
+  (teaching, performing), its picture darkened, its kind, its name and a round arrow,
+  linking to the offering's page. One screen pins while the cards roll past on a slight
+  cylinder, drawn on a canvas (see "The work cards" below).
+- **Beyond the practice:** what she also offers (hair, drone), kept small on purpose: a
+  row each with a small picture, its kind, name and lead, linking to its page.
+- **Say hi:** back on the light page: her invitation, the question she asks, large and
+  centred, her words, and the ways to reach her.
+- **Footer:** a quiet strip on the light page: her name in the hero's thin, widely
+  spaced capitals, the page's links and the wedding-hair link, "Back to the start", where
+  she is with a small live dot, and the copyright line.
 
-Each offering also has its own page at `/<file name>/` (`src/pages/[stop].astro`): name,
-facts, picture, what it is, her words with the booking action, then the next offering and
-the contact section.
+Each offering, including those beyond the practice, also has its own page at
+`/<file name>/` (`src/pages/[stop].astro`), on the light page. It opens as its work
+card: the picture darkened in a rounded card at the cards' measures, its kind and name
+over it, and her note. Then its `title` and `lead` with the facts and any badge, beside
+her words about it with the booking action; the next offering as a card's words with a
+round arrow; and the contact section.
 
 ### Motion
 
 Everything that moves loads late (`components/Effects.astro`, `scripts/effects.ts`) and
 only while motion is allowed:
 
-| Script             | Does                                                                          |
-| :----------------- | :---------------------------------------------------------------------------- |
-| `parallax.ts`      | The about photo drifts.                                                       |
-| `gallery.ts`       | The gallery's pictures fly outward while the section is pinned.               |
-| `reveal.ts`        | The about and contact headings sharpen word by word as they scroll into view. |
-| `carousel.ts`      | The work cards roll past a pinned screen, drawn on a canvas.                  |
-| `switcher.ts`      | The pinned step through the offerings.                                        |
-| `footer-shader.ts` | The footer's liquid gradient.                                                 |
+| Script        | Does                                                                          |
+| :------------ | :---------------------------------------------------------------------------- |
+| `parallax.ts` | The about photo drifts.                                                       |
+| `gallery.ts`  | The gallery's pictures fly outward while the section is pinned.               |
+| `reveal.ts`   | The about and contact headings and an offering's lead sharpen word by word as |
+|               | they scroll into view; the practice, about and offering words as a block. All |
+|               | are fully in by the foot of the page, however tall the screen.                |
+| `carousel.ts` | The work cards roll past a pinned screen, drawn on a canvas.                  |
 
 The intro and the hero carry their own small scripts, which load with the page.
 
 **Without JavaScript, with reduced motion, or with motion paused** (the control in the
 top bar), each of these falls back to plain HTML: no intro, the hero's video resting on
-its first frame, the gallery's sentence above a grid of its pictures, the about text
-simply there, each work card a screen with its picture centred, and the offerings as a
-grid of panels. The footer keeps a CSS glow of the same colours, or holds the shader on
-one frame. Pausing also stops the scroll cue and the ticker.
+its first frame, the gallery's sentence above a grid of its pictures, the practice and
+about text simply there, and each work card a screen with its picture centred. Pausing
+also stops the scroll cue.
 
 ### The work cards
 
@@ -131,14 +139,6 @@ and a column of bars on the right shows and picks the card. Pictures are read fr
 cards' own `<img>` (or a playing `<video>`), so the plain layout and the canvas always show
 the same media. Without WebGL the plain layout stays.
 
-### The footer
-
-`scripts/footer-shader.ts` is the theme's footer shader (MIT, a port of Framer's "Liquid
-Gradient"), with its settings and its five colours, fire into dusk (`--glow-1` to
-`--glow-5`, `palette.glow` in `brand.ts`). It starts when the footer is two screens away,
-draws at half resolution only while on screen, and the pointer pushes it a little. Night
-covers the top seventh of the footer and fades out toward the foot, as in the theme.
-
 ### Link previews and the icon
 
 A shared link previews with the opening screen of the home page
@@ -148,8 +148,8 @@ crafts in the hero's thin, widely spaced capitals. The motto takes a line per se
 as on phones, so it stays legible when the preview is small, and the words sit above her
 fire. It is a JPEG of 1200 by 630 pixels; every page uses it.
 
-The icon (`src/lib/icon.ts`) is the footer in small: the first letter of her name,
-bold as the wordmark, over night melting into the glow of fire and dusk at the foot.
+The icon (`src/lib/icon.ts`) is the first letter of her name, bold, over night melting
+into a glow of fire and dusk at the foot.
 
 Both are drawn with satori in Sora (`src/lib/satori.ts`), which turns the text into
 outlines, so neither depends on a font where it is shown.
@@ -158,8 +158,8 @@ outlines, so neither depends on a font where it is shown.
 
 | Path                                                                    | Holds                                                                                             |
 | :---------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
-| `src/content/chapters/*.md`                                             | One file per section: each offering (`layout: stop`), plus `about` and `contact`.                 |
-| `src/content/settings.json`                                             | Name, role, line, "currently in", contact details, wedding-site link, the hero's words.           |
+| `src/content/chapters/*.md`                                             | One file per section: each offering (`layout: stop`), plus `practice`, `about` and `contact`.     |
+| `src/content/settings.json`                                             | Name, role, "currently in", contact details, wedding-site link, the hero's words.                 |
 | `src/content.config.ts`                                                 | The schema both are checked against at build time.                                                |
 | `src/pages/index.astro`, `[stop].astro`                                 | The home page, and the page each offering gets.                                                   |
 | `src/pages/404.astro`                                                   | The page for unknown addresses: the hero's first frame and a way back.                            |
@@ -169,9 +169,10 @@ outlines, so neither depends on a font where it is shown.
 | `src/components/Intro.astro`, `public/media/intro/`                     | The cities at night, played once before the hero.                                                 |
 | `src/components/Hero.astro`, `public/media/hero/`                       | The opening video, with the motto and crafts over it.                                             |
 | `src/components/Gallery.astro`, `src/assets/gallery/`                   | The gallery pin, and its photos and stills from the hero's video.                                 |
+| `src/components/Practice.astro`                                         | Her words about her practice, opening the work cards.                                             |
 | `src/components/About.astro`, `src/assets/about/`                       | The about section and its photo.                                                                  |
-| `src/components/Stops.astro`, `Offerings.astro`                         | The work cards, and the step through the offerings.                                               |
-| `src/components/Contact.astro`, `Ticker.astro`                          | The sections of those names.                                                                      |
+| `src/components/Stops.astro`, `Beyond.astro`                            | The work cards, and the smaller "Beyond the practice" section.                                    |
+| `src/components/Contact.astro`                                          | The "Say hi" section.                                                                             |
 | `src/components/ContactAction.astro`, `ContactLinks.astro`              | The contact pills.                                                                                |
 | `src/components/BackgroundMedia.astro`                                  | A video or still that fills its card, with portrait cuts and posters.                             |
 | `src/components/Effects.astro`, `src/scripts/`                          | The late loader for motion, and the scripts above plus `motion.ts`, `live.ts`, `play-in-view.ts`. |
@@ -182,7 +183,7 @@ outlines, so neither depends on a font where it is shown.
 | `scripts/encode-loop.sh`                                                | Encodes a full-screen video into the WebMs, MP4s and poster the page plays.                       |
 | `scripts/cut-intro.sh`                                                  | Cuts the intro's master from its Pexels clips.                                                    |
 | `scripts/encode-alpha.sh`                                               | Encodes a master clip with alpha into the stacked AV1, HEVC and poster files.                     |
-| `THIRD-PARTY-NOTICES.md`                                                | The licence of the theme code the work cards and the footer are adapted from; the intro's clips.  |
+| `THIRD-PARTY-NOTICES.md`                                                | The licence of the theme code the work cards are adapted from; the intro's clips.                 |
 | `scripts/check-launch.mjs`                                              | The launch check (#13).                                                                           |
 | `public/media/test/`, `public/media/placeholder/`                       | Synthetic test clips and labelled placeholder images.                                             |
 
@@ -198,36 +199,44 @@ Words and media live in `src/content/`, not in the layout code:
   shows all of that plus `note` (in her handwriting), `title`, `lead`, the body, `badge`,
   `facts` and `cta`.
 - To add an offering, add a Markdown file with the next `order`. It gets a work card, a
-  step, a place in the ticker and the gallery, and a page at `/<file name>/`.
-- The gallery's sentence is `line` in `settings.json`; the part after its last comma is
-  set muted.
+  place in the gallery, and a page at `/<file name>/`. With `beyond: true` it is listed
+  under "Beyond the practice" (picture, `kicker`, `nav`, `lead`) instead of getting a work
+  card.
+- The gallery's sentence is the `title` of `chapters/practice.md`; the part after its last
+  full stop or comma is set muted. Its body opens the work cards, the first paragraph
+  large.
+- The contact section's question is the `title` of `chapters/contact.md`, its words the
+  body. Text in `*asterisks*` in an offering's words is set in her
+  handwriting, as her own emphasis.
 - Add contact details in `settings.json` (`whatsapp` as an international number, `email`,
   `instagram` as the handle). Until a detail is there, its button renders as a dashed
   placeholder.
 - The hero's words are `hero` in `settings.json`: `motto` (each sentence keeps to one
-  line), `crafts` (shown with dots between them) and `alt`, which describes the video.
+  line), `crafts` (shown with dots between them), `cue` (over the arrow at its foot) and
+  `alt`, which describes the video.
 - The link preview shows `name`, `role` and the hero's `motto` and `crafts` from
   `settings.json` over the hero video's poster, so editing them, or re-encoding the video,
   updates it on the next build. Apps that already fetched the preview may keep the old one for a while.
 
 ## Design rules in code
 
-- A light grey page (`--bg`) with near-black text at 14.7:1 and muted text at 6:1. Photos,
-  video and the footer are the dark surfaces, with light type over a shade.
+- A light grey page (`--bg`) with near-black text at 14.7:1 and muted text at 6:1, for the
+  gallery, "Say hi", the footer and the offering pages. Photos, video and her work, from
+  the about photo's foot through "Beyond the practice", are night (`--night`), with light
+  type.
 - The accent (`--signal`) fills contact actions, with night text on it at 6.8:1, and marks
   hover and active states. Deepened (`--ink`, 5.8:1 on the page) it colours her
-  handwriting, the active tick and the progress line. With its neighbours (`--glow-1` to
-  `--glow-5`, fire into dusk) it lights the footer.
+  handwriting.
 - Type is Sora, self-hosted: semi-bold headings with tight tracking, and small caps
-  captions that are never tracked out. The one exception is the hero, set like a film
-  title: thin capitals spaced wide. Shantell Sans stands in for Amy's handwriting.
-  `.hand` is for her voice only, at 20px or larger, never for body copy, prices or contact
-  details, and at most one note per section.
+  captions that are never tracked out. The exceptions are set like a film's titles, thin
+  capitals spaced wide: the hero, the footer's name, and the "Say hi" and "Next" labels. Caveat, a felt pen, stands in for
+  Amy's handwriting until she sends a sample (#2); it is small for its size, so `.hand`
+  sets it at 25px or larger. `.hand` is for her voice only, never for body copy, prices
+  or contact details, and at most one note per section.
 - Media sits in cards with a 1.25rem radius. Buttons are pills.
 - Scroll-tied motion follows the scroll position, with no scroll-jacking; the work cards
   ease after it, as in the theme. The only things that move on their own are the intro,
-  the hero's video and its breath in, the scroll cue, the ticker, the footer's gradient and
-  the work cards' wobble. A pause control stops all of them and all video (WCAG 2.2.2).
+  the hero's video and its breath in, the scroll cue and the work cards' wobble. A pause control stops all of them and all video (WCAG 2.2.2).
 
 ## Transparent video
 

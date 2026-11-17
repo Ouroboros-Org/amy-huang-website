@@ -54,6 +54,16 @@ export async function renderSocialCard({
   const sentences = hero.motto.split(/(?<=[.!?])\s+/);
   const mottoSize = 44;
   const craftsSize = 20;
+  // More than three crafts don't fit one line at this size: two lines, the
+  // first one the longer if they can't be even.
+  const perRow =
+    hero.crafts.length > 3
+      ? Math.ceil(hero.crafts.length / 2)
+      : hero.crafts.length;
+  const craftRows = Array.from(
+    { length: Math.ceil(hero.crafts.length / perRow) },
+    (_, row) => hero.crafts.slice(row * perRow, (row + 1) * perRow),
+  );
 
   const shade = (background: string) => ({
     type: "div",
@@ -150,18 +160,18 @@ export async function renderSocialCard({
                 })),
                 // The crafts with dots between them; the dots aren't tracked, so
                 // they sit midway.
-                {
+                ...craftRows.map((crafts, row) => ({
                   type: "div",
                   props: {
                     style: {
                       display: "flex",
                       gap: craftsSize * 1.1,
-                      marginTop: 18,
+                      marginTop: row === 0 ? 18 : 10,
                       fontSize: craftsSize,
                       fontWeight: 400,
                       color: "rgba(245, 245, 245, 0.88)",
                     },
-                    children: hero.crafts.flatMap((craft, index) => [
+                    children: crafts.flatMap((craft, index) => [
                       ...(index > 0
                         ? [{ type: "div", props: { children: "·" } }]
                         : []),
@@ -171,13 +181,14 @@ export async function renderSocialCard({
                           style: {
                             letterSpacing: craftsSize * CRAFTS_TRACK,
                             marginRight: -craftsSize * CRAFTS_TRACK,
+                            whiteSpace: "nowrap",
                           },
                           children: craft.toUpperCase(),
                         },
                       },
                     ]),
                   },
-                },
+                })),
               ],
             },
           },

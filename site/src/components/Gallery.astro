@@ -11,13 +11,16 @@
  * they belong, so here they are decorative.
  */
 interface Props {
-  /** The sentence. Its last clause, after the last comma, is set muted. */
+  /**
+   * The sentence. Its last part, after the last full stop or comma between its
+   * words, is set muted.
+   */
   sentence: string;
   images: { src: string; portrait?: boolean }[];
 }
 
 const { sentence, images } = Astro.props;
-const cut = sentence.lastIndexOf(", ");
+const cut = Math.max(sentence.lastIndexOf(". "), sentence.lastIndexOf(", "));
 const lead = cut > 0 ? sentence.slice(0, cut + 1) : sentence;
 const tail = cut > 0 ? sentence.slice(cut + 1) : "";
 

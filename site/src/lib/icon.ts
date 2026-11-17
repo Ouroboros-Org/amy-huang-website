@@ -5,8 +5,8 @@ import { draw } from "./satori";
 const night = (alpha: number) => `rgba(12, 13, 16, ${alpha})`;
 
 /**
- * The icon, as the footer in small: the initial of her wordmark, bold, over
- * night that melts into the footer's glow of fire and dusk at the foot.
+ * The icon: the initial of her name, bold, over night that melts into a glow
+ * of fire and dusk at the foot.
  * `rounded` gives the browser-tab version its own corners; the home-screen
  * version stays square because phones round it themselves.
  */
@@ -46,7 +46,7 @@ export function renderIcon(
         },
         children: [
           layer(`linear-gradient(90deg, ${palette.glow.join(", ")})`),
-          // The footer's fade: solid night over the top, easing out to the foot.
+          // Solid night over the top, easing out to the foot.
           layer(
             `linear-gradient(to bottom, ${night(1)} 0%, ${night(1)} 34%, ${night(0.72)} 58%, ${night(0.2)} 84%, ${night(0)} 100%)`,
           ),

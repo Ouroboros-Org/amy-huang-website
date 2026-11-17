@@ -3,13 +3,18 @@
     "id": "site",
     "name": "Amy Huang",
     "role": "Kung fu teacher & performer",
-    "line": "I teach kung fu, perform with fire, and travel a lot.",
     "currentlyIn": "Thailand",
     "replyNote": "I usually reply within [a day or two]",
     "contact": {},
     "hero": {
       "motto": "More within. More without.",
-      "crafts": ["Kung Fu", "Fire", "Flow"],
+      "crafts": [
+        "Martial Arts",
+        "Movement",
+        "Weapon Flow",
+        "Fire/LED Performance"
+      ],
+      "cue": "Enter my world",
       "alt": "Amy spinning fire on a ridge below the mountains and on a lawn at night, then stretching and training kung fu with a group in a courtyard."
     }
   }

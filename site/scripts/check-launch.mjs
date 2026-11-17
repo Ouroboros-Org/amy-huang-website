@@ -28,8 +28,9 @@ const BRACKETED = /\[[^\]\n]{1,200}\]/g;
  * The content file a section's words come from:
  * - the hero and the footer come from the settings;
  * - the gallery shows pictures from several chapters;
- * - a stop's work card (`card-<id>`) and its offerings panel (`panel-<id>`)
- *   come from the chapter of that id, as does every other section.
+ * - a stop's work card (`card-<id>`) and its entry under "Beyond the
+ *   practice" (`beyond-<id>`) come from the chapter of that id, as does every
+ *   other section.
  */
 export function sourceOf(sectionId) {
   if (!sectionId) return "";
@@ -37,7 +38,7 @@ export function sourceOf(sectionId) {
     return "src/content/settings.json";
   }
   if (sectionId === "gallery") return "src/content/chapters/";
-  const prefix = ["card-", "panel-"].find((p) => sectionId.startsWith(p));
+  const prefix = ["card-", "beyond-"].find((p) => sectionId.startsWith(p));
   const chapter = prefix ? sectionId.slice(prefix.length) : sectionId;
   return `src/content/chapters/${chapter}.md`;
 }

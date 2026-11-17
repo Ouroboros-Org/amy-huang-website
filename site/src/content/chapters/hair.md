@@ -1,14 +1,15 @@
 ---
-order: 4
-title: I also do hair
+order: 5
+title: Beyond the practice
 nav: Hair
-kicker: Event styling
-lead: "Hair styling for events and special days. [Amy: what kind of styling, and for whom.]"
+kicker: Braids, festival and wedding hair
+lead: Mostly braids, like cornrows, festival hair and weddings.
 note: before → after
 cta:
   label: Ask about hair on WhatsApp
   channel: whatsapp
   message: Hi Amy, I'd like to ask about hair styling.
+beyond: true
 background:
   type: still
   src: /media/placeholder/hair-detail.svg

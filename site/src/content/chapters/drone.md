@@ -1,14 +1,15 @@
 ---
-order: 5
-title: And I fly drones
+order: 6
+title: Beyond the practice
 nav: Drone
-kicker: Aerial photo and video
-lead: "Aerial photos and video from wherever I happen to be. [Amy: what she shoots, and for whom.]"
+kicker: Drone filming
+lead: "Drone filming, from the places my travels take me. [Amy: what she films, and for whom.]"
 note: view from up here
 cta:
   label: Ask about drone work on WhatsApp
   channel: whatsapp
-  message: Hi Amy, I'd like to ask about drone photography.
+  message: Hi Amy, I'd like to ask about drone filming.
+beyond: true
 background:
   type: still
   src: /media/placeholder/aerial-coast.svg
