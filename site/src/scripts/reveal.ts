@@ -10,7 +10,9 @@ gsap.registerPlugin(ScrollTrigger);
  * - `data-reveal` on a heading sharpens it word by word.
  * - `data-reveal="block"` sharpens the whole element at once.
  *
- * Scroll position drives it. With motion off the text is simply there.
+ * Scroll position drives it. The end is clamped to the foot of the page, so text
+ * near the foot is fully in when the page can scroll no further, however tall
+ * the screen. With motion off the text is simply there.
  */
 export function initReveal(): void {
   const targets = [...document.querySelectorAll<HTMLElement>("[data-reveal]")];
@@ -23,7 +25,7 @@ export function initReveal(): void {
         const trigger = {
           trigger: target,
           start: "top 88%",
-          end: "top 40%",
+          end: "clamp(top 40%)",
           scrub: true,
         };
         if (target.dataset.reveal === "block") {

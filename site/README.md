@@ -109,7 +109,8 @@ only while motion is allowed:
 | `parallax.ts` | The about photo drifts.                                                       |
 | `gallery.ts`  | The gallery's pictures fly outward while the section is pinned.               |
 | `reveal.ts`   | The about and contact headings and an offering's lead sharpen word by word as |
-|               | they scroll into view; the practice, about and offering words as a block.     |
+|               | they scroll into view; the practice, about and offering words as a block. All |
+|               | are fully in by the foot of the page, however tall the screen.                |
 | `carousel.ts` | The work cards roll past a pinned screen, drawn on a canvas.                  |
 
 The intro and the hero carry their own small scripts, which load with the page.
