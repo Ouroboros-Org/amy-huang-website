@@ -24,8 +24,8 @@
 
   /* Type: one sans for everything readable, handwriting only for Amy's voice. */
   --font-sans: "Sora Variable", system-ui, sans-serif;
-  /* A brush pen: small for its size, so set larger than the text beside it. */
-  --font-hand: "Nanum Brush Script", "Segoe Print", "Bradley Hand", cursive;
+  /* A felt pen: small for its size, so set larger than the text beside it. */
+  --font-hand: "Caveat Variable", "Segoe Print", "Bradley Hand", cursive;
 
   /* Fluid modular scale: 17px x1.25 at 360px wide, 18px x1.333 at 1440px, capped at 6rem. */
   --step--1: 0.875rem;

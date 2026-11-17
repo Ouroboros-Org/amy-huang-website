@@ -222,10 +222,10 @@ Words and media live in `src/content/`, not in the layout code:
   handwriting.
 - Type is Sora, self-hosted: semi-bold headings with tight tracking, and small caps
   captions that are never tracked out. The exceptions are the hero and the footer, set
-  like a film's titles: thin capitals spaced wide. Nanum Brush Script, a brush pen, stands
-  in for Amy's handwriting until she sends a sample (#2); it is small for its size, so
-  `.hand` sets it at 28px or larger. `.hand` is for her voice only, never for body copy,
-  prices or contact details, and at most one note per section.
+  like a film's titles: thin capitals spaced wide. Caveat, a felt pen, stands in for
+  Amy's handwriting until she sends a sample (#2); it is small for its size, so `.hand`
+  sets it at 25px or larger. `.hand` is for her voice only, never for body copy, prices
+  or contact details, and at most one note per section.
 - Media sits in cards with a 1.25rem radius. Buttons are pills.
 - Scroll-tied motion follows the scroll position, with no scroll-jacking; the work cards
   ease after it, as in the theme. The only things that move on their own are the intro,

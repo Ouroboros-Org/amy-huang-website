@@ -84,8 +84,8 @@ a {
 /* Amy's voice: short notes only. Never body copy, prices or contact details. */
 .hand {
   font-family: var(--font-hand);
-  font-weight: 400;
-  font-size: max(1.75rem, calc(var(--step-1) * 1.4));
+  font-weight: 500;
+  font-size: max(1.5625rem, calc(var(--step-1) * 1.25));
   line-height: 1.1;
   letter-spacing: 0;
   color: var(--ink);
