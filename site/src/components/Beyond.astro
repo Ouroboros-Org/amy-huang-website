@@ -4,9 +4,9 @@ import BackgroundMedia from "./BackgroundMedia.astro";
 
 /**
  * "Beyond the practice": what Amy also offers beside her martial arts and
- * movement (stops marked `beyond: true`), kept smaller than the work cards on
- * purpose. Each entry is a small picture, its kind, its name and its lead, and
- * leads to its own page.
+ * movement (stops marked `beyond: true`), on the work cards' night but kept
+ * smaller than them on purpose. Each entry is a small picture, its kind, its
+ * name and its lead, and leads to its own page.
  */
 interface Props {
   stops: CollectionEntry<"chapters">[];
@@ -16,7 +16,12 @@ const { stops } = Astro.props;
 ---
 
 {stops.length > 0 && (
-  <section class="beyond" id="beyond" aria-labelledby="beyond-title">
+  <section
+    class="beyond"
+    id="beyond"
+    data-bar-tone="light"
+    aria-labelledby="beyond-title"
+  >
     <div class="beyond__head">
       <p class="caption">Also offered</p>
       <h2 id="beyond-title">Beyond the practice</h2>
@@ -56,9 +61,14 @@ const { stops } = Astro.props;
 
 <style>
   .beyond {
+    --text: var(--on-media);
+    --text-2: oklch(0.97 0 0 / 0.72);
+    --line: oklch(1 0 0 / 0.14);
     display: grid;
     gap: var(--space-4);
-    padding: var(--space-12) var(--page-margin);
+    padding: var(--space-12) var(--page-margin) var(--space-16);
+    background: var(--night);
+    color: var(--text);
   }
 
   .beyond__head {
@@ -97,7 +107,7 @@ const { stops } = Astro.props;
     aspect-ratio: 4 / 3;
     overflow: hidden;
     border-radius: 0.75rem;
-    background: var(--night);
+    background: oklch(0.2 0.006 262);
   }
 
   .item__media :global(img) {

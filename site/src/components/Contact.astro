@@ -4,8 +4,10 @@ import ContactLinks from "./ContactLinks.astro";
 import type { ContactDetails } from "../lib/contact";
 
 /**
- * The last section: a large invitation on one side, the ways to reach Amy on the
- * other. Nothing moves here, so an action never shifts under a finger.
+ * The last section, on the night the page ends on: "Say hi" in the hero's
+ * thin, widely spaced capitals, her invitation large, her words, and the ways
+ * to reach her, all centred. Nothing moves here, so an action never shifts
+ * under a finger.
  */
 interface Props {
   entry: CollectionEntry<"chapters">;
@@ -22,59 +24,72 @@ const { title, note, draft } = entry.data;
   class="contact"
   id={entry.id}
   data-draft={draft ? "" : undefined}
+  data-bar-tone="light"
   aria-labelledby={`${entry.id}-title`}
 >
-  <div class="contact__lead">
-    {note && <p class="contact__note hand">{note}</p>}
-    <h2 id={`${entry.id}-title`} data-reveal>
-      {title}
-    </h2>
+  <p class="contact__kicker">Say hi</p>
+  {note && <p class="contact__note hand">{note}</p>}
+  <h2 id={`${entry.id}-title`} data-reveal>
+    {title}
+  </h2>
+  <div class="contact__words prose">
+    <Content />
   </div>
-  <div class="contact__side">
-    <p class="caption">Get in touch</p>
-    <div class="prose">
-      <Content />
-    </div>
-    <ContactLinks details={contact} size="large" />
-    <p class="contact__reply">{replyNote}</p>
-  </div>
+  <ContactLinks details={contact} size="large" class="contact__links" />
+  <p class="contact__reply">{replyNote}</p>
 </section>
 
 <style>
   .contact {
+    --text: var(--on-media);
+    --text-2: oklch(0.97 0 0 / 0.72);
     display: grid;
-    gap: var(--space-6);
-    padding: var(--space-12) var(--page-margin) var(--space-16);
-    border-top: 1px solid var(--line);
+    justify-items: center;
+    gap: var(--space-3);
+    padding: var(--space-16) var(--page-margin);
+    border-top: 1px solid oklch(1 0 0 / 0.14);
+    background: var(--night);
+    color: var(--text);
+    text-align: center;
+  }
+
+  /* The hero's film-title manner: thin capitals set wide, the space after the
+     last letter given back so it centres. */
+  .contact__kicker {
+    margin-inline-end: -0.45em;
+    font-size: 0.8125rem;
+    font-weight: 300;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--text-2);
   }
 
   .contact__note {
-    width: max-content;
-    max-width: 100%;
-    margin-bottom: var(--space-1);
     rotate: var(--tilt-n2);
+    color: var(--text);
   }
 
   .contact h2 {
-    font-size: var(--step-6);
-    line-height: 1.05;
+    max-width: 26ch;
+    font-size: var(--step-3);
+    line-height: 1.2;
   }
 
-  .contact__side {
-    display: grid;
-    align-content: start;
-    gap: var(--space-3);
+  .contact__words {
+    color: var(--text-2);
+  }
+
+  .contact__words :global(p) {
+    margin-inline: auto;
+  }
+
+  .contact :global(.contact__links) {
+    justify-content: center;
+    margin-top: var(--space-2);
   }
 
   .contact__reply {
     font-size: var(--step--1);
     color: var(--text-2);
-  }
-
-  @media (min-width: 48rem) {
-    .contact {
-      grid-template-columns: 7fr 5fr;
-      gap: var(--space-8);
-    }
   }
 </style>

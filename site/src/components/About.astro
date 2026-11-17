@@ -110,13 +110,15 @@ const { title, lead, note, photoAlt, draft } = entry.data;
     object-position: 31% 50%;
   }
 
-  /* A little night at the foot, for the note. */
+  /* Night at the foot, for the note, melting into the night of the section
+     after it. */
   .about__shade {
     position: absolute;
     inset: 0;
     background: linear-gradient(
       to top,
-      oklch(0.16 0.006 262 / 0.7),
+      var(--night),
+      oklch(0.16 0.006 262 / 0.7) 3rem,
       transparent 12rem
     );
   }
@@ -172,8 +174,15 @@ const { title, lead, note, photoAlt, draft } = entry.data;
       mask-image: none;
     }
 
+    /* The foot first, so the dusk on the right melts into night too. */
     .about__shade {
       background:
+        linear-gradient(
+          to top,
+          var(--night),
+          oklch(0.16 0.006 262 / 0.7) 6%,
+          transparent 22%
+        ),
         linear-gradient(
           to left,
           oklch(0.2 0.045 262 / 0.86) 0%,
@@ -182,8 +191,7 @@ const { title, lead, note, photoAlt, draft } = entry.data;
           oklch(0.2 0.045 262 / 0.12) 70%,
           transparent 86%
         ),
-        linear-gradient(to bottom, oklch(0.2 0.045 262 / 0.5), transparent 28%),
-        linear-gradient(to top, oklch(0.16 0.006 262 / 0.7), transparent 22%);
+        linear-gradient(to bottom, oklch(0.2 0.045 262 / 0.5), transparent 28%);
     }
 
     .about__content {

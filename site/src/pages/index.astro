@@ -19,7 +19,6 @@ import Hero from "../components/Hero.astro";
 import Intro from "../components/Intro.astro";
 import Practice from "../components/Practice.astro";
 import Stops from "../components/Stops.astro";
-import Ticker from "../components/Ticker.astro";
 import TopBar from "../components/TopBar.astro";
 import { getSite } from "../lib/site";
 
@@ -61,10 +60,9 @@ const gallery = [
   <main>
     <Hero {...settings.hero} />
     <Gallery sentence={practice.data.title} images={gallery} />
-    <Practice entry={practice} />
     <About entry={about} />
+    <Practice entry={practice} />
     <Stops stops={work} />
-    <Ticker items={settings.hero.crafts} />
     <Beyond stops={beyond} />
     <Contact
       entry={contact}
@@ -74,7 +72,6 @@ const gallery = [
   </main>
   <Footer
     name={settings.name}
-    crafts={settings.hero.crafts}
     currentlyIn={settings.currentlyIn}
     weddingsUrl={settings.weddingsUrl}
     links={links.footer}

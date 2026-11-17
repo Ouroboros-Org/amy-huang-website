@@ -2,10 +2,12 @@
 import { render, type CollectionEntry } from "astro:content";
 
 /**
- * Her words about her practice, right below the gallery's sentence
- * (Gallery.astro), which is this chapter's title: a short centred column on the
- * light page that comes into focus as it scrolls in. The gallery's heading
- * covers it, so it has no heading of its own.
+ * Her words about her practice, opening the work cards (Stops.astro) on the
+ * same night: her first line large, the rest beside it. They come into focus
+ * as they scroll in.
+ *
+ * The chapter's title is the gallery's sentence (Gallery.astro); its body is
+ * shown here.
  */
 interface Props {
   entry: CollectionEntry<"chapters">;
@@ -19,31 +21,63 @@ const { Content } = await render(entry);
   class="practice"
   id={entry.id}
   data-draft={entry.data.draft ? "" : undefined}
+  data-bar-tone="light"
+  aria-labelledby={`${entry.id}-title`}
 >
-  <div class="practice__words prose" data-reveal="block">
+  <h2 class="caption" id={`${entry.id}-title`}>
+    My practice
+  </h2>
+  <div class="practice__words" data-reveal="block">
     <Content />
   </div>
 </section>
 
 <style>
   .practice {
+    --text: var(--on-media);
+    --text-2: oklch(0.97 0 0 / 0.72);
     display: grid;
-    justify-items: center;
-    padding: var(--space-8) var(--page-margin) var(--space-16);
+    gap: var(--space-4);
+    padding: var(--space-16) var(--page-margin) var(--space-12);
+    background: var(--night);
+    color: var(--text);
   }
 
   .practice__words {
-    max-width: 38rem;
-    font-size: var(--step-1);
-    line-height: 1.5;
-    text-align: center;
+    display: grid;
+    gap: var(--space-3);
   }
 
-  .practice__words :global(p) {
-    margin-inline: auto;
+  /* Her first line, as a statement. */
+  .practice__words :global(p:first-child) {
+    max-width: 20ch;
+    font-size: var(--step-4);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
   }
 
-  .practice__words :global(p + p) {
-    margin-top: var(--space-3);
+  .practice__words :global(p:not(:first-child)) {
+    max-width: 34rem;
+    color: var(--text-2);
+  }
+
+  /* Wide screens: the statement on the left, the rest together at its foot on
+     the right. */
+  @media (min-width: 60rem) {
+    .practice__words {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      grid-template-rows: 1fr auto;
+      column-gap: var(--space-8);
+    }
+
+    .practice__words :global(p:first-child) {
+      grid-row: span 2;
+    }
+
+    .practice__words :global(p:nth-child(2)) {
+      align-self: end;
+    }
   }
 </style>

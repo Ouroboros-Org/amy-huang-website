@@ -1,58 +1,24 @@
 ---
-import { Picture } from "astro:assets";
-import fire from "../assets/gallery/amy-3.webp";
-
 /**
- * The page's end, as the end of a film: her name and crafts set like the
- * hero's title (thin capitals, widely spaced) on night, and below them Amy
- * spinning fire at night, rising out of the dark. Along the foot: where she is
- * with a small live dot, the page's links and the wedding-hair link, a way back
- * to the start, and the copyright line.
- *
- * Nothing in it moves, so it needs no pause and no fallback.
+ * The page's end: a quiet strip on the night the page ends on. Her name in the
+ * hero's thin, widely spaced capitals, the page's links and the wedding-hair
+ * link, a way back to the start; below them where she is, with a small live
+ * dot, and the copyright line.
  */
 interface Props {
   name: string;
-  crafts: string[];
   currentlyIn: string;
   weddingsUrl?: string;
   links: { label: string; href: string }[];
 }
 
-const { name, crafts, currentlyIn, weddingsUrl, links } = Astro.props;
+const { name, currentlyIn, weddingsUrl, links } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer" id="footer" data-bar-tone="light">
-  <div class="footer__media" aria-hidden="true">
-    <Picture
-      src={fire}
-      alt=""
-      widths={[720, 1440]}
-      sizes="(orientation: portrait) 180vh, 100vw"
-      formats={["avif", "webp"]}
-      fallbackFormat="webp"
-      loading="lazy"
-    />
-  </div>
-  <div class="footer__shade" aria-hidden="true"></div>
-  <div class="footer__credits">
+  <div class="footer__row">
     <p class="footer__name">{name}</p>
-    <p class="footer__crafts">
-      {crafts.map((craft, index) => (
-        <>
-          {index > 0 && (
-            <span class="footer__dot" aria-hidden="true">
-              ·
-            </span>
-          )}
-          <span>{craft}</span>
-        </>
-      ))}
-    </p>
-  </div>
-  <div class="footer__foot">
-    <p class="footer__where">Currently in {currentlyIn}</p>
     <nav class="footer__links" aria-label="Footer">
       {links.map((link) => (
         <a href={link.href}>{link.label}</a>
@@ -83,7 +49,10 @@ const year = new Date().getFullYear();
         ></path>
       </svg>
     </a>
-    <p class="footer__legal">
+  </div>
+  <div class="footer__row footer__row--small">
+    <p class="footer__where">Currently in {currentlyIn}</p>
+    <p>
       © {year} {name}
     </p>
   </div>
@@ -92,128 +61,38 @@ const year = new Date().getFullYear();
 <style>
   .footer {
     --text-2: oklch(0.97 0 0 / 0.72);
-    position: relative;
     display: grid;
-    grid-template-rows: auto 1fr auto;
-    min-height: max(40rem, 100vh);
-    min-height: max(40rem, 100svh);
-    overflow: hidden;
+    gap: var(--space-3);
+    padding: var(--space-6) var(--page-margin) var(--space-4);
+    border-top: 1px solid oklch(1 0 0 / 0.14);
     background: var(--night);
     color: var(--on-media);
-  }
-
-  /* The fire fills the lower part; the credits sit on night above it. */
-  .footer__media {
-    position: absolute;
-    inset: 28% 0 0;
-  }
-
-  .footer__media :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 50% 55%;
-  }
-
-  /* Night melting into the photo from the top, and back at the foot for the links. */
-  .footer__shade {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      var(--night) 28%,
-      oklch(0.16 0.006 262 / 0.82) 38%,
-      oklch(0.16 0.006 262 / 0.35) 54%,
-      oklch(0.16 0.006 262 / 0.2) 68%,
-      oklch(0.16 0.006 262 / 0.75) 92%
-    );
-  }
-
-  .footer__credits,
-  .footer__foot {
-    position: relative;
-    z-index: 1;
+    font-size: var(--step--1);
+    line-height: 1.4;
   }
 
   .footer p {
     max-width: none;
   }
 
-  .footer__credits {
-    display: grid;
-    justify-items: center;
-    gap: var(--space-3);
-    padding: calc(var(--bar-height) + var(--space-8)) var(--page-margin) 0;
-    text-align: center;
-  }
-
-  /* The hero's film title: thin capitals set wide, the space after the last
-     letter given back so the name centres. */
-  .footer__name {
-    margin-inline-end: -0.5em;
-    font-size: clamp(1.75rem, 1.2rem + 3vw, 4rem);
-    font-weight: 200;
-    line-height: 1.2;
-    letter-spacing: 0.5em;
-    text-transform: uppercase;
-  }
-
-  .footer__crafts {
+  .footer__row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.4em 1.1em;
-    font-size: clamp(0.6875rem, 0.62rem + 0.25vw, 0.875rem);
-    font-weight: 300;
-    letter-spacing: 0.45em;
-    text-transform: uppercase;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .footer__row--small {
     color: var(--text-2);
   }
 
-  .footer__crafts > span:not(.footer__dot) {
-    margin-inline-end: -0.45em;
-  }
-
-  .footer__dot {
-    letter-spacing: 0;
-  }
-
-  /* Narrow screens: a craft a line, as in the hero. */
-  @media (max-width: 47.99rem) {
-    .footer__crafts {
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5em;
-    }
-
-    .footer__dot {
-      display: none;
-    }
-  }
-
-  .footer__foot {
-    grid-row: 3;
-    display: grid;
-    gap: var(--space-2) var(--space-4);
-    padding: var(--space-4) var(--page-margin) var(--space-3);
-    font-size: var(--step--1);
-    line-height: 1.4;
-  }
-
-  /* A small live dot, for where she is now. */
-  .footer__where {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-  }
-
-  .footer__where::before {
-    content: "";
-    flex: none;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--signal);
+  /* The hero's film title, small. */
+  .footer__name {
+    font-size: 0.9375rem;
+    font-weight: 300;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
   }
 
   .footer__links {
@@ -233,11 +112,22 @@ const year = new Date().getFullYear();
     display: inline-flex;
     align-items: center;
     gap: var(--space-1);
-    justify-self: start;
   }
 
-  .footer__legal {
-    color: var(--text-2);
+  /* A small live dot, for where she is now. */
+  .footer__where {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .footer__where::before {
+    content: "";
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--signal);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -250,15 +140,11 @@ const year = new Date().getFullYear();
     outline-color: var(--on-media);
   }
 
-  /* Wide screens: one line along the foot. */
-  @media (min-width: 60rem) {
-    .footer__foot {
-      grid-template-columns: auto 1fr auto auto;
-      align-items: center;
-    }
-
-    .footer__links {
-      justify-content: center;
+  /* Narrow screens: one item under the other. */
+  @media (max-width: 47.99rem) {
+    .footer__row {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>

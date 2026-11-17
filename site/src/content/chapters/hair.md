@@ -1,6 +1,6 @@
 ---
 order: 5
-title: I also do hair
+title: Beyond the practice
 nav: Hair
 kicker: Braids, festival and wedding hair
 lead: Mostly braids, like cornrows, festival hair and weddings.

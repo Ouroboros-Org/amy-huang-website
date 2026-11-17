@@ -1,9 +1,9 @@
 ---
 order: 6
-title: And I fly drones
+title: Beyond the practice
 nav: Drone
 kicker: Drone filming
-lead: "Drone filming from wherever I happen to be. [Amy: what she films, and for whom.]"
+lead: "Drone filming, from the places my travels take me. [Amy: what she films, and for whom.]"
 note: view from up here
 cta:
   label: Ask about drone work on WhatsApp
