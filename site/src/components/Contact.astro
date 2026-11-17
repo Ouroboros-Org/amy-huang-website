@@ -4,10 +4,10 @@ import ContactLinks from "./ContactLinks.astro";
 import type { ContactDetails } from "../lib/contact";
 
 /**
- * The last section, on the night the page ends on: "Say hi" in the hero's
- * thin, widely spaced capitals, her invitation large, her words, and the ways
- * to reach her, all centred. Nothing moves here, so an action never shifts
- * under a finger.
+ * The last section, back on the light page after the night of her work: "Say
+ * hi" in the hero's thin, widely spaced capitals, her invitation large, her
+ * words, and the ways to reach her, all centred. Nothing moves here, so an
+ * action never shifts under a finger.
  */
 interface Props {
   entry: CollectionEntry<"chapters">;
@@ -24,7 +24,6 @@ const { title, note, draft } = entry.data;
   class="contact"
   id={entry.id}
   data-draft={draft ? "" : undefined}
-  data-bar-tone="light"
   aria-labelledby={`${entry.id}-title`}
 >
   <p class="contact__kicker">Say hi</p>
@@ -41,14 +40,12 @@ const { title, note, draft } = entry.data;
 
 <style>
   .contact {
-    --text: var(--on-media);
-    --text-2: oklch(0.97 0 0 / 0.72);
     display: grid;
     justify-items: center;
     gap: var(--space-3);
     padding: var(--space-16) var(--page-margin);
-    border-top: 1px solid oklch(1 0 0 / 0.14);
-    background: var(--night);
+    border-top: 1px solid var(--line);
+    background: var(--bg);
     color: var(--text);
     text-align: center;
   }

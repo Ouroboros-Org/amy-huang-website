@@ -60,8 +60,8 @@ From top to bottom:
   saver on, or without JavaScript (`components/Intro.astro`).
 - **Top bar:** her name and role, the section links, the pause-motion control and "Say hi".
   Over the light page it is a blurred strip of the page colour with dark type. Over the
-  hero, the about photo and the night from the work cards to the footer it turns clear
-  with light type.
+  hero, the about photo and the night of her work after it, it turns clear with light
+  type.
 - **Hero:** one screen of Amy's video, looping, under a night shade, with her motto set
   like a film title (thin capitals, widely spaced) and her crafts beneath, separated by
   dots. After the intro it breathes in: the video comes into focus from a light blur, and
@@ -77,7 +77,7 @@ From top to bottom:
 - **About:** over the photo of Amy with her staff: a large statement, her words, and a
   handwritten note pointing at her. On wide screens it is a screen tall with the text on
   the right; on narrow ones the text comes first on dusk and the photo rises out of it.
-  Its foot melts into night: from here to the end the page is night.
+  Its foot melts into night, which carries her work through "Beyond the practice".
 - **My practice:** her words about her practice open the work: her first line large on
   the left, the rest beside it.
 - **Work cards:** the theme's project carousel: one card per offering of her practice
@@ -86,14 +86,14 @@ From top to bottom:
   cylinder, drawn on a canvas (see "The work cards" below).
 - **Beyond the practice:** what she also offers (hair, drone), kept small on purpose: a
   row each with a small picture, its kind, name and lead, linking to its page.
-- **Say hi:** her invitation, the question she asks, large and centred, her words, and
-  the ways to reach her.
-- **Footer:** a quiet strip: her name in the hero's thin, widely spaced capitals, the
-  page's links and the wedding-hair link, "Back to the start", where she is with a small
-  live dot, and the copyright line.
+- **Say hi:** back on the light page: her invitation, the question she asks, large and
+  centred, her words, and the ways to reach her.
+- **Footer:** a quiet strip on the light page: her name in the hero's thin, widely
+  spaced capitals, the page's links and the wedding-hair link, "Back to the start", where
+  she is with a small live dot, and the copyright line.
 
 Each offering, including those beyond the practice, also has its own page at
-`/<file name>/` (`src/pages/[stop].astro`), on night throughout. It opens as its work
+`/<file name>/` (`src/pages/[stop].astro`), on the light page. It opens as its work
 card: the picture darkened in a rounded card at the cards' measures, its kind and name
 over it, and her note. Then its `title` and `lead` with the facts and any badge, beside
 her words about it with the booking action; the next offering as a card's words with a
@@ -221,8 +221,9 @@ Words and media live in `src/content/`, not in the layout code:
 ## Design rules in code
 
 - A light grey page (`--bg`) with near-black text at 14.7:1 and muted text at 6:1, for the
-  gallery. Photos, video and everything from the work cards to the footer are night
-  (`--night`), with light type; the offering pages are night throughout.
+  gallery, "Say hi", the footer and the offering pages. Photos, video and her work, from
+  the about photo's foot through "Beyond the practice", are night (`--night`), with light
+  type.
 - The accent (`--signal`) fills contact actions, with night text on it at 6.8:1, and marks
   hover and active states. Deepened (`--ink`, 5.8:1 on the page) it colours her
   handwriting.

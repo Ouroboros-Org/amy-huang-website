@@ -46,7 +46,7 @@ export function renderIcon(
         },
         children: [
           layer(`linear-gradient(90deg, ${palette.glow.join(", ")})`),
-          // The footer's fade: solid night over the top, easing out to the foot.
+          // Solid night over the top, easing out to the foot.
           layer(
             `linear-gradient(to bottom, ${night(1)} 0%, ${night(1)} 34%, ${night(0.72)} 58%, ${night(0.2)} 84%, ${night(0)} 100%)`,
           ),

@@ -10,11 +10,11 @@ import TopBar from "../components/TopBar.astro";
 import { getSite } from "../lib/site";
 
 /**
- * One page per offering, on the night of the work cards. It opens as its work
- * card does on the home page: the picture darkened in a rounded card, its kind
- * and its name over it, and her handwritten note. Then what it is (her lead,
- * the facts, any announcement) beside her words about it and the way to book,
- * the next offering, and the contact section.
+ * One page per offering, on the light page. It opens as its work card does on
+ * the home page: the picture darkened in a rounded card, its kind and its name
+ * over it, and her handwritten note. Then what it is (her lead, the facts, any
+ * announcement) beside her words about it and the way to book, the next
+ * offering, and the contact section.
  */
 export async function getStaticPaths() {
   const { stops } = await getSite();
@@ -43,12 +43,11 @@ const nextName = next.data.nav ?? next.data.title;
   description={lead ?? `${name} with ${settings.name}.`}
 >
   <TopBar name={settings.name} role={settings.role} links={links.bar} />
-  <main class="offering">
+  <main>
     <section
       class="cover"
       id={stop.id}
       data-draft={draft ? "" : undefined}
-      data-bar-tone="light"
       aria-labelledby="page-title"
     >
       <div class="cover__media">
@@ -61,7 +60,7 @@ const nextName = next.data.nav ?? next.data.title;
       </div>
     </section>
 
-    <div class="story" data-bar-tone="light">
+    <div class="story">
       <div class="story__col">
         <h2 class="caption">{title}</h2>
         {lead && (
@@ -98,7 +97,7 @@ const nextName = next.data.nav ?? next.data.title;
       </div>
     </div>
 
-    <section class="next" data-bar-tone="light" aria-label="Next">
+    <section class="next" aria-label="Next">
       <a class="next__link" href={`/${next.id}/`}>
         <span class="next__label">Next</span>
         {next.data.kicker && <span class="next__kind">{next.data.kicker}</span>}
@@ -133,15 +132,6 @@ const nextName = next.data.nav ?? next.data.title;
 </Base>
 
 <style>
-  /* Night throughout, as the work cards. */
-  .offering {
-    --text: var(--on-media);
-    --text-2: oklch(0.97 0 0 / 0.72);
-    --line: oklch(1 0 0 / 0.14);
-    background: var(--night);
-    color: var(--text);
-  }
-
   /* The work card's measures (Stops.astro): the picture's share of the screen. */
   .cover {
     --media-w: 80%;
@@ -215,12 +205,15 @@ const nextName = next.data.nav ?? next.data.title;
     background: rgb(0 0 0 / 0.4);
   }
 
+  /* Kept inside the card, since light type off it would vanish into the page. */
   .cover__words {
     position: relative;
     display: grid;
     justify-items: center;
     gap: var(--space-3);
+    max-width: min(var(--media-w), 87.5rem, 100% - var(--gutter));
     padding: var(--space-3);
+    color: var(--on-media);
     text-align: center;
   }
 
@@ -233,7 +226,7 @@ const nextName = next.data.nav ?? next.data.title;
   }
 
   .cover h1 {
-    max-width: 94vw;
+    max-width: 100%;
     font-size: clamp(3.5rem, 9vw, 8.25rem);
     font-weight: 600;
     line-height: 1.05;
@@ -352,7 +345,7 @@ const nextName = next.data.nav ?? next.data.title;
     margin-top: var(--space-2);
     font-size: 0.9375rem;
     font-weight: 600;
-    color: oklch(0.92 0 0);
+    color: var(--text-2);
   }
 
   .next__name {
@@ -381,14 +374,14 @@ const nextName = next.data.nav ?? next.data.title;
   }
 
   .next__link:focus-visible .next__button {
-    outline: 3px solid var(--on-media);
+    outline: 3px solid var(--text);
     outline-offset: 4px;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .next__link:hover .next__button {
-      background: var(--on-media);
-      color: var(--night);
+      background: var(--text);
+      color: var(--bg);
       transform: scale(1.08);
     }
   }

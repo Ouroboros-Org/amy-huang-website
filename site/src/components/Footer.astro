@@ -1,9 +1,9 @@
 ---
 /**
- * The page's end: a quiet strip on the night the page ends on. Her name in the
- * hero's thin, widely spaced capitals, the page's links and the wedding-hair
- * link, a way back to the start; below them where she is, with a small live
- * dot, and the copyright line.
+ * The page's end: a quiet strip on the light page. Her name in the hero's thin,
+ * widely spaced capitals, the page's links and the wedding-hair link, a way
+ * back to the start; below them where she is, with a small live dot, and the
+ * copyright line.
  */
 interface Props {
   name: string;
@@ -16,7 +16,7 @@ const { name, currentlyIn, weddingsUrl, links } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="footer" id="footer" data-bar-tone="light">
+<footer class="footer" id="footer">
   <div class="footer__row">
     <p class="footer__name">{name}</p>
     <nav class="footer__links" aria-label="Footer">
@@ -60,13 +60,12 @@ const year = new Date().getFullYear();
 
 <style>
   .footer {
-    --text-2: oklch(0.97 0 0 / 0.72);
     display: grid;
     gap: var(--space-3);
     padding: var(--space-6) var(--page-margin) var(--space-4);
-    border-top: 1px solid oklch(1 0 0 / 0.14);
-    background: var(--night);
-    color: var(--on-media);
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
     font-size: var(--step--1);
     line-height: 1.4;
   }
@@ -132,12 +131,8 @@ const year = new Date().getFullYear();
 
   @media (hover: hover) and (pointer: fine) {
     .footer a:hover {
-      color: var(--on-media);
+      color: var(--text);
     }
-  }
-
-  .footer :focus-visible {
-    outline-color: var(--on-media);
   }
 
   /* Narrow screens: one item under the other. */
